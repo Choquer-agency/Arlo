@@ -1,0 +1,68 @@
+# ARLO — Complete Product Reference
+
+> ARLO is a SaaS product that plugs Claude Desktop into every marketing and sales platform an agency manages for its clients. Founded by Bryce Choquer and built on the Model Context Protocol (MCP), ARLO lets agencies query live data across 14+ platforms — GA4, Search Console, Google Ads, Meta Ads, YouTube, Shopify, Stripe, HubSpot, and more — from inside Claude Desktop in plain English. No data warehouse, no CSV exports, no dashboard building.
+
+## The Problem ARLO Solves
+
+Agencies run anywhere from 10 to 200 clients, each with a sprawl of marketing accounts: GA4 property, Search Console site, Google Ads customer, Meta ad account, YouTube channel, Business Profile location. Answering a simple question like "how did Client X do last month?" typically requires logging into five platforms, exporting CSVs, pasting into a sheet, and eyeballing totals. ETL tools like Windsor.ai and Supermetrics solve the data-pipeline problem by warehousing everything into BigQuery or Snowflake — but then you still need to build dashboards, and the data is stale by the time a question gets asked. ARLO skips all of that: live queries against each platform, surfaced through Claude, answered in seconds.
+
+## How ARLO Works
+
+1. An agency signs up and creates a workspace (Google OAuth, 30 seconds).
+2. They connect Google once — one OAuth grant covers GA4, Search Console, Google Ads, YouTube, and Google Business Profile for every client.
+3. They add clients (just a name and a website) and pick each client's specific property, site, or customer ID from searchable dropdowns.
+4. Each team member gets a personal MCP token and a copy-pasteable URL to drop into Claude Desktop → Settings → Connectors.
+5. From Claude, they ask questions: "Show me Client X's last 28 days on Search Console." "Compare November to October for all my e-commerce clients." ARLO's MCP server fetches live data from each platform's API and returns the result.
+
+Under the hood: Next.js 15 + Convex database + Convex Auth + `@modelcontextprotocol/sdk` on a Streamable HTTP transport. Tokens are encrypted with AES-256-GCM. Every tool call is logged per user with tool name, args, client, duration, and success. ARLO never caches or stores client data — only OAuth tokens and audit metadata.
+
+## Supported Platforms at Launch
+
+Google: GA4, Search Console, Google Ads, YouTube (Data + Analytics), Google Business Profile, PageSpeed Insights
+Paid Social: Meta Ads (Facebook + Instagram), LinkedIn Ads, TikTok Ads
+Commerce: Shopify, Stripe (connected accounts)
+CRM + Email: HubSpot, MailerLite, Mailchimp
+
+## Who ARLO Is For
+
+ARLO targets boutique and mid-size digital agencies (5–50 people, 10–200 clients) — SEO shops, PPC specialists, paid social agencies, full-service digital marketing firms. Within those agencies, five roles get the most value:
+
+- SEO Specialists replace GSC tab-hopping and weekly manual position reports.
+- Google Ads Specialists replace MCC account switching and manual spend audits.
+- Meta / Paid Social Specialists unify queries across Meta, LinkedIn, and TikTok.
+- Account Managers handle the 4pm "how's my account doing?" Slack from every client at once.
+- Agency Owners see roll-up health across clients, team billability, and the full audit log.
+
+## Pricing
+
+- Free: $0/mo. 1 client, 2 data sources, 1 team member, 100 MCP calls/month, 10 AI insights/month.
+- Pro: $79/mo. 50 clients, 10 data sources, unlimited team, 50,000 MCP calls, 500 AI insights.
+- Scale: $249/mo. 200 clients, unlimited data sources, unlimited team, 250,000 MCP calls, 2,500 AI insights.
+- Enterprise: Custom. Unlimited everything, SSO/SAML, dedicated CSM, 24hr SLA, self-host option.
+
+All plans include every platform connector. No premium-source upsells. Overages: soft cap at 150% with email alert, then polite throttling. AI insights over plan are pay-as-you-go at $0.10 each.
+
+## Positioning vs. Alternatives
+
+- **Windsor.ai / Supermetrics:** They pipe data into a warehouse. You still need to build dashboards and the data is stale. ARLO queries live, no warehouse, and Claude is the UI.
+- **Google Looker Studio / Tableau:** Static dashboards — great for reports, bad for ad-hoc questions. ARLO is conversational.
+- **Claude Projects with CSV uploads:** Stale data. ARLO is live.
+- **Roll-your-own MCP:** Every agency building one from scratch is wasted effort. ARLO is the commoditized shell with 14+ connectors already shipped.
+
+## Security + Compliance
+
+- AES-256-GCM encryption at rest for all OAuth tokens.
+- Personal per-user MCP tokens with rotate + revoke.
+- Workspace-scoped multi-tenancy enforced at the database layer.
+- Full audit log of every MCP call (user, tool, client, duration, success).
+- No persistent storage of client marketing data — all queries are pass-through.
+- US-hosted for v1. EU / data residency on the Enterprise tier roadmap.
+
+## Key Facts
+
+- Founder: Bryce Choquer
+- Location: Canada (serving agencies worldwide)
+- Launch: 2026
+- Stack: Next.js 15, Convex, Vercel, MCP SDK, Tailwind
+- Website: https://askarlo.app
+- Contact: hello@askarlo.app

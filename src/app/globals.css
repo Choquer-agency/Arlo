@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cubic-default: cubic-bezier(0.625, 0.05, 0, 1);
+    --duration-default: 0.6s;
+    --duration-half: 0.3s;
+    --duration-double: 1.2s;
+
+    /* shadcn color tokens */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+    --primary: 82 100% 72%;
+    --primary-foreground: 168 30% 15%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 155 85% 87%;
+    --accent-foreground: 168 30% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 82 100% 72%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    vertical-align: bottom;
+  }
+
+  /*
+   * Typographic rule: no widows on headings. `text-wrap: balance` auto-balances
+   * lines so the last line never has a single orphaned word. Applies to every
+   * heading site-wide — do not override per-component.
+   */
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  /* Body copy uses `pretty` instead — avoids widows without forcing balance. */
+  p {
+    text-wrap: pretty;
+  }
+
+  html {
+    background-color: #fff;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-light text-dark antialiased;
+    font-size: clamp(1.0625rem, 0.2vw + 0.9rem, 1.1875rem);
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background-color: #D0FF71;
+    color: #193133;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, blockquote, label {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  a:not([class]) {
+    text-decoration: underline;
+  }
+
+  button {
+    background-color: unset;
+    padding: unset;
+    text-align: inherit;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  video {
+    width: 100%;
+    object-fit: cover;
+  }
+
+  svg {
+    max-width: 100%;
+  }
+
+  section, header, footer {
+    position: relative;
+  }
+}
+
+@layer components {
+  /* Container */
+  .u-container {
+    @apply w-full mx-auto px-8 md:px-12;
+    max-width: min(85rem, 100%);
+  }
+
+  /* Theme classes */
+  .theme-dark {
+    @apply bg-bg-dark text-light;
+  }
+
+  .theme-grey {
+    background-color: #FFF9F0;
+    @apply text-dark;
+  }
+
+  .theme-pitchblack {
+    @apply bg-dark text-light;
+  }
+
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center gap-4 rounded-sm font-sans font-medium transition-all;
+    padding: 0.375rem 0.5rem 0.375rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.05);
+    transition: all var(--duration-half) var(--cubic-default);
+  }
+
+  .btn:hover {
+    color: inherit;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-3 rounded-sm font-sans font-medium;
+    background-color: #D0FF71;
+    color: #193133;
+    padding: 0.75rem 1.5rem;
+    transition: background-color var(--duration-half) var(--cubic-default), color var(--duration-half) var(--cubic-default);
+  }
+
+  .btn-secondary:hover {
+    background-color: #0c0c0c !important;
+    color: #ffffff !important;
+  }
+
+  .btn-arrow {
+    @apply inline-flex items-center justify-center flex-shrink-0;
+    width: 2.75rem;
+    height: 2.375rem;
+    border-radius: 0.25rem;
+    background: rgba(0, 0, 0, 0.05);
+    transition: background var(--duration-half) var(--cubic-default);
+  }
+
+  /* Eyebrow text — highlighter effect */
+  .eyebrow {
+    @apply font-mono text-fluid-small uppercase tracking-wider inline-block;
+    background-color: hsl(82 100% 72%);
+    padding: 0.25em 0.6em;
+    border-radius: 2px;
+  }
+
+  /* Section spacing */
+  .section-space-hero {
+    padding-top: clamp(2rem, 3vw, 3rem);
+    padding-bottom: clamp(4rem, 6vw, 8rem);
+  }
+
+  .section-space-large {
+    padding-top: clamp(6rem, 8vw, 12rem);
+    padding-bottom: clamp(6rem, 8vw, 12rem);
+  }
+
+  .section-space-main {
+    padding-top: clamp(4.5rem, 6vw, 8rem);
+    padding-bottom: clamp(4.5rem, 6vw, 8rem);
+  }
+
+  .section-space-small {
+    padding-top: clamp(3rem, 4vw, 5rem);
+    padding-bottom: clamp(3rem, 4vw, 5rem);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Migration pricing range slider */
+.migration-range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.migration-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #F79C42;
+  cursor: pointer;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.migration-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.migration-range-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #F79C42;
+  cursor: pointer;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.migration-range-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+}

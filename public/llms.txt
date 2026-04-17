@@ -1,0 +1,59 @@
+# ARLO
+
+> ARLO is a SaaS product that plugs Claude Desktop into every marketing and sales platform an agency manages for its clients. Agencies connect once (Google OAuth grants GA4, Search Console, Google Ads, YouTube, and Business Profile in a single step), assign each client's properties and accounts, then distribute a personal MCP URL to every team member. From Claude, they ask questions in plain English and get live numbers in seconds — no exports, no dashboards, no data warehouse.
+
+## What ARLO Does
+
+ARLO exposes an MCP (Model Context Protocol) server that Claude Desktop treats as a custom connector. Tool calls fan out to each connected platform's API on demand. Because ARLO never stores or warehouses client data, answers are always live and the setup is minutes instead of days. ARLO is positioned as a replacement for manual CSV exports, per-client dashboard building in Windsor or Supermetrics, and the general pain of tab-hopping between GA4, Search Console, Google Ads, Meta Ads Manager, and a half-dozen other platforms.
+
+## Supported Platforms (at launch)
+
+- GA4 (Google Analytics Data API)
+- Google Search Console
+- Google Ads
+- YouTube (Data + Analytics)
+- Google Business Profile
+- PageSpeed Insights
+- Meta Ads (Facebook + Instagram)
+- LinkedIn Ads
+- TikTok Ads
+- Shopify
+- Stripe (connected accounts)
+- HubSpot
+- MailerLite
+- Mailchimp
+
+## Who ARLO Is For
+
+- [SEO Specialists](https://askarlo.app/services/seo-specialist): Replace GSC tab-hopping and manual weekly position reports.
+- [Google Ads Specialists](https://askarlo.app/services/google-ads-specialist): Replace MCC account switching and manual spend audits.
+- [Meta / Paid Social Specialists](https://askarlo.app/services/meta-ads-specialist): Single-surface query across Meta, LinkedIn, and TikTok.
+- [Account Managers](https://askarlo.app/services/account-manager): Instant cross-platform client recaps for QBRs and check-ins.
+- [Agency Owners](https://askarlo.app/services/agency-owner): Roll-up health across clients, team accountability, audit log.
+
+## Key Facts
+
+- Founder: Bryce Choquer
+- Location: Canada (serving agencies worldwide)
+- Launch: 2026
+- Data storage model: pass-through — no warehouse, no ETL, no persistent client data
+- OAuth model: workspace-level, one grant per platform unlocks every connected client
+- Audit: every MCP tool call logged with user, tool, client, duration, and success
+- Pricing: Free ($0, 1 client) → Pro ($79/mo, 50 clients) → Scale ($249/mo, 200 clients) → Enterprise (custom)
+- Setup time: under 5 minutes end-to-end
+- Security: AES-256-GCM token encryption at rest, per-user MCP tokens with rotate + revoke
+
+## Pages
+
+- [Homepage](https://askarlo.app/)
+- [Pricing](https://askarlo.app/pricing)
+- [Docs](https://askarlo.app/docs)
+- [Services (who it's for)](https://askarlo.app/services)
+- [About](https://askarlo.app/about)
+- [Contact](https://askarlo.app/contact)
+- [Blog](https://askarlo.app/blog)
+
+## Contact
+
+- Email: hello@askarlo.app
+- LinkedIn: https://linkedin.com/company/askarlo

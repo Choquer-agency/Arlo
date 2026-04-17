@@ -1,0 +1,13 @@
+{
+  "dataStudio": {
+    "name": "ARLO",
+    "logoUrl": "https://askarlo.app/images/logo.svg",
+    "company": "ARLO",
+    "companyUrl": "https://askarlo.app",
+    "supportUrl": "https://askarlo.app/contact",
+    "description": "Live ARLO source data piped into Looker Studio. One bearer token per client, scoped and NDA-safe.",
+    "addonUrl": "https://askarlo.app/destinations/looker_studio",
+    "privacyPolicyUrl": "https://askarlo.app/privacy",
+    "termsOfServiceUrl": "https://askarlo.app/terms"
+  }
+}

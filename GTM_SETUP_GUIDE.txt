@@ -1,0 +1,683 @@
+====================================================================
+  GOOGLE TAG MANAGER SETUP GUIDE - FuturLabs
+  Step-by-step instructions for configuring all
+  analytics tracking
+====================================================================
+
+TABLE OF CONTENTS
+  1. Prerequisites
+  2. Create Data Layer Variables (13 variables)
+  3. Create Custom Event Triggers (7 triggers)
+  4. Create Built-in Triggers (2 triggers)
+  5. Create GA4 Event Tags (9 tags)
+  6. Register Custom Dimensions in GA4 (11 dimensions)
+  7. Mark Conversions in GA4
+  8. Test Everything with Preview Mode
+  9. Publish Your Container
+
+====================================================================
+  1. PREREQUISITES
+====================================================================
+
+Before you start, make sure you have:
+  - Access to your GTM container (GTM-PJV92STC)
+  - Access to your GA4 property
+  - A GA4 Configuration Tag already set up in GTM
+    (if not, see step below)
+
+IF YOU DON'T HAVE A GA4 CONFIGURATION TAG YET:
+  1. In GTM, click "Tags" > "New"
+  2. Name it: "GA4 - Configuration"
+  3. Tag type: "Google Analytics: GA4 Configuration"
+  4. Measurement ID: paste your GA4 Measurement ID
+     (starts with "G-")
+     - Find this in GA4 > Admin > Data Streams >
+       select your stream > Measurement ID
+  5. Trigger: "All Pages"
+  6. Save
+
+Throughout this guide, when a tag says "use your GA4
+Measurement ID", you'll enter that same G-XXXXXXXX
+value.
+
+
+====================================================================
+  2. CREATE DATA LAYER VARIABLES (13 total)
+====================================================================
+
+Data Layer Variables tell GTM how to read data from
+the events your website sends. You need one for each
+piece of data you want to pass to GA4.
+
+For EACH variable below, follow these steps:
+  1. In GTM, click "Variables" in the left sidebar
+  2. Scroll down to "User-Defined Variables"
+  3. Click "New"
+  4. Name it exactly as shown below
+  5. Click the variable configuration box
+  6. Choose "Data Layer Variable"
+  7. Enter the "Data Layer Variable Name" exactly
+     as shown
+  8. Leave "Data Layer Version" as "Version 2"
+  9. Save
+
+Here are all 13 variables to create:
+
+VARIABLE 1:
+  Name:                     dlv - cta_location
+  Data Layer Variable Name: cta_location
+
+VARIABLE 2:
+  Name:                     dlv - cta_text
+  Data Layer Variable Name: cta_text
+
+VARIABLE 3:
+  Name:                     dlv - pricing_tier
+  Data Layer Variable Name: pricing_tier
+
+VARIABLE 4:
+  Name:                     dlv - pricing_range
+  Data Layer Variable Name: pricing_range
+
+VARIABLE 5:
+  Name:                     dlv - form_source
+  Data Layer Variable Name: form_source
+
+VARIABLE 6:
+  Name:                     dlv - step_number
+  Data Layer Variable Name: step_number
+
+VARIABLE 7:
+  Name:                     dlv - step_name
+  Data Layer Variable Name: step_name
+
+VARIABLE 8:
+  Name:                     dlv - project_type
+  Data Layer Variable Name: project_type
+
+VARIABLE 9:
+  Name:                     dlv - budget
+  Data Layer Variable Name: budget
+
+VARIABLE 10:
+  Name:                     dlv - company_size
+  Data Layer Variable Name: company_size
+
+VARIABLE 11:
+  Name:                     dlv - timeline
+  Data Layer Variable Name: timeline
+
+VARIABLE 12:
+  Name:                     dlv - referral
+  Data Layer Variable Name: referral
+
+VARIABLE 13:
+  Name:                     dlv - faq_question
+  Data Layer Variable Name: faq_question
+
+
+====================================================================
+  3. CREATE CUSTOM EVENT TRIGGERS (7 total)
+====================================================================
+
+Custom Event Triggers tell GTM "when this specific
+event happens on the site, fire a tag." Each one
+listens for a specific event name that the website
+code sends via dataLayer.push().
+
+For EACH trigger below:
+  1. Click "Triggers" in the left sidebar
+  2. Click "New"
+  3. Name it exactly as shown
+  4. Click the trigger configuration box
+  5. Choose "Custom Event"
+  6. Enter the Event Name exactly as shown
+     (case sensitive!)
+  7. Leave "This trigger fires on" as
+     "All Custom Events"
+  8. Save
+
+TRIGGER 1:
+  Name:       CE - cta_click
+  Event Name: cta_click
+
+TRIGGER 2:
+  Name:       CE - form_open
+  Event Name: form_open
+
+TRIGGER 3:
+  Name:       CE - form_step
+  Event Name: form_step
+
+TRIGGER 4:
+  Name:       CE - generate_lead
+  Event Name: generate_lead
+
+TRIGGER 5:
+  Name:       CE - form_abandon
+  Event Name: form_abandon
+
+TRIGGER 6:
+  Name:       CE - pricing_click
+  Event Name: pricing_click
+
+TRIGGER 7:
+  Name:       CE - faq_toggle
+  Event Name: faq_toggle
+
+
+====================================================================
+  4. CREATE BUILT-IN TRIGGERS (2 total)
+====================================================================
+
+These use GTM's built-in trigger types -- no code
+changes needed on the site.
+
+--- TRIGGER 8: Scroll Depth ---
+
+  1. Click "Triggers" > "New"
+  2. Name: "Scroll Depth - 25 50 75 90"
+  3. Click the trigger configuration box
+  4. Choose "Scroll Depth"
+  5. Configure:
+     - Vertical Scroll Depths: CHECK this box
+     - Percentages: 25, 50, 75, 90
+     - (Leave Horizontal unchecked)
+     - This trigger fires on: "All Pages"
+  6. Save
+
+IMPORTANT: You also need to enable the built-in
+"Scroll Depth Threshold" variable:
+  1. Go to "Variables"
+  2. Click "Configure" at the top of
+     "Built-In Variables"
+  3. Scroll down to the "Scrolling" section
+  4. Check "Scroll Depth Threshold"
+  5. Also check "Scroll Depth Units" and
+     "Scroll Direction" while you're here
+
+
+--- TRIGGER 9: Outbound Link Clicks ---
+
+  1. Click "Triggers" > "New"
+  2. Name: "Click - Outbound Links"
+  3. Click the trigger configuration box
+  4. Choose "Click - Just Links"
+  5. Check "Wait for Tags" (max wait: 2000ms)
+  6. Check "Check Validation"
+  7. This trigger fires on: "Some Link Clicks"
+  8. Condition:
+     "Click URL" > "does not contain" >
+     "futurlabs.dev"
+     (Replace with your actual domain if different)
+  9. Save
+
+IMPORTANT: Enable the built-in "Click URL" variable:
+  1. Go to "Variables" > "Configure"
+     (Built-In Variables)
+  2. Under "Clicks", check "Click URL" and
+     "Click Text"
+
+
+====================================================================
+  5. CREATE GA4 EVENT TAGS (9 total)
+====================================================================
+
+Each tag sends an event to GA4 when its trigger
+fires. The event parameters carry the data that
+makes your reports useful.
+
+For EACH tag below:
+  1. Click "Tags" > "New"
+  2. Name it exactly as shown
+  3. Click the tag configuration box
+  4. Choose "Google Analytics: GA4 Event"
+  5. Measurement ID: enter your GA4 Measurement ID
+     (G-XXXXXXXXXX) OR select your GA4
+     Configuration Tag
+  6. Event Name: enter exactly as shown
+  7. Expand "Event Parameters" and click
+     "Add Row" for each parameter
+  8. Set the trigger as specified
+  9. Save
+
+
+--- TAG 1: GA4 - CTA Click ---
+
+  Tag Name:     GA4 - CTA Click
+  Event Name:   cta_click
+  Trigger:      CE - cta_click
+
+  Event Parameters:
+  +-----------------+------------------------+
+  | Parameter Name  | Value                  |
+  +-----------------+------------------------+
+  | cta_location    | {{dlv - cta_location}} |
+  | cta_text        | {{dlv - cta_text}}     |
+  | pricing_tier    | {{dlv - pricing_tier}} |
+  +-----------------+------------------------+
+
+
+--- TAG 2: GA4 - Form Open ---
+
+  Tag Name:     GA4 - Form Open
+  Event Name:   form_open
+  Trigger:      CE - form_open
+
+  Event Parameters:
+  +-----------------+-------------------------+
+  | Parameter Name  | Value                   |
+  +-----------------+-------------------------+
+  | form_source     | {{dlv - form_source}}   |
+  | pricing_tier    | {{dlv - pricing_tier}}  |
+  | pricing_range   | {{dlv - pricing_range}} |
+  +-----------------+-------------------------+
+
+
+--- TAG 3: GA4 - Form Step ---
+
+  Tag Name:     GA4 - Form Step
+  Event Name:   form_step
+  Trigger:      CE - form_step
+
+  Event Parameters:
+  +-----------------+------------------------+
+  | Parameter Name  | Value                  |
+  +-----------------+------------------------+
+  | step_number     | {{dlv - step_number}}  |
+  | step_name       | {{dlv - step_name}}    |
+  +-----------------+------------------------+
+
+
+--- TAG 4: GA4 - Lead Generated (CONVERSION) ---
+
+  Tag Name:     GA4 - Lead Generated
+  Event Name:   generate_lead
+  Trigger:      CE - generate_lead
+
+  Event Parameters:
+  +-----------------+-------------------------+
+  | Parameter Name  | Value                   |
+  +-----------------+-------------------------+
+  | project_type    | {{dlv - project_type}}  |
+  | budget          | {{dlv - budget}}        |
+  | company_size    | {{dlv - company_size}}  |
+  | timeline        | {{dlv - timeline}}      |
+  | referral        | {{dlv - referral}}      |
+  | pricing_tier    | {{dlv - pricing_tier}}  |
+  +-----------------+-------------------------+
+
+  NOTE: This is your most important tag! It tracks
+  completed form submissions. You will mark this as
+  a conversion in GA4 (see Section 7).
+
+
+--- TAG 5: GA4 - Form Abandon ---
+
+  Tag Name:     GA4 - Form Abandon
+  Event Name:   form_abandon
+  Trigger:      CE - form_abandon
+
+  Event Parameters:
+  +-----------------+------------------------+
+  | Parameter Name  | Value                  |
+  +-----------------+------------------------+
+  | step_number     | {{dlv - step_number}}  |
+  | step_name       | {{dlv - step_name}}    |
+  +-----------------+------------------------+
+
+  NOTE: This only fires when someone closes the
+  form after progressing past step 1. People who
+  open and immediately close won't trigger this
+  (avoids noise).
+
+
+--- TAG 6: GA4 - Pricing Click ---
+
+  Tag Name:     GA4 - Pricing Click
+  Event Name:   pricing_click
+  Trigger:      CE - pricing_click
+
+  Event Parameters:
+  +-----------------+-------------------------+
+  | Parameter Name  | Value                   |
+  +-----------------+-------------------------+
+  | pricing_tier    | {{dlv - pricing_tier}}  |
+  | pricing_range   | {{dlv - pricing_range}} |
+  +-----------------+-------------------------+
+
+
+--- TAG 7: GA4 - FAQ Toggle ---
+
+  Tag Name:     GA4 - FAQ Toggle
+  Event Name:   faq_toggle
+  Trigger:      CE - faq_toggle
+
+  Event Parameters:
+  +-----------------+-------------------------+
+  | Parameter Name  | Value                   |
+  +-----------------+-------------------------+
+  | faq_question    | {{dlv - faq_question}}  |
+  +-----------------+-------------------------+
+
+
+--- TAG 8: GA4 - Scroll Depth ---
+
+  Tag Name:     GA4 - Scroll Depth
+  Event Name:   scroll_depth
+  Trigger:      Scroll Depth - 25 50 75 90
+
+  Event Parameters:
+  +------------------+------------------------------+
+  | Parameter Name   | Value                        |
+  +------------------+------------------------------+
+  | percent_scrolled | {{Scroll Depth Threshold}}   |
+  +------------------+------------------------------+
+
+  NOTE: "Scroll Depth Threshold" is a built-in
+  variable (not one you created). It will
+  automatically contain 25, 50, 75, or 90.
+
+
+--- TAG 9: GA4 - Outbound Click ---
+
+  Tag Name:     GA4 - Outbound Click
+  Event Name:   outbound_click
+  Trigger:      Click - Outbound Links
+
+  Event Parameters:
+  +-----------------+------------------------+
+  | Parameter Name  | Value                  |
+  +-----------------+------------------------+
+  | link_url        | {{Click URL}}          |
+  | link_text       | {{Click Text}}         |
+  +-----------------+------------------------+
+
+  NOTE: "Click URL" and "Click Text" are
+  built-in variables.
+
+
+====================================================================
+  6. REGISTER CUSTOM DIMENSIONS IN GA4 (11 total)
+====================================================================
+
+Custom dimensions let your event parameters show
+up in GA4 reports and explorations. Without this
+step, the data is collected but you can't see it
+in reports.
+
+For EACH dimension:
+  1. Go to GA4 (analytics.google.com)
+  2. Click Admin (gear icon, bottom left)
+  3. Under "Data display", click
+     "Custom definitions"
+  4. Click "Create custom dimension"
+  5. Fill in as shown below
+  6. Click "Save"
+
+  +----+------------------+------------------+-------+
+  | #  | Dimension Name   | Event Parameter  | Scope |
+  +----+------------------+------------------+-------+
+  | 1  | CTA Location     | cta_location     | Event |
+  | 2  | CTA Text         | cta_text         | Event |
+  | 3  | Pricing Tier     | pricing_tier     | Event |
+  | 4  | Pricing Range    | pricing_range    | Event |
+  | 5  | Form Source      | form_source      | Event |
+  | 6  | Form Step Number | step_number      | Event |
+  | 7  | Form Step Name   | step_name        | Event |
+  | 8  | Project Type     | project_type     | Event |
+  | 9  | Budget Range     | budget           | Event |
+  | 10 | Company Size     | company_size     | Event |
+  | 11 | Referral Source   | referral         | Event |
+  +----+------------------+------------------+-------+
+
+  "Scope" should always be "Event" for all of these.
+
+  NOTE: GA4 free properties allow up to 50 custom
+  dimensions. You're using 11.
+
+
+====================================================================
+  7. MARK CONVERSIONS IN GA4
+====================================================================
+
+Mark "generate_lead" as a key event (conversion)
+so GA4 highlights it in reports and you can use it
+for Google Ads optimization.
+
+  1. In GA4, go to Admin > Events
+  2. Wait for "generate_lead" to appear in the
+     events list (it will show up after the first
+     form submission with tracking live)
+  3. Toggle the "Mark as key event" switch next
+     to "generate_lead"
+
+  If you don't see it yet, you can create it
+  manually:
+  1. In Admin > Events, click "Create event"
+  2. Custom event name: generate_lead
+  3. Save, then toggle "Mark as key event"
+
+
+====================================================================
+  8. TEST EVERYTHING WITH PREVIEW MODE
+====================================================================
+
+BEFORE publishing, always test! GTM Preview Mode
+shows you exactly what fires.
+
+STEP 1: OPEN PREVIEW MODE
+  1. In GTM, click "Preview" (top right corner)
+  2. Enter your website URL
+     (e.g., https://futurlabs.dev or
+     http://localhost:3000)
+  3. Click "Connect"
+  4. Your site opens in a new tab with
+     Tag Assistant connected
+
+STEP 2: TEST EACH EVENT
+
+  Test CTA Click:
+  - Click "Get a Free SaaS Audit" in the hero
+  - In Tag Assistant, you should see "cta_click"
+    event fire
+  - Click on it and verify:
+    cta_location = "hero"
+    cta_text = "Get a Free SaaS Audit"
+  - Close the modal
+  - Now click "Book a Discovery Call" in the nav
+  - Verify cta_location = "nav"
+  - Scroll down and test the footer CTA too
+
+  Test Form Open:
+  - Click any CTA that opens the contact form
+  - Verify "form_open" event fires with the
+    correct form_source
+  - If you clicked from pricing, verify
+    pricing_tier is populated
+
+  Test Form Steps:
+  - Fill out step 1 (name, email, company) and
+    click Next
+  - Verify "form_step" fires with
+    step_number = 1, step_name = "about_project"
+  - Continue through all steps
+
+  Test Form Submit:
+  - Complete the full form and submit
+  - Verify "generate_lead" fires with all
+    parameters populated
+  - Check: project_type, budget, company_size,
+    timeline, referral
+
+  Test Form Abandon:
+  - Open the form, fill out step 1, advance to
+    step 2
+  - Close the modal (X button or click backdrop)
+  - Verify "form_abandon" fires with
+    last_step = 1
+
+  Test Pricing Click:
+  - Click "Get Started" on any pricing card
+  - Verify both "pricing_click" AND "cta_click"
+    fire
+  - Check pricing_tier and pricing_range values
+
+  Test FAQ Toggle:
+  - Click on any FAQ question to open it
+  - Verify "faq_toggle" fires with question text
+  - Click the same question to close it -- verify
+    it does NOT fire again
+
+  Test Scroll Depth:
+  - Scroll slowly down the page
+  - Verify "scroll_depth" fires at
+    25%, 50%, 75%, 90%
+
+  Test Outbound Click:
+  - Click a social media link (LinkedIn or
+    Twitter) in the footer
+  - Verify "outbound_click" fires with link_url
+
+STEP 3: CHECK FOR ERRORS
+  - In Tag Assistant, look for any red error
+    indicators
+  - Click on any event to see its details and
+    verify parameter values
+  - If a tag didn't fire, check that the trigger
+    event name matches exactly
+
+
+====================================================================
+  9. PUBLISH YOUR CONTAINER
+====================================================================
+
+Once everything tests correctly:
+
+  1. Click "Submit" (top right in GTM)
+  2. Version Name:
+     "Analytics tracking - CTA, form funnel,
+     FAQ, scroll depth"
+  3. Version Description (optional):
+     "Added tracking for: CTA clicks with
+     location, 4-step form funnel
+     (open/step/submit/abandon), pricing tier
+     clicks, FAQ opens, scroll depth, and
+     outbound link clicks. 9 GA4 event tags
+     total."
+  4. Click "Publish"
+
+Your tracking is now live!
+
+
+====================================================================
+  QUICK REFERENCE: WHAT EACH EVENT TELLS YOU
+====================================================================
+
+  cta_click
+    "Which buttons do people click, and where
+    on the page?"
+    Look at: cta_location breakdown --
+    hero vs nav vs footer vs pricing
+
+  form_open
+    "How many people open the contact form, and
+    where did they come from?"
+    Look at: form_source -- which CTAs actually
+    drive form opens
+
+  form_step
+    "How far do people get in the form?"
+    Build a funnel: step 0 > 1 > 2 > 3 --
+    spot the biggest drop-off
+
+  generate_lead (CONVERSION)
+    "How many leads did we get, and what do
+    they want?"
+    Look at: budget, project_type, company_size
+    -- understand your pipeline
+
+  form_abandon
+    "Where do people give up on the form?"
+    Look at: last_step_name -- if most abandon
+    at budget_timeline, maybe pricing is
+    scaring people off
+
+  pricing_click
+    "Which pricing tiers get the most interest?"
+    Compare: Discovery vs MVP vs Full Platform
+    vs Growth Retainer
+
+  faq_toggle
+    "What questions do visitors need answered?"
+    If one FAQ gets 10x the clicks, promote
+    that answer higher on the page
+
+  scroll_depth
+    "How far down the page do people scroll?"
+    If 70% don't reach pricing, consider
+    moving it up
+
+  outbound_click
+    "Are people clicking our social links?"
+    Track which external links get engagement
+
+
+====================================================================
+  REPORTING TIPS
+====================================================================
+
+FUNNEL EXPLORATION (see where people drop off):
+  1. GA4 > Explore > Create new exploration
+  2. Choose "Funnel exploration"
+  3. Add steps:
+     Step 1: form_open
+     Step 2: form_step (filter: step_number = 1)
+     Step 3: form_step (filter: step_number = 2)
+     Step 4: form_step (filter: step_number = 3)
+     Step 5: generate_lead
+  4. This shows your exact conversion funnel
+     drop-off
+
+CTA COMPARISON:
+  1. GA4 > Reports > Engagement > Events
+  2. Click on "cta_click"
+  3. Add secondary dimension: "CTA Location"
+  4. Now you can see which page locations drive
+     the most clicks
+
+PRICING INTEREST:
+  1. GA4 > Explore > Free form exploration
+  2. Rows: Pricing Tier
+  3. Values: Event count
+  4. Filter: Event name = pricing_click
+  5. See which tiers attract the most interest
+
+
+====================================================================
+  DONE!
+====================================================================
+
+After ~24-48 hours of data collection, you'll have
+enough data to start making informed decisions.
+Come back and review:
+
+  - Which CTAs perform best
+    (cta_click by location)
+  - Form completion rate
+    (form_open vs generate_lead)
+  - Where people drop off
+    (form_step funnel)
+  - Most popular pricing tiers
+    (pricing_click)
+  - Most-read FAQs
+    (faq_toggle)
+  - Scroll depth patterns
+    (do people see your pricing section?)
+
+This data will directly inform decisions about:
+  - CTA placement and copy
+  - Form length and field ordering
+  - Pricing presentation
+  - Content priority and page layout
+  - FAQ content strategy

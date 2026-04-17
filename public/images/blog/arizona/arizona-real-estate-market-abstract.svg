@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#FFF8F0"/>
+      <stop offset="100%" stop-color="#FFF2E6"/>
+    </linearGradient>
+    <linearGradient id="bar1" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#FF9B6B"/>
+    </linearGradient>
+    <linearGradient id="bar2" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FFB088"/>
+      <stop offset="100%" stop-color="#FFD0B0"/>
+    </linearGradient>
+    <linearGradient id="bar3" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#E8A87C"/>
+      <stop offset="100%" stop-color="#F0C8A8"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="0.5" cy="0.6" r="0.5">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots3" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="0.6" fill="#000" opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="675" fill="url(#bg3)"/>
+  <rect width="1200" height="675" fill="url(#glow3)"/>
+
+  <!-- Subtle grid lines -->
+  <g opacity="0.06" stroke="#C0A080" stroke-width="0.5">
+    <line x1="200" y1="580" x2="1000" y2="580"/>
+    <line x1="200" y1="480" x2="1000" y2="480"/>
+    <line x1="200" y1="380" x2="1000" y2="380"/>
+    <line x1="200" y1="280" x2="1000" y2="280"/>
+    <line x1="200" y1="180" x2="1000" y2="180"/>
+  </g>
+
+  <!-- Growth chart bars - Arizona real estate market visualization -->
+  <!-- Abstract rising bars suggesting market growth -->
+
+  <!-- 2020 -->
+  <rect x="240" y="460" width="48" height="120" rx="4" fill="url(#bar3)" opacity="0.5"/>
+
+  <!-- 2021 -->
+  <rect x="330" y="400" width="48" height="180" rx="4" fill="url(#bar3)" opacity="0.55"/>
+
+  <!-- 2022 -->
+  <rect x="420" y="350" width="48" height="230" rx="4" fill="url(#bar2)" opacity="0.6"/>
+
+  <!-- 2023 -->
+  <rect x="510" y="310" width="48" height="270" rx="4" fill="url(#bar2)" opacity="0.65"/>
+
+  <!-- 2024 -->
+  <rect x="600" y="260" width="48" height="320" rx="4" fill="url(#bar1)" opacity="0.7"/>
+
+  <!-- 2025 -->
+  <rect x="690" y="220" width="48" height="360" rx="4" fill="url(#bar1)" opacity="0.75"/>
+
+  <!-- 2026 (current/projected) -->
+  <rect x="780" y="170" width="48" height="410" rx="4" fill="url(#bar1)" opacity="0.85"/>
+
+  <!-- Projected -->
+  <rect x="870" y="140" width="48" height="440" rx="4" fill="url(#bar1)" opacity="0.35" stroke="#FF6B35" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Trend line -->
+  <path d="M264 455 L354 395 L444 340 L534 300 L624 248 L714 210 L804 160 L894 128"
+        fill="none" stroke="#FF6B35" stroke-width="2" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Trend line dots -->
+  <circle cx="264" cy="455" r="4" fill="#FF6B35" opacity="0.4"/>
+  <circle cx="354" cy="395" r="4" fill="#FF6B35" opacity="0.45"/>
+  <circle cx="444" cy="340" r="4" fill="#FF6B35" opacity="0.5"/>
+  <circle cx="534" cy="300" r="4" fill="#FF6B35" opacity="0.55"/>
+  <circle cx="624" cy="248" r="4" fill="#FF6B35" opacity="0.6"/>
+  <circle cx="714" cy="210" r="4" fill="#FF6B35" opacity="0.65"/>
+  <circle cx="804" cy="160" r="5" fill="#FF6B35" opacity="0.8"/>
+  <circle cx="894" cy="128" r="4" fill="#FF6B35" opacity="0.35" stroke="#FF6B35" stroke-width="1"/>
+
+  <!-- Small house icons sitting on top of some bars -->
+  <!-- House on 2026 bar -->
+  <g transform="translate(788, 148)">
+    <rect x="2" y="8" width="20" height="14" rx="1" fill="#FEFCF8" stroke="#E0D0C0" stroke-width="0.8"/>
+    <polygon points="12,2 24,10 0,10" fill="#FF6B35" opacity="0.6"/>
+    <rect x="9" y="14" width="6" height="8" rx="0.5" fill="#FF6B35" opacity="0.3"/>
+  </g>
+
+  <!-- House on 2024 bar -->
+  <g transform="translate(608, 238)">
+    <rect x="2" y="8" width="18" height="12" rx="1" fill="#FEFCF8" stroke="#E0D0C0" stroke-width="0.7"/>
+    <polygon points="11,2 21,10 1,10" fill="#FF6B35" opacity="0.4"/>
+    <rect x="8" y="13" width="5" height="7" rx="0.5" fill="#FF6B35" opacity="0.2"/>
+  </g>
+
+  <!-- Abstract Arizona shape outline (very subtle) -->
+  <path d="M100 100 L100 200 L80 210 L75 250 L90 280 L85 350 L70 400 L65 500 L140 500 L140 460 L170 460 L170 100 Z"
+        fill="none" stroke="#FF6B35" stroke-width="1" opacity="0.06" stroke-linejoin="round"/>
+
+  <!-- Year labels -->
+  <g font-family="system-ui, sans-serif" font-size="11" fill="#999" text-anchor="middle">
+    <text x="264" y="600">'20</text>
+    <text x="354" y="600">'21</text>
+    <text x="444" y="600">'22</text>
+    <text x="534" y="600">'23</text>
+    <text x="624" y="600">'24</text>
+    <text x="714" y="600">'25</text>
+    <text x="804" y="600" fill="#FF6B35" font-weight="600" opacity="0.8">'26</text>
+    <text x="894" y="600" fill="#FF6B35" opacity="0.35">'27</text>
+  </g>
+
+  <!-- Floating accent text - very subtle -->
+  <text x="85" y="560" font-family="system-ui, sans-serif" font-size="10" fill="#C0A080" opacity="0.3" letter-spacing="0.15em">ARIZONA MARKET</text>
+
+  <!-- Up arrow indicator -->
+  <g transform="translate(960, 200)" opacity="0.4">
+    <line x1="20" y1="60" x2="20" y2="10" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+    <polyline points="10,22 20,10 30,22" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Dot overlay -->
+  <rect width="1200" height="675" fill="url(#dots3)"/>
+
+  <!-- Subtle corner marks -->
+  <line x1="30" y1="30" x2="70" y2="30" stroke="#E0D0C0" stroke-width="0.5" opacity="0.4"/>
+  <line x1="30" y1="30" x2="30" y2="70" stroke="#E0D0C0" stroke-width="0.5" opacity="0.4"/>
+  <line x1="1170" y1="645" x2="1130" y2="645" stroke="#E0D0C0" stroke-width="0.5" opacity="0.4"/>
+  <line x1="1170" y1="645" x2="1170" y2="605" stroke="#E0D0C0" stroke-width="0.5" opacity="0.4"/>
+</svg>

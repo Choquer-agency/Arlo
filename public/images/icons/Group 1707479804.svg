@@ -1,0 +1,14 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="16" height="16" fill="black"/>
+<rect x="64" width="16" height="16" fill="black"/>
+<path d="M16 32C16 23.1634 23.1634 16 32 16V32H16Z" fill="black"/>
+<rect x="32" y="16" width="16" height="16" fill="black"/>
+<path d="M48 16C56.8366 16 64 23.1634 64 32H48V16Z" fill="black"/>
+<rect x="16" y="32" width="16" height="16" fill="black"/>
+<rect x="48" y="32" width="16" height="16" fill="black"/>
+<path d="M16 48H32V64C23.1634 64 16 56.8366 16 48Z" fill="black"/>
+<rect x="32" y="48" width="16" height="16" fill="black"/>
+<path d="M48 48H64C64 56.8366 56.8366 64 48 64V48Z" fill="black"/>
+<rect y="64" width="16" height="16" fill="black"/>
+<rect x="64" y="64" width="16" height="16" fill="black"/>
+</svg>
