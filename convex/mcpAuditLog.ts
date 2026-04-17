@@ -1,9 +1,11 @@
-import { internalMutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership, requireRole } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
-export const record = internalMutation({
+export const record = mutation({
   args: {
+    _serviceSecret: v.string(),
     workspaceId: v.id("workspaces"),
     userId: v.optional(v.id("users")),
     tokenId: v.optional(v.id("mcpTokens")),
@@ -14,9 +16,10 @@ export const record = internalMutation({
     durationMs: v.number(),
     clientId: v.optional(v.id("clients")),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { _serviceSecret, ...rest }) => {
+    requireServiceSecret(_serviceSecret);
     return ctx.db.insert("mcpAuditLog", {
-      ...args,
+      ...rest,
       createdAt: new Date().toISOString(),
     });
   },

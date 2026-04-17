@@ -13,13 +13,14 @@ import {
   CheckCircle2,
   SkipForward,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { BusinessType, SoloConfig } from "@/lib/useSoloOnboarding";
 
 const BUSINESS_TYPES: {
   id: BusinessType;
   label: string;
   sub: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
 }[] = [
   { id: "ecommerce", label: "E-commerce", sub: "I sell products online (Shopify, WooCommerce, Etsy)", icon: ShoppingBag },
   { id: "service", label: "Service-based", sub: "Consulting, bookings, agency work", icon: Calendar },

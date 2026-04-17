@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { google } from "googleapis";
 import { fetchMutation } from "convex/nextjs";
-import { internal } from "../../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
 import { encryptCredentials } from "@/lib/crypto";
 import { verifyState } from "@/lib/oauth-state";
+import { getServiceSecret } from "@/lib/serviceSecret";
 
 export const runtime = "nodejs";
 
@@ -104,7 +105,8 @@ export async function GET(req: Request) {
   );
   const tokenExpiresAt = Date.now() + tokens.expires_in * 1000;
 
-  const connectionId = await fetchMutation(internal.platformConnections.upsert, {
+  const connectionId = await fetchMutation(api.platformConnections.upsert, {
+    _serviceSecret: getServiceSecret(),
     workspaceId: state.workspaceId as Id<"workspaces">,
     provider: "google",
     accountEmail: userInfo.email,
@@ -213,7 +215,8 @@ export async function GET(req: Request) {
     } catch {}
   }
 
-  await fetchMutation(internal.platformConnections.updateAvailableAccounts, {
+  await fetchMutation(api.platformConnections.updateAvailableAccounts, {
+    _serviceSecret: getServiceSecret(),
     connectionId,
     availableAccounts: accounts,
   });

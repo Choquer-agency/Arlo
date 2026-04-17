@@ -3,10 +3,11 @@
  * pulls the PlatformConnection record(s) the connector needs.
  */
 import { fetchQuery, fetchMutation } from "convex/nextjs";
-import { api, internal } from "../../convex/_generated/api";
+import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 import { decryptCredentials, encryptCredentials } from "./crypto";
 import type { ConnectorContext, OAuthProvider } from "./connectors/types";
+import { getServiceSecret } from "./serviceSecret";
 
 const REFRESH_ENDPOINTS: Record<OAuthProvider, string> = {
   google: "https://oauth2.googleapis.com/token",
@@ -67,7 +68,8 @@ async function refreshProviderToken(
   const { ciphertext, iv } = encryptCredentials(JSON.stringify(newCreds));
   const newExpires = json.expires_in ? Date.now() + json.expires_in * 1000 : undefined;
 
-  await fetchMutation(internal.platformConnections.updateTokens, {
+  await fetchMutation(api.platformConnections.updateTokens, {
+    _serviceSecret: getServiceSecret(),
     connectionId: connection._id,
     encryptedTokens: ciphertext,
     tokensIv: iv,

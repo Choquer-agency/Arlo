@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-12-18.acacia" });
+  const stripe = new Stripe(stripeKey, { apiVersion: "2025-02-24.acacia" });
   const origin = new URL(req.url).origin;
 
   // Try authenticated path first — only activates if Convex is configured

@@ -1,6 +1,7 @@
-import { internalMutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireClientAccess, requireMembership } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
 export const listForDestination = query({
   args: {
@@ -21,25 +22,28 @@ export const listForDestination = query({
   },
 });
 
-export const recordStart = internalMutation({
+export const recordStart = mutation({
   args: {
+    _serviceSecret: v.string(),
     destinationId: v.id("destinations"),
     syncId: v.optional(v.id("destinationSyncs")),
     workspaceId: v.id("workspaces"),
     clientId: v.optional(v.id("clients")),
     startedAt: v.number(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { _serviceSecret, ...rest }) => {
+    requireServiceSecret(_serviceSecret);
     return ctx.db.insert("destinationRuns", {
-      ...args,
+      ...rest,
       status: "running",
       createdAt: new Date().toISOString(),
     });
   },
 });
 
-export const recordFinish = internalMutation({
+export const recordFinish = mutation({
   args: {
+    _serviceSecret: v.string(),
     runId: v.id("destinationRuns"),
     status: v.string(), // "success" | "error"
     finishedAt: v.number(),
@@ -48,7 +52,8 @@ export const recordFinish = internalMutation({
     bytesWritten: v.optional(v.number()),
     errorMessage: v.optional(v.string()),
   },
-  handler: async (ctx, { runId, ...patch }) => {
+  handler: async (ctx, { _serviceSecret, runId, ...patch }) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(runId, patch);
   },
 });

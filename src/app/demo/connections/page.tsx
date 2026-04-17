@@ -119,7 +119,7 @@ export default function DemoConnectionsPage() {
   }
   function submitWaitlist(id: string) {
     if (!waitlistEmail.trim()) return;
-    setSubmitted(new Set([...submitted, id]));
+    setSubmitted(new Set([...Array.from(submitted), id]));
     setWaitlist(null);
     setWaitlistEmail("");
   }

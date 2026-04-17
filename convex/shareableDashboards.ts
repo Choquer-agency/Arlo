@@ -7,12 +7,17 @@
  * destination so the /share/[token] route can call fetchDataset with the locked
  * clientId. A leaked token can therefore only reveal its one client's data.
  */
-import { internalQuery } from "./_generated/server";
+import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
-export const resolveByTokenHash = internalQuery({
-  args: { tokenHash: v.string() },
-  handler: async (ctx, { tokenHash }) => {
+export const resolveByTokenHash = query({
+  args: {
+    _serviceSecret: v.string(),
+    tokenHash: v.string(),
+  },
+  handler: async (ctx, { _serviceSecret, tokenHash }) => {
+    requireServiceSecret(_serviceSecret);
     const dest = await ctx.db
       .query("destinations")
       .withIndex("by_live_token_hash", (q) => q.eq("liveTokenHash", tokenHash))

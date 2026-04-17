@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeKey) return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
 
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-12-18.acacia" });
+  const stripe = new Stripe(stripeKey, { apiVersion: "2025-02-24.acacia" });
   const origin = new URL(req.url).origin;
   const portal = await stripe.billingPortal.sessions.create({
     customer: ws.stripeCustomerId,

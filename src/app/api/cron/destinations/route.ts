@@ -6,11 +6,12 @@
  * accept `Authorization: Bearer CRON_SECRET` for manual / local triggering.
  */
 import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { internal } from "../../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { decryptCredentials } from "@/lib/crypto";
 import { getAdapter, hasAdapter } from "@/lib/destinations/registry";
 import type { DestinationContext } from "@/lib/destinations/adapter";
+import { getServiceSecret } from "@/lib/serviceSecret";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -52,7 +53,8 @@ async function runOne(sync: Doc<"destinationSyncs">): Promise<{
   rowsWritten?: number;
   bytesWritten?: number;
 }> {
-  const dest = await fetchQuery(internal.destinations.internalGet, {
+  const dest = await fetchQuery(api.destinations.internalGet, {
+    _serviceSecret: getServiceSecret(),
     destinationId: sync.destinationId,
   });
   if (!dest) return { ok: false, error: "Destination missing" };
@@ -86,12 +88,16 @@ export async function GET(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const due = await fetchQuery(internal.destinationSyncs.listDue, { limit: BATCH });
+  const due = await fetchQuery(api.destinationSyncs.listDue, {
+    _serviceSecret: getServiceSecret(),
+    limit: BATCH,
+  });
   const ran: Array<{ syncId: string; ok: boolean; error?: string }> = [];
 
   for (const sync of due) {
     const startedAt = Date.now();
-    const runId = await fetchMutation(internal.destinationRuns.recordStart, {
+    const runId = await fetchMutation(api.destinationRuns.recordStart, {
+      _serviceSecret: getServiceSecret(),
       destinationId: sync.destinationId,
       syncId: sync._id,
       workspaceId: sync.workspaceId,
@@ -115,7 +121,8 @@ export async function GET(req: Request) {
     }
 
     const finishedAt = Date.now();
-    await fetchMutation(internal.destinationRuns.recordFinish, {
+    await fetchMutation(api.destinationRuns.recordFinish, {
+      _serviceSecret: getServiceSecret(),
       runId,
       status: ok ? "success" : "error",
       finishedAt,
@@ -126,21 +133,24 @@ export async function GET(req: Request) {
     });
 
     const nextRunAt = computeNextRunAt(sync.schedule, finishedAt);
-    await fetchMutation(internal.destinationSyncs.advance, {
+    await fetchMutation(api.destinationSyncs.advance, {
+      _serviceSecret: getServiceSecret(),
       syncId: sync._id,
       lastRunAt: finishedAt,
       nextRunAt,
     });
 
     if (!ok) {
-      await fetchMutation(internal.destinations.internalMarkRun, {
+      await fetchMutation(api.destinations.internalMarkRun, {
+        _serviceSecret: getServiceSecret(),
         destinationId: sync.destinationId,
         status: "error",
         lastRunAt: new Date(finishedAt).toISOString(),
         lastError: error,
       });
     } else {
-      await fetchMutation(internal.destinations.internalMarkRun, {
+      await fetchMutation(api.destinations.internalMarkRun, {
+        _serviceSecret: getServiceSecret(),
         destinationId: sync.destinationId,
         status: "active",
         lastRunAt: new Date(finishedAt).toISOString(),

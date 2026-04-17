@@ -1,6 +1,7 @@
-import { internalMutation, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
 export const listForWorkspace = query({
   args: { workspaceId: v.id("workspaces") },
@@ -26,8 +27,9 @@ export const getByProvider = query({
   },
 });
 
-export const upsert = internalMutation({
+export const upsert = mutation({
   args: {
+    _serviceSecret: v.string(),
     workspaceId: v.id("workspaces"),
     provider: v.string(),
     accountEmail: v.optional(v.string()),
@@ -38,7 +40,8 @@ export const upsert = internalMutation({
     tokenExpiresAt: v.optional(v.number()),
     addedByUserId: v.optional(v.id("users")),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { _serviceSecret, ...args }) => {
+    requireServiceSecret(_serviceSecret);
     const existing = await ctx.db
       .query("platformConnections")
       .withIndex("by_workspace_provider", (q) =>
@@ -69,8 +72,9 @@ export const upsert = internalMutation({
   },
 });
 
-export const updateAvailableAccounts = internalMutation({
+export const updateAvailableAccounts = mutation({
   args: {
+    _serviceSecret: v.string(),
     connectionId: v.id("platformConnections"),
     availableAccounts: v.array(
       v.object({
@@ -80,26 +84,34 @@ export const updateAvailableAccounts = internalMutation({
       })
     ),
   },
-  handler: async (ctx, { connectionId, availableAccounts }) => {
+  handler: async (ctx, { _serviceSecret, connectionId, availableAccounts }) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(connectionId, { availableAccounts });
   },
 });
 
-export const updateTokens = internalMutation({
+export const updateTokens = mutation({
   args: {
+    _serviceSecret: v.string(),
     connectionId: v.id("platformConnections"),
     encryptedTokens: v.string(),
     tokensIv: v.string(),
     tokenExpiresAt: v.optional(v.number()),
   },
-  handler: async (ctx, { connectionId, ...patch }) => {
+  handler: async (ctx, { _serviceSecret, connectionId, ...patch }) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(connectionId, patch);
   },
 });
 
-export const markError = internalMutation({
-  args: { connectionId: v.id("platformConnections"), error: v.string() },
-  handler: async (ctx, { connectionId, error }) => {
+export const markError = mutation({
+  args: {
+    _serviceSecret: v.string(),
+    connectionId: v.id("platformConnections"),
+    error: v.string(),
+  },
+  handler: async (ctx, { _serviceSecret, connectionId, error }) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(connectionId, { status: "error", lastError: error });
   },
 });

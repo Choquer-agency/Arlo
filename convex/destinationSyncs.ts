@@ -1,6 +1,7 @@
-import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireClientAccess, requireMembership } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
 export const listForDestination = query({
   args: { workspaceId: v.id("workspaces"), destinationId: v.id("destinations") },
@@ -112,9 +113,13 @@ export const runNow = mutation({
  * so the cron tick stays under the Next.js response budget; the next tick picks
  * up the rest.
  */
-export const listDue = internalQuery({
-  args: { limit: v.optional(v.number()) },
-  handler: async (ctx, { limit }) => {
+export const listDue = query({
+  args: {
+    _serviceSecret: v.string(),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, { _serviceSecret, limit }) => {
+    requireServiceSecret(_serviceSecret);
     const now = Date.now();
     const batch = await ctx.db
       .query("destinationSyncs")
@@ -124,13 +129,15 @@ export const listDue = internalQuery({
   },
 });
 
-export const advance = internalMutation({
+export const advance = mutation({
   args: {
+    _serviceSecret: v.string(),
     syncId: v.id("destinationSyncs"),
     lastRunAt: v.number(),
     nextRunAt: v.number(),
   },
-  handler: async (ctx, { syncId, lastRunAt, nextRunAt }) => {
+  handler: async (ctx, { _serviceSecret, syncId, lastRunAt, nextRunAt }) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(syncId, { lastRunAt, nextRunAt });
   },
 });

@@ -8,9 +8,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { createHash } from "crypto";
 import { fetchQuery } from "convex/nextjs";
-import { internal } from "../../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { fetchDataset } from "@/lib/datasets/fetchDataset";
+import { getServiceSecret } from "@/lib/serviceSecret";
 import type { DateRangeInput } from "@/lib/connectors/types";
 import type { PlatformRef } from "@/lib/connectors/registry";
 
@@ -49,7 +50,8 @@ export default async function SharePage({
   if (!token || token.length < 16) notFound();
 
   const tokenHash = hashToken(token);
-  const resolved = await fetchQuery(internal.shareableDashboards.resolveByTokenHash, {
+  const resolved = await fetchQuery(api.shareableDashboards.resolveByTokenHash, {
+    _serviceSecret: getServiceSecret(),
     tokenHash,
   });
   if (!resolved) notFound();

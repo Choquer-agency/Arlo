@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (!stripeKey || !webhookSecret) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-12-18.acacia" });
+  const stripe = new Stripe(stripeKey, { apiVersion: "2025-02-24.acacia" });
   const sig = req.headers.get("stripe-signature") ?? "";
   const raw = await req.text();
 

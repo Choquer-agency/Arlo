@@ -16,6 +16,7 @@ import type * as destinationSyncs from "../destinationSyncs.js";
 import type * as destinations from "../destinations.js";
 import type * as http from "../http.js";
 import type * as lib_currentUser from "../lib/currentUser.js";
+import type * as lib_serviceAuth from "../lib/serviceAuth.js";
 import type * as mcpAuditLog from "../mcpAuditLog.js";
 import type * as mcpTokens from "../mcpTokens.js";
 import type * as members from "../members.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   destinations: typeof destinations;
   http: typeof http;
   "lib/currentUser": typeof lib_currentUser;
+  "lib/serviceAuth": typeof lib_serviceAuth;
   mcpAuditLog: typeof mcpAuditLog;
   mcpTokens: typeof mcpTokens;
   members: typeof members;

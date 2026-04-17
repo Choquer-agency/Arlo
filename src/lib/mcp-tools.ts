@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchQuery, fetchMutation } from "convex/nextjs";
-import { api, internal } from "../../convex/_generated/api";
+import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
+import { getServiceSecret } from "./serviceSecret";
 import {
   allBuiltinPlatforms,
   discover,
@@ -76,7 +77,8 @@ async function logCall(
   errorMessage: string | undefined
 ) {
   try {
-    await fetchMutation(internal.mcpAuditLog.record, {
+    await fetchMutation(api.mcpAuditLog.record, {
+      _serviceSecret: getServiceSecret(),
       workspaceId: caller.workspaceId,
       userId: caller.userId,
       tokenId: caller.tokenId,
@@ -87,7 +89,8 @@ async function logCall(
       durationMs,
       clientId,
     });
-    await fetchMutation(internal.usageCounters.incrementToolCall, {
+    await fetchMutation(api.usageCounters.incrementToolCall, {
+      _serviceSecret: getServiceSecret(),
       workspaceId: caller.workspaceId,
       isInsight: tool === "marketing_insights",
     });
@@ -150,7 +153,7 @@ export function registerTools(server: McpServer, caller: McpCaller): void {
       const client = resolveClientFromList(clients, clientName);
       const ctx = await buildConnectorContext(caller.workspaceId, client);
       const result: Record<string, { connected: boolean; reason?: string; status: string }> = {};
-      for (const p of allPlatforms()) {
+      for (const p of allBuiltinPlatforms()) {
         const c = getConnector(p);
         const ok = c.isConfigured(ctx);
         result[p] = ok

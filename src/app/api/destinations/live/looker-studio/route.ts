@@ -14,9 +14,10 @@
 import { createHash } from "crypto";
 import { NextResponse } from "next/server";
 import { fetchQuery } from "convex/nextjs";
-import { internal } from "../../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
 import { fetchDataset } from "@/lib/datasets/fetchDataset";
+import { getServiceSecret } from "@/lib/serviceSecret";
 import type { LookerStudioConfig } from "@/lib/destinations/adapters/lookerStudio";
 import type { DateRangeInput, ResolvedDateRange } from "@/lib/connectors/types";
 
@@ -102,7 +103,8 @@ export async function POST(req: Request) {
   const token = extractToken(req);
   if (!token) return NextResponse.json({ error: "Missing bearer token" }, { status: 401 });
 
-  const resolved = await fetchQuery(internal.shareableDashboards.resolveByTokenHash, {
+  const resolved = await fetchQuery(api.shareableDashboards.resolveByTokenHash, {
+    _serviceSecret: getServiceSecret(),
     tokenHash: hashToken(token),
   });
   if (!resolved || !resolved.clientId) {
@@ -162,7 +164,8 @@ export async function GET(req: Request) {
   // Allow GET as a simple health probe for the community connector author.
   const token = extractToken(req);
   if (!token) return NextResponse.json({ ok: true, info: "Looker Studio live endpoint" });
-  const resolved = await fetchQuery(internal.shareableDashboards.resolveByTokenHash, {
+  const resolved = await fetchQuery(api.shareableDashboards.resolveByTokenHash, {
+    _serviceSecret: getServiceSecret(),
     tokenHash: hashToken(token),
   });
   return NextResponse.json({ ok: !!resolved });

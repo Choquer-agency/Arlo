@@ -1,10 +1,10 @@
-import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import {
-  filterVisibleClients,
   requireClientAccess,
   requireMembership,
 } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
 /**
  * List destinations in a workspace. Filters out destinations scoped to clients
@@ -129,23 +129,34 @@ export const remove = mutation({
   },
 });
 
-// ── Internal: used by the cron runner (/api/cron/destinations). ──────────────
+// ── Service-secret guarded: used by the cron runner (/api/cron/destinations)
+//    and the OAuth callback. Registered as public so fetchQuery/fetchMutation
+//    can reach them, but gated by a shared secret so the open internet cannot. ─
 
-export const internalGet = internalQuery({
-  args: { destinationId: v.id("destinations") },
-  handler: async (ctx, { destinationId }) => {
+export const internalGet = query({
+  args: {
+    _serviceSecret: v.string(),
+    destinationId: v.id("destinations"),
+  },
+  handler: async (ctx, { _serviceSecret, destinationId }) => {
+    requireServiceSecret(_serviceSecret);
     return ctx.db.get(destinationId);
   },
 });
 
-export const internalMarkRun = internalMutation({
+export const internalMarkRun = mutation({
   args: {
+    _serviceSecret: v.string(),
     destinationId: v.id("destinations"),
     status: v.string(), // "active" | "error"
     lastRunAt: v.string(),
     lastError: v.optional(v.string()),
   },
-  handler: async (ctx, { destinationId, status, lastRunAt, lastError }) => {
+  handler: async (
+    ctx,
+    { _serviceSecret, destinationId, status, lastRunAt, lastError }
+  ) => {
+    requireServiceSecret(_serviceSecret);
     await ctx.db.patch(destinationId, { status, lastRunAt, lastError });
   },
 });

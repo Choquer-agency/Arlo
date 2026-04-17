@@ -1,19 +1,25 @@
-import { internalMutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 
 function currentPeriod(): string {
   return new Date().toISOString().slice(0, 7);
 }
 
-export const incrementToolCall = internalMutation({
+export const incrementToolCall = mutation({
   args: {
+    _serviceSecret: v.string(),
     workspaceId: v.id("workspaces"),
     isInsight: v.optional(v.boolean()),
     tokensIn: v.optional(v.number()),
     tokensOut: v.optional(v.number()),
   },
-  handler: async (ctx, { workspaceId, isInsight, tokensIn, tokensOut }) => {
+  handler: async (
+    ctx,
+    { _serviceSecret, workspaceId, isInsight, tokensIn, tokensOut }
+  ) => {
+    requireServiceSecret(_serviceSecret);
     const period = currentPeriod();
     const existing = await ctx.db
       .query("usageCounters")
