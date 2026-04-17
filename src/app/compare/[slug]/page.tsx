@@ -6,7 +6,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CtaBanner } from "@/components/CtaBanner";
 import { AGENCY_NAME, SITE_URL } from "@/lib/siteConfig";
-import { getComparison, getAllComparisonSlugs } from "@/content/comparisons";
+import { getComparisonBySlug, getAllComparisonSlugs } from "@/content/comparisons";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const page = getComparison(slug);
+  const page = getComparisonBySlug(slug);
   if (!page) return { title: "Not Found" };
 
   return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ComparisonPage({ params }: PageProps) {
   const { slug } = await params;
-  const page = getComparison(slug);
+  const page = getComparisonBySlug(slug);
   if (!page) notFound();
 
   const { sections } = page;

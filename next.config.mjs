@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingIncludes: {
-    "/*": ["./src/content/blog/posts/**/*.md"],
+  experimental: {
+    outputFileTracingIncludes: {
+      "/*": ["./src/content/blog/posts/**/*.md"],
+    },
   },
 };
 
