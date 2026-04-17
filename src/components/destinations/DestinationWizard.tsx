@@ -11,7 +11,7 @@ import {
   SYNC_MODE_LABELS,
   type DestinationEntry,
 } from "@/lib/destinations/catalog";
-import { hasAdapter, isRealAdapter } from "@/lib/destinations/registry";
+import { hasAdapter, isRealAdapter } from "@/lib/destinations/capabilities";
 
 type Step = "pick" | "configure" | "sources" | "saving" | "done";
 
