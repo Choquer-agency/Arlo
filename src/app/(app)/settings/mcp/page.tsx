@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import Link from "next/link";
 import { Copy, RotateCw, Check } from "lucide-react";
 
 export default function McpSettingsPage() {

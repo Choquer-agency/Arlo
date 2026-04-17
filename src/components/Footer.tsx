@@ -29,7 +29,6 @@ const socialLinks = [
 ];
 
 export function Footer() {
-  const { openModal } = useContactForm();
   const year = new Date().getFullYear();
 
   return (

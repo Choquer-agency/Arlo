@@ -4,7 +4,7 @@
  * pastes the URL into the ARLO wizard, done. Full OAuth / bot-token auth is a
  * future iteration (would enable posting to multiple channels from one install).
  */
-import type { DestinationAdapter, DestinationContext, SyncResult, TestResult } from "../adapter";
+import type { DestinationAdapter, DestinationContext, SyncResult } from "../adapter";
 import type { MetricResult } from "../../connectors/types";
 import { fetchDataset } from "../../datasets/fetchDataset";
 import { buildSlackDigestBlocks } from "../render/slackBlocks";

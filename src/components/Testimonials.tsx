@@ -3,12 +3,10 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap-register";
-import { useContactForm } from "@/context/ContactFormContext";
 import { testimonials } from "@/content/shared";
 import { trackCtaClick } from "@/lib/analytics";
 
 export function Testimonials() {
-  const { openModal } = useContactForm();
   const ref = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 

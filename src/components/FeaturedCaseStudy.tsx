@@ -18,10 +18,10 @@ export function FeaturedCaseStudy() {
   const ref = useRef<HTMLElement>(null);
   const caseStudies = getAllCaseStudies();
   const featured = caseStudies[0];
-  if (!featured) return null;
 
   useGSAP(
     () => {
+      if (!featured) return;
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.from(".featured-heading", {
@@ -40,8 +40,10 @@ export function FeaturedCaseStudy() {
         });
       });
     },
-    { scope: ref }
+    { scope: ref, dependencies: [featured] }
   );
+
+  if (!featured) return null;
 
   return (
     <section ref={ref} className="section-space-main">

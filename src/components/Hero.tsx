@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap-register";
-import { useContactForm } from "@/context/ContactFormContext";
 import { trackCtaClick } from "@/lib/analytics";
 
 const featureColors = ["#D0FF71", "#27EAA6", "#FFB84D"];
@@ -16,7 +15,6 @@ const features = [
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const { openModal } = useContactForm();
 
   useGSAP(
     () => {

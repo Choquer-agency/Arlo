@@ -118,7 +118,7 @@ export const googleAdsConnector: MarketingConnector = {
       );
     }
     const body = await res.json();
-    const results: any[] = body.results || [];
+    const results: Array<Record<string, unknown>> = body.results || [];
 
     const totals: Record<string, number> = {};
     for (const m of query.metrics) totals[m] = 0;

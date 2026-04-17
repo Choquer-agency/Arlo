@@ -27,10 +27,6 @@ import { fetchDataset } from "./datasets/fetchDataset";
 const PLATFORM_REF = z
   .string()
   .describe("Platform id (e.g. ga4, gsc, shopify) or custom:<slug> for a workspace's custom connector.");
-const BUILTIN_ENUM = z.enum(
-  allBuiltinPlatforms() as [MarketingPlatform, ...MarketingPlatform[]]
-);
-
 const DateRangePresetEnum = z.enum([
   "today", "yesterday",
   "last_7_days", "last_14_days", "last_28_days", "last_30_days", "last_90_days",

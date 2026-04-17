@@ -6,7 +6,7 @@
  * accept `Authorization: Bearer CRON_SECRET` for manual / local triggering.
  */
 import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { api, internal } from "../../../../../convex/_generated/api";
+import { internal } from "../../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { decryptCredentials } from "@/lib/crypto";
 import { getAdapter, hasAdapter } from "@/lib/destinations/registry";
