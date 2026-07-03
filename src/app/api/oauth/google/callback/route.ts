@@ -123,18 +123,31 @@ export async function GET(req: Request) {
 
   const accounts: AvailableAccount[] = [];
 
-  // GA4 properties
+  // GA4 properties — accountSummaries.list() returns every property the user
+  // can see across all accounts in one call. (properties.list requires a
+  // concrete account in its filter; the `parent:accounts/-` wildcard is
+  // rejected, which silently yielded zero properties.)
   try {
     const admin = google.analyticsadmin({ version: "v1beta", auth: oauth2Client });
-    const props = await admin.properties.list({ filter: 'parent:accounts/-' });
-    for (const p of props.data.properties ?? []) {
-      accounts.push({
-        id: p.name ?? "",
-        name: p.displayName ?? p.name ?? "",
-        kind: "ga4_property",
-      });
-    }
-  } catch {}
+    let pageToken: string | undefined;
+    do {
+      const res = await admin.accountSummaries.list({ pageSize: 200, pageToken });
+      for (const acct of res.data.accountSummaries ?? []) {
+        for (const prop of acct.propertySummaries ?? []) {
+          accounts.push({
+            id: prop.property ?? "", // e.g. "properties/123456789"
+            name: prop.displayName
+              ? `${prop.displayName}${acct.displayName ? ` · ${acct.displayName}` : ""}`
+              : prop.property ?? "",
+            kind: "ga4_property",
+          });
+        }
+      }
+      pageToken = res.data.nextPageToken ?? undefined;
+    } while (pageToken);
+  } catch (e) {
+    console.error("[oauth probe] ga4 accountSummaries.list failed:", e);
+  }
 
   // GSC sites
   try {
@@ -147,7 +160,9 @@ export async function GET(req: Request) {
         kind: "gsc_site",
       });
     }
-  } catch {}
+  } catch (e) {
+    console.error("[oauth probe] gsc sites.list failed:", e);
+  }
 
   // YouTube channels
   try {
@@ -160,7 +175,9 @@ export async function GET(req: Request) {
         kind: "yt_channel",
       });
     }
-  } catch {}
+  } catch (e) {
+    console.error("[oauth probe] youtube channels.list failed:", e);
+  }
 
   // GBP accounts + locations
   try {
@@ -191,7 +208,9 @@ export async function GET(req: Request) {
         }
       }
     }
-  } catch {}
+  } catch (e) {
+    console.error("[oauth probe] gbp accounts/locations failed:", e);
+  }
 
   // Google Ads customers
   if (process.env.GOOGLE_ADS_DEVELOPER_TOKEN) {
