@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership } from "./lib/currentUser";
+import { clientCap, planLabel } from "./lib/planLimits";
 
 function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48) || "client";
@@ -39,6 +40,26 @@ export const create = mutation({
   },
   handler: async (ctx, { workspaceId, name, websiteUrl }) => {
     await requireMembership(ctx, workspaceId);
+
+    // Enforce the plan's client cap. Solo/Free allow a single business; adding
+    // another requires upgrading. (Previously unenforced — solo could add many.)
+    const workspace = await ctx.db.get(workspaceId);
+    const existing = await ctx.db
+      .query("clients")
+      .withIndex("by_workspace_archived", (q) =>
+        q.eq("workspaceId", workspaceId).eq("archivedAt", undefined)
+      )
+      .collect();
+    const cap = clientCap(workspace?.plan);
+    if (existing.length >= cap) {
+      const label = planLabel(workspace?.plan);
+      throw new Error(
+        cap === 1
+          ? `${label} includes a single business. Upgrade to add more — see Billing.`
+          : `You're at the ${cap}-business limit for ${label}. Upgrade to add more — see Billing.`
+      );
+    }
+
     const base = slugify(name);
     let slug = base;
     let i = 1;
