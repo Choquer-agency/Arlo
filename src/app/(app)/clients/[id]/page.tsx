@@ -152,35 +152,83 @@ function ClientOverview({
       <p className="font-mono text-xs uppercase tracking-wider text-dark opacity-60 mb-6">
         Connected account IDs for this client
       </p>
+
+      {/* Workspace-level Google connection status */}
+      {connection === undefined ? null : googleConnected ? (
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-mint/40 border border-brand/20 px-4 py-3 mb-6">
+          <p className="font-mono text-xs text-brand flex items-center gap-2 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand inline-block shrink-0" />
+            <span className="truncate">Google connected as {connection?.accountEmail}</span>
+          </p>
+          <a
+            href="/api/oauth/google/start"
+            className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-50 hover:opacity-100 shrink-0"
+          >
+            Reconnect
+          </a>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-grey border border-dark-faded px-4 py-3 mb-6">
+          <p className="text-dark/70 text-sm">Connect Google to assign accounts to this client.</p>
+          <a
+            href="/api/oauth/google/start"
+            className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
+          >
+            <Plus size={13} /> Connect Google
+          </a>
+        </div>
+      )}
+
       <div className="space-y-3">
         {googlePlatforms.map((p) => {
           const assigned = !!p.value;
           const pickerOpen = openPicker === p.key;
+          const availCount = availableAccounts.filter((a) => a.kind === p.accountKind).length;
           return (
             <div key={p.key} className="border-b border-dark-faded last:border-0">
               <div className="flex items-center justify-between gap-4 py-3">
-                <p className="font-sans text-dark">{p.label}</p>
+                <div className="min-w-0">
+                  <p className="font-sans text-dark">{p.label}</p>
+                  {googleConnected && !assigned && (
+                    <p className="font-mono text-[11px] text-dark opacity-40 mt-0.5">
+                      {availCount > 0
+                        ? `${availCount} available on this account`
+                        : "None on this account"}
+                    </p>
+                  )}
+                </div>
                 {assigned ? (
-                  <p className="font-mono text-xs text-dark opacity-60 truncate">{p.value}</p>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <p className="font-mono text-xs text-dark opacity-60 truncate max-w-[16rem]">{p.value}</p>
+                    {googleConnected && availCount > 0 && (
+                      <button
+                        onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
+                        className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-50 hover:opacity-100"
+                      >
+                        {pickerOpen ? "Cancel" : "Change"}
+                      </button>
+                    )}
+                  </div>
                 ) : connection === undefined ? (
                   <span className="font-mono text-xs text-dark opacity-40 shrink-0">…</span>
                 ) : !googleConnected ? (
-                  <a
-                    href="/api/oauth/google/start"
-                    className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
-                  >
-                    <Plus size={13} /> Connect
-                  </a>
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40 shrink-0">
+                    Not connected
+                  </span>
+                ) : availCount === 0 ? (
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40 shrink-0">
+                    —
+                  </span>
                 ) : (
                   <button
                     onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
                     className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
                   >
-                    <Plus size={13} /> {pickerOpen ? "Cancel" : "Connect"}
+                    <Plus size={13} /> {pickerOpen ? "Cancel" : "Choose"}
                   </button>
                 )}
               </div>
-              {!assigned && googleConnected && pickerOpen && (
+              {googleConnected && pickerOpen && (
                 <div className="pb-4">
                   <AccountPicker
                     workspaceId={workspaceId}
