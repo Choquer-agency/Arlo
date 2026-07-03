@@ -80,6 +80,9 @@ export const ga4Connector: MarketingConnector = {
         dateRanges: [{ startDate: query.dateRange.start, endDate: query.dateRange.end }],
         metrics: query.metrics.map((name) => ({ name })),
         dimensions: (query.dimensions || []).map((name) => ({ name })),
+        // Without this, GA4 omits `data.totals` entirely and every headline
+        // metric reads as 0 — the real aggregate only appears per-row.
+        metricAggregations: ["TOTAL"],
         dimensionFilter:
           metricFilters.length === 1
             ? metricFilters[0]
@@ -123,9 +126,19 @@ export const ga4Connector: MarketingConnector = {
 
     const totals: Record<string, number> = {};
     const totalRow = data.totals?.[0];
-    metricHeaders.forEach((h, i) => {
-      totals[h.name!] = Number(totalRow?.metricValues?.[i]?.value ?? 0);
-    });
+    if (totalRow) {
+      metricHeaders.forEach((h, i) => {
+        totals[h.name!] = Number(totalRow.metricValues?.[i]?.value ?? 0);
+      });
+    } else if (!dimensionHeaders.length && breakdown[0]) {
+      // No dimensions requested → the single row IS the aggregate.
+      Object.assign(totals, breakdown[0].metrics);
+    } else {
+      // Fallback: sum each metric across rows so totals are never silently 0.
+      metricHeaders.forEach((h) => {
+        totals[h.name!] = breakdown.reduce((s, r) => s + (r.metrics[h.name!] ?? 0), 0);
+      });
+    }
 
     return {
       platform: "ga4",
