@@ -4,7 +4,6 @@ import Link from "next/link";
 import { TriangleAlert } from "lucide-react";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import {
-  liveCount,
   enabledSourcesFor,
   sourceState,
   type Account,
@@ -31,7 +30,10 @@ export function BusinessCard({
 }) {
   const enabled = enabledSourcesFor(client);
   const enabledDenom = Math.max(enabled.length, 1);
-  const live = liveCount(client);
+  const connectedSources = enabled.filter(
+    (s) => sourceState(client, s, availableAccounts).state === "live"
+  );
+  const live = connectedSources.length;
   const hasGa4 = !!client.ga4PropertyId;
   const hasGsc = !!client.gscSiteUrl;
 
@@ -78,7 +80,7 @@ export function BusinessCard({
       <div className="mt-5">
         <div className="flex items-center justify-between mb-2">
           <span className="font-mono text-[11px] uppercase tracking-wider text-dark/60">
-            {live} of {enabled.length} connected
+            {live} connected
           </span>
           <Link
             href={href}
@@ -95,11 +97,10 @@ export function BusinessCard({
         </div>
       </div>
 
-      {/* Source chips — only the sources this business opts into */}
-      <div className="flex flex-wrap gap-2 mt-4">
-        {enabled.map((s) => {
-          const { state, availCount } = sourceState(client, s, availableAccounts);
-          return (
+      {/* Chips — only sources actually connected (mapped & pulling data) */}
+      {connectedSources.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-4">
+          {connectedSources.map((s) => (
             <span
               key={s.key}
               className="inline-flex items-center gap-2 bg-grey border border-dark-faded rounded-lg px-2.5 py-1.5 text-sm"
@@ -111,11 +112,13 @@ export function BusinessCard({
                 {s.glyph}
               </span>
               <span className="text-dark">{s.short}</span>
-              <SourceTag state={state} availCount={availCount} googleConnected={googleConnected} />
+              <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-mint text-brand">
+                Live
+              </span>
             </span>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Metrics where live, else a single CTA */}
       {hasGa4 || hasGsc ? (
@@ -169,28 +172,6 @@ function Pill({ children, className }: { children: React.ReactNode; className: s
       {children}
     </span>
   );
-}
-
-function SourceTag({
-  state,
-  availCount,
-  googleConnected,
-}: {
-  state: "live" | "available" | "none";
-  availCount: number;
-  googleConnected: boolean;
-}) {
-  if (state === "live") {
-    return <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-mint text-brand">Live</span>;
-  }
-  if (state === "available" && googleConnected) {
-    return (
-      <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-bg-yellow/50 text-dark/70">
-        {availCount} available
-      </span>
-    );
-  }
-  return <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-dark-faded text-dark/40">None</span>;
 }
 
 function Metric({
