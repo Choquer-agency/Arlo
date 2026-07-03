@@ -54,6 +54,25 @@ export const getForService = query({
   },
 });
 
+// Service-authenticated list for the MCP server path, which has no Convex
+// session (it authenticates the caller via the MCP token, then reads with the
+// shared service secret). Scope is still the token's workspaceId.
+export const listForService = query({
+  args: {
+    _serviceSecret: v.string(),
+    workspaceId: v.id("workspaces"),
+    includeArchived: v.optional(v.boolean()),
+  },
+  handler: async (ctx, { _serviceSecret, workspaceId, includeArchived }) => {
+    requireServiceSecret(_serviceSecret);
+    const all = await ctx.db
+      .query("clients")
+      .withIndex("by_workspace", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+    return includeArchived ? all : all.filter((c) => !c.archivedAt);
+  },
+});
+
 export const create = mutation({
   args: {
     workspaceId: v.id("workspaces"),

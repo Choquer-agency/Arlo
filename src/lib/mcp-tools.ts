@@ -64,7 +64,11 @@ const MetricQueryShape = {
 };
 
 async function loadClients(workspaceId: Id<"workspaces">): Promise<Doc<"clients">[]> {
-  return fetchQuery(api.clients.list, { workspaceId, includeArchived: false });
+  return fetchQuery(api.clients.listForService, {
+    _serviceSecret: getServiceSecret(),
+    workspaceId,
+    includeArchived: false,
+  });
 }
 
 async function logCall(
@@ -128,7 +132,8 @@ export function registerTools(server: McpServer, caller: McpCaller): void {
     "List every client in your workspace (id, name, slug, website).",
     { archived: z.boolean().optional(), question: QUESTION_PARAM },
     wrap(caller, "list_clients", async ({ archived }) => {
-      const clients = await fetchQuery(api.clients.list, {
+      const clients = await fetchQuery(api.clients.listForService, {
+        _serviceSecret: getServiceSecret(),
         workspaceId: caller.workspaceId,
         includeArchived: archived ?? false,
       });
