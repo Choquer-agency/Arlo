@@ -5,7 +5,9 @@ import { SITE_URL } from "@/lib/siteConfig";
 export const OAUTH_ISSUER = SITE_URL; // "https://askarlo.app"
 export const MCP_RESOURCE = `${SITE_URL}/api/mcp`;
 
-export const AUTHORIZATION_ENDPOINT = `${SITE_URL}/api/mcp/oauth/authorize`;
+// User-facing consent page (a styled React route). The back-channel that
+// actually issues the code is /api/mcp/oauth/authorize (POST).
+export const AUTHORIZATION_ENDPOINT = `${SITE_URL}/oauth/authorize`;
 export const TOKEN_ENDPOINT = `${SITE_URL}/api/mcp/oauth/token`;
 export const REGISTRATION_ENDPOINT = `${SITE_URL}/api/mcp/oauth/register`;
 
