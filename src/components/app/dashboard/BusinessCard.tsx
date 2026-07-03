@@ -105,12 +105,8 @@ export function BusinessCard({
               key={s.key}
               className="inline-flex items-center gap-2 bg-grey border border-dark-faded rounded-lg px-2.5 py-1.5 text-sm"
             >
-              <span
-                className="w-4 h-4 rounded flex items-center justify-center text-white text-[9px]"
-                style={{ backgroundColor: s.color }}
-              >
-                {s.glyph}
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.icon} alt="" className="w-4 h-4 object-contain" />
               <span className="text-dark">{s.short}</span>
               <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-mint text-brand">
                 Live

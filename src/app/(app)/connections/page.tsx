@@ -9,17 +9,11 @@ import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { AccountPicker } from "@/components/app/dashboard/AccountPicker";
 import {
   GOOGLE_SOURCES,
+  COMING_SOON_SOURCES,
   sourceState,
   type Account,
   type GoogleSourceDef,
 } from "@/lib/googleSources";
-
-const COMING_SOON = [
-  { name: "Meta", detail: "Ads + Instagram / Facebook organic" },
-  { name: "LinkedIn", detail: "Ads + organic" },
-  { name: "Shopify", detail: "Orders & storefront" },
-  { name: "Stripe", detail: "Revenue & subscriptions" },
-];
 
 export default function ConnectionsPage() {
   const workspaces = useQuery(api.workspaces.listMine);
@@ -108,7 +102,7 @@ export default function ConnectionsPage() {
         </Link>
       </div>
 
-      <div className="bg-white border border-dark-faded rounded-lg overflow-hidden">
+      <div className="space-y-3">
         {GOOGLE_SOURCES.map((source) => (
           <SourceGroup
             key={source.key}
@@ -121,14 +115,18 @@ export default function ConnectionsPage() {
             onToggle={() => setOpenSource(openSource === source.key ? "" : source.key)}
           />
         ))}
-        {COMING_SOON.map((p) => (
+        {COMING_SOON_SOURCES.map((p) => (
           <div
             key={p.name}
-            className="flex items-center justify-between px-5 py-4 border-t border-dark-faded opacity-70"
+            className="bg-white border border-dark-faded rounded-lg flex items-center justify-between px-5 py-4 opacity-70"
           >
-            <div>
-              <span className="font-sans text-dark">{p.name}</span>{" "}
-              <span className="font-mono text-[11px] text-dark/50">{p.detail}</span>
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.icon} alt="" className="w-6 h-6 object-contain grayscale opacity-70" />
+              <div>
+                <span className="font-sans text-dark">{p.name}</span>{" "}
+                <span className="font-mono text-[11px] text-dark/50">{p.detail}</span>
+              </div>
             </div>
             <span className="font-mono text-[10px] uppercase tracking-wider text-dark/40">
               Coming soon
@@ -163,18 +161,14 @@ function SourceGroup({
   ).length;
 
   return (
-    <div className="border-t border-dark-faded first:border-t-0">
+    <div className="bg-white border border-dark-faded rounded-lg overflow-hidden">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 px-5 py-4 hover:bg-grey/60 transition-colors"
       >
         <span className="flex items-center gap-3 min-w-0">
-          <span
-            className="w-6 h-6 rounded flex items-center justify-center text-white text-[11px] shrink-0"
-            style={{ backgroundColor: source.color }}
-          >
-            {source.glyph}
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={source.icon} alt="" className="w-6 h-6 object-contain shrink-0" />
           <span className="font-sans text-dark">{source.label}</span>
         </span>
         <span className="flex items-center gap-3 shrink-0">

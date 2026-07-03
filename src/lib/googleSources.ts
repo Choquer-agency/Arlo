@@ -18,17 +18,25 @@ export interface GoogleSourceDef {
   short: string;
   field: GoogleAssignmentField;
   kind: string;
-  color: string;
-  glyph: string;
+  /** Brand logo served from /public/sources. */
+  icon: string;
   pickerLabel: string;
 }
 
 export const GOOGLE_SOURCES: GoogleSourceDef[] = [
-  { key: "ga4", label: "Google Analytics 4", short: "GA4", field: "ga4PropertyId", kind: "ga4_property", color: "#E37400", glyph: "▲", pickerLabel: "GA4 property" },
-  { key: "gsc", label: "Search Console", short: "Search Console", field: "gscSiteUrl", kind: "gsc_site", color: "#4285F4", glyph: "◎", pickerLabel: "Search Console site" },
-  { key: "ads", label: "Google Ads", short: "Ads", field: "googleAdsCustomerId", kind: "ads_customer", color: "#34A853", glyph: "◆", pickerLabel: "Ads customer" },
-  { key: "yt", label: "YouTube", short: "YouTube", field: "youtubeChannelId", kind: "yt_channel", color: "#FF0000", glyph: "▶", pickerLabel: "YouTube channel" },
-  { key: "gbp", label: "Business Profile", short: "GBP", field: "gbpLocationName", kind: "gbp_location", color: "#4285F4", glyph: "⚑", pickerLabel: "Business Profile location" },
+  { key: "ga4", label: "Google Analytics 4", short: "GA4", field: "ga4PropertyId", kind: "ga4_property", icon: "/sources/ga4.svg", pickerLabel: "GA4 property" },
+  { key: "gsc", label: "Search Console", short: "Search Console", field: "gscSiteUrl", kind: "gsc_site", icon: "/sources/gsc.svg", pickerLabel: "Search Console site" },
+  { key: "ads", label: "Google Ads", short: "Ads", field: "googleAdsCustomerId", kind: "ads_customer", icon: "/sources/ads.svg", pickerLabel: "Ads customer" },
+  { key: "yt", label: "YouTube", short: "YouTube", field: "youtubeChannelId", kind: "yt_channel", icon: "/sources/youtube.svg", pickerLabel: "YouTube channel" },
+  { key: "gbp", label: "Business Profile", short: "GBP", field: "gbpLocationName", kind: "gbp_location", icon: "/sources/gbp.svg", pickerLabel: "Business Profile location" },
+];
+
+/** Sources not yet buildable, shown as "coming soon" with their brand logos. */
+export const COMING_SOON_SOURCES = [
+  { name: "Meta", detail: "Ads + Instagram / Facebook organic", icon: "/sources/meta.svg" },
+  { name: "LinkedIn", detail: "Ads + organic", icon: "/sources/linkedin.svg" },
+  { name: "Shopify", detail: "Orders & storefront", icon: "/sources/shopify.svg" },
+  { name: "Stripe", detail: "Revenue & subscriptions", icon: "/sources/stripe.svg" },
 ];
 
 export type Account = { id: string; name: string; kind: string };
