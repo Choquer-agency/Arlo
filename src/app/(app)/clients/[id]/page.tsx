@@ -9,6 +9,7 @@ import type { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { Plus, MessageSquare, Pause, Play, Trash2, PlayCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { findDestination, SYNC_MODE_LABELS } from "@/lib/destinations/catalog";
 import { DestinationWizard } from "@/components/destinations/DestinationWizard";
+import { AccountPicker } from "@/components/app/dashboard/AccountPicker";
 
 type TabKey = "overview" | "destinations";
 
@@ -68,7 +69,7 @@ export default function ClientDetailPage() {
         </TabButton>
       </div>
 
-      {tab === "overview" && ws && <ClientOverview client={client} />}
+      {tab === "overview" && ws && <ClientOverview workspaceId={ws._id} client={client} />}
       {tab === "destinations" && ws && (
         <ClientDestinations workspaceId={ws._id} clientId={clientId} clientName={client?.name ?? ""} />
       )}
@@ -99,17 +100,52 @@ function TabButton({
   );
 }
 
-function ClientOverview({ client }: { client: Doc<"clients"> | undefined | null }) {
+type GoogleAssignmentField =
+  | "ga4PropertyId"
+  | "gscSiteUrl"
+  | "googleAdsCustomerId"
+  | "youtubeChannelId"
+  | "gbpLocationName";
+
+type GooglePlatform = {
+  key: string;
+  label: string;
+  value: string | undefined;
+  accountKind: string;
+  assignmentField: GoogleAssignmentField;
+  pickerLabel: string;
+};
+
+function ClientOverview({
+  workspaceId,
+  client,
+}: {
+  workspaceId: Id<"workspaces">;
+  client: Doc<"clients"> | undefined | null;
+}) {
+  const connection = useQuery(api.platformConnections.getByProvider, {
+    workspaceId,
+    provider: "google",
+  });
+  const [openPicker, setOpenPicker] = useState<string | null>(null);
+
   if (!client) return <p className="text-dark opacity-60">Loading…</p>;
-  const assignments = [
-    { key: "ga4", label: "GA4 property", value: client.ga4PropertyId },
-    { key: "gsc", label: "Search Console", value: client.gscSiteUrl },
-    { key: "ga", label: "Google Ads", value: client.googleAdsCustomerId },
-    { key: "yt", label: "YouTube channel", value: client.youtubeChannelId },
-    { key: "gbp", label: "Business Profile", value: client.gbpLocationName },
+
+  const googleConnected = connection?.status === "active";
+  const availableAccounts = connection?.availableAccounts ?? [];
+
+  const googlePlatforms: GooglePlatform[] = [
+    { key: "ga4", label: "GA4 property", value: client.ga4PropertyId, accountKind: "ga4_property", assignmentField: "ga4PropertyId", pickerLabel: "GA4 property" },
+    { key: "gsc", label: "Search Console", value: client.gscSiteUrl, accountKind: "gsc_site", assignmentField: "gscSiteUrl", pickerLabel: "Search Console site" },
+    { key: "ga", label: "Google Ads", value: client.googleAdsCustomerId, accountKind: "ads_customer", assignmentField: "googleAdsCustomerId", pickerLabel: "Ads customer" },
+    { key: "yt", label: "YouTube channel", value: client.youtubeChannelId, accountKind: "yt_channel", assignmentField: "youtubeChannelId", pickerLabel: "YouTube channel" },
+    { key: "gbp", label: "Business Profile", value: client.gbpLocationName, accountKind: "gbp_location", assignmentField: "gbpLocationName", pickerLabel: "Business Profile location" },
+  ];
+  const comingSoon = [
     { key: "meta", label: "Meta ad account", value: client.metaAdAccountId },
     { key: "shopify", label: "Shopify store", value: client.shopifyStoreDomain },
   ];
+
   return (
     <section className="bg-white border border-dark-faded rounded-lg p-8">
       <h2 className="font-sans text-fluid-h4 text-dark mb-1">Platform assignments</h2>
@@ -117,15 +153,61 @@ function ClientOverview({ client }: { client: Doc<"clients"> | undefined | null 
         Connected account IDs for this client
       </p>
       <div className="space-y-3">
-        {assignments.map((a) => (
+        {googlePlatforms.map((p) => {
+          const assigned = !!p.value;
+          const pickerOpen = openPicker === p.key;
+          return (
+            <div key={p.key} className="border-b border-dark-faded last:border-0">
+              <div className="flex items-center justify-between gap-4 py-3">
+                <p className="font-sans text-dark">{p.label}</p>
+                {assigned ? (
+                  <p className="font-mono text-xs text-dark opacity-60 truncate">{p.value}</p>
+                ) : connection === undefined ? (
+                  <span className="font-mono text-xs text-dark opacity-40 shrink-0">…</span>
+                ) : !googleConnected ? (
+                  <a
+                    href="/api/oauth/google/start"
+                    className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
+                  >
+                    <Plus size={13} /> Connect
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
+                    className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
+                  >
+                    <Plus size={13} /> {pickerOpen ? "Cancel" : "Connect"}
+                  </button>
+                )}
+              </div>
+              {!assigned && googleConnected && pickerOpen && (
+                <div className="pb-4">
+                  <AccountPicker
+                    workspaceId={workspaceId}
+                    clientId={client._id}
+                    accounts={availableAccounts}
+                    accountKind={p.accountKind}
+                    assignmentField={p.assignmentField}
+                    label={p.pickerLabel}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {comingSoon.map((p) => (
           <div
-            key={a.key}
-            className="flex items-center justify-between py-3 border-b border-dark-faded last:border-0"
+            key={p.key}
+            className="flex items-center justify-between gap-4 py-3 border-b border-dark-faded last:border-0"
           >
-            <p className="font-sans text-dark">{a.label}</p>
-            <p className="font-mono text-xs text-dark opacity-60">
-              {a.value ?? "— not assigned"}
-            </p>
+            <p className="font-sans text-dark">{p.label}</p>
+            {p.value ? (
+              <p className="font-mono text-xs text-dark opacity-60 truncate">{p.value}</p>
+            ) : (
+              <span className="font-mono text-[10px] uppercase tracking-wider text-dark opacity-40 shrink-0">
+                Coming soon
+              </span>
+            )}
           </div>
         ))}
       </div>
