@@ -24,6 +24,7 @@ export function AccountPicker({
   accountKind,
   assignmentField,
   label,
+  onSaved,
 }: {
   workspaceId: Id<"workspaces">;
   clientId: Id<"clients">;
@@ -38,6 +39,8 @@ export function AccountPicker({
     | "youtubeChannelId"
     | "gbpLocationName";
   label: string;
+  /** Called after a successful assignment so the parent can collapse the picker. */
+  onSaved?: () => void;
 }) {
   const updateAssignments = useMutation(api.clients.updateAssignments);
   const filtered = accounts.filter((a) => a.kind === accountKind);
@@ -62,6 +65,7 @@ export function AccountPicker({
         clientId,
         [assignmentField]: selected,
       });
+      onSaved?.();
     } finally {
       setSaving(false);
     }

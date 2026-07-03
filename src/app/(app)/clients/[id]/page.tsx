@@ -237,6 +237,7 @@ function ClientOverview({
                     accountKind={p.accountKind}
                     assignmentField={p.assignmentField}
                     label={p.pickerLabel}
+                    onSaved={() => setOpenPicker(null)}
                   />
                 </div>
               )}
