@@ -10,7 +10,7 @@ import {
   Plug,
   UserRound,
   Settings,
-  Terminal,
+  Sparkles,
   Building2,
 } from "lucide-react";
 
@@ -26,7 +26,7 @@ export function Sidebar() {
         { href: "/clients", label: "My Business", icon: Building2 },
         { href: "/connections", label: "Connections", icon: Plug },
         { href: "/team", label: "Team", icon: UserRound },
-        { href: "/settings/mcp", label: "MCP URL", icon: Terminal },
+        { href: "/settings/mcp", label: "Connect to Claude", icon: Sparkles },
         { href: "/settings/billing", label: "Billing", icon: Settings },
       ]
     : [
@@ -34,7 +34,7 @@ export function Sidebar() {
         { href: "/clients", label: "Clients", icon: Users },
         { href: "/connections", label: "Connections", icon: Plug },
         { href: "/team", label: "Team", icon: UserRound },
-        { href: "/settings/mcp", label: "MCP URL", icon: Terminal },
+        { href: "/settings/mcp", label: "Connect to Claude", icon: Sparkles },
         { href: "/settings/billing", label: "Billing", icon: Settings },
       ];
 
