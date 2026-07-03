@@ -46,6 +46,11 @@ export default defineSchema({
     archivedAt: v.optional(v.string()),
     createdAt: v.string(),
 
+    // Which Google sources this business opts into. Undefined = the default set
+    // (GA4 + Search Console). A source that has an assignment below is always
+    // treated as enabled regardless of this list.
+    enabledSources: v.optional(v.array(v.string())),
+
     ga4PropertyId: v.optional(v.string()),
     gscSiteUrl: v.optional(v.string()),
     googleAdsCustomerId: v.optional(v.string()),

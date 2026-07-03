@@ -52,3 +52,27 @@ export function sourceState(
 export function liveCount(client: Doc<"clients">): number {
   return GOOGLE_SOURCES.filter((s) => !!client[s.field]).length;
 }
+
+/** Sources a brand-new business opts into by default. */
+export const DEFAULT_ENABLED_KEYS = ["ga4", "gsc"];
+
+/**
+ * Whether a business opts into this source. A mapped source is always enabled
+ * (you can't have live data flowing from a source you've turned off). Otherwise
+ * fall back to the client's explicit list, or the default set if unset.
+ */
+export function isSourceEnabled(client: Doc<"clients">, source: GoogleSourceDef): boolean {
+  if (client[source.field]) return true;
+  const set = client.enabledSources ?? DEFAULT_ENABLED_KEYS;
+  return set.includes(source.key);
+}
+
+/** The sources this business has opted into (enabled or mapped). */
+export function enabledSourcesFor(client: Doc<"clients">): GoogleSourceDef[] {
+  return GOOGLE_SOURCES.filter((s) => isSourceEnabled(client, s));
+}
+
+/** The effective set of enabled keys, resolving the default when unset. */
+export function effectiveEnabledKeys(client: Doc<"clients">): string[] {
+  return enabledSourcesFor(client).map((s) => s.key);
+}

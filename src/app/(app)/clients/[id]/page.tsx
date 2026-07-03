@@ -10,6 +10,7 @@ import { Plus, MessageSquare, Pause, Play, Trash2, PlayCircle, ChevronDown, Chev
 import { findDestination, SYNC_MODE_LABELS } from "@/lib/destinations/catalog";
 import { DestinationWizard } from "@/components/destinations/DestinationWizard";
 import { AccountPicker } from "@/components/app/dashboard/AccountPicker";
+import { DEFAULT_ENABLED_KEYS } from "@/lib/googleSources";
 
 type TabKey = "overview" | "destinations";
 
@@ -77,6 +78,38 @@ export default function ClientDetailPage() {
   );
 }
 
+function Toggle({
+  checked,
+  disabled,
+  onChange,
+  title,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  onChange: () => void;
+  title?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={onChange}
+      title={title}
+      className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ${
+        checked ? "bg-brand" : "bg-dark/20"
+      } ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+    >
+      <span
+        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+          checked ? "translate-x-4" : "translate-x-0"
+        }`}
+      />
+    </button>
+  );
+}
+
 function TabButton({
   active,
   onClick,
@@ -109,6 +142,8 @@ type GoogleAssignmentField =
 
 type GooglePlatform = {
   key: string;
+  /** Stable key stored in client.enabledSources (matches @/lib/googleSources). */
+  enableKey: string;
   label: string;
   value: string | undefined;
   accountKind: string;
@@ -127,6 +162,7 @@ function ClientOverview({
     workspaceId,
     provider: "google",
   });
+  const setEnabledSources = useMutation(api.clients.setEnabledSources);
   const [openPicker, setOpenPicker] = useState<string | null>(null);
 
   if (!client) return <p className="text-dark opacity-60">Loading…</p>;
@@ -135,12 +171,13 @@ function ClientOverview({
   const availableAccounts = connection?.availableAccounts ?? [];
 
   const googlePlatforms: GooglePlatform[] = [
-    { key: "ga4", label: "GA4 property", value: client.ga4PropertyId, accountKind: "ga4_property", assignmentField: "ga4PropertyId", pickerLabel: "GA4 property" },
-    { key: "gsc", label: "Search Console", value: client.gscSiteUrl, accountKind: "gsc_site", assignmentField: "gscSiteUrl", pickerLabel: "Search Console site" },
-    { key: "ga", label: "Google Ads", value: client.googleAdsCustomerId, accountKind: "ads_customer", assignmentField: "googleAdsCustomerId", pickerLabel: "Ads customer" },
-    { key: "yt", label: "YouTube channel", value: client.youtubeChannelId, accountKind: "yt_channel", assignmentField: "youtubeChannelId", pickerLabel: "YouTube channel" },
-    { key: "gbp", label: "Business Profile", value: client.gbpLocationName, accountKind: "gbp_location", assignmentField: "gbpLocationName", pickerLabel: "Business Profile location" },
+    { key: "ga4", enableKey: "ga4", label: "GA4 property", value: client.ga4PropertyId, accountKind: "ga4_property", assignmentField: "ga4PropertyId", pickerLabel: "GA4 property" },
+    { key: "gsc", enableKey: "gsc", label: "Search Console", value: client.gscSiteUrl, accountKind: "gsc_site", assignmentField: "gscSiteUrl", pickerLabel: "Search Console site" },
+    { key: "ga", enableKey: "ads", label: "Google Ads", value: client.googleAdsCustomerId, accountKind: "ads_customer", assignmentField: "googleAdsCustomerId", pickerLabel: "Ads customer" },
+    { key: "yt", enableKey: "yt", label: "YouTube channel", value: client.youtubeChannelId, accountKind: "yt_channel", assignmentField: "youtubeChannelId", pickerLabel: "YouTube channel" },
+    { key: "gbp", enableKey: "gbp", label: "Business Profile", value: client.gbpLocationName, accountKind: "gbp_location", assignmentField: "gbpLocationName", pickerLabel: "Business Profile location" },
   ];
+  const enabledBase = client.enabledSources ?? DEFAULT_ENABLED_KEYS;
   const comingSoon = [
     { key: "meta", label: "Meta ad account", value: client.metaAdAccountId },
     { key: "shopify", label: "Shopify store", value: client.shopifyStoreDomain },
@@ -179,17 +216,30 @@ function ClientOverview({
         </div>
       )}
 
+      <p className="font-mono text-[11px] uppercase tracking-wider text-dark/50 mb-3">
+        Turn on the sources this business uses — the rest stay hidden.
+      </p>
       <div className="space-y-3">
         {googlePlatforms.map((p) => {
           const assigned = !!p.value;
+          const enabled = assigned || enabledBase.includes(p.enableKey);
           const pickerOpen = openPicker === p.key;
           const availCount = availableAccounts.filter((a) => a.kind === p.accountKind).length;
+          const toggle = () => {
+            const set = new Set(enabledBase);
+            if (enabled) set.delete(p.enableKey);
+            else set.add(p.enableKey);
+            setEnabledSources({ workspaceId, clientId: client._id, enabledSources: Array.from(set) });
+          };
           return (
-            <div key={p.key} className="border-b border-dark-faded last:border-0">
+            <div
+              key={p.key}
+              className={`border-b border-dark-faded last:border-0 ${enabled ? "" : "opacity-55"}`}
+            >
               <div className="flex items-center justify-between gap-4 py-3">
                 <div className="min-w-0">
                   <p className="font-sans text-dark">{p.label}</p>
-                  {googleConnected && !assigned && (
+                  {enabled && googleConnected && !assigned && (
                     <p className="font-mono text-[11px] text-dark opacity-40 mt-0.5">
                       {availCount > 0
                         ? `${availCount} available on this account`
@@ -197,38 +247,56 @@ function ClientOverview({
                     </p>
                   )}
                 </div>
-                {assigned ? (
-                  <div className="flex items-center gap-3 shrink-0">
-                    <p className="font-mono text-xs text-dark opacity-60 truncate max-w-[16rem]">{p.value}</p>
-                    {googleConnected && availCount > 0 && (
-                      <button
-                        onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
-                        className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-50 hover:opacity-100"
-                      >
-                        {pickerOpen ? "Cancel" : "Change"}
-                      </button>
-                    )}
-                  </div>
-                ) : connection === undefined ? (
-                  <span className="font-mono text-xs text-dark opacity-40 shrink-0">…</span>
-                ) : !googleConnected ? (
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40 shrink-0">
-                    Not connected
-                  </span>
-                ) : availCount === 0 ? (
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40 shrink-0">
-                    —
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
-                    className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
-                  >
-                    <Plus size={13} /> {pickerOpen ? "Cancel" : "Choose"}
-                  </button>
-                )}
+                <div className="flex items-center gap-4 shrink-0">
+                  {!enabled ? (
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40">
+                      Off
+                    </span>
+                  ) : assigned ? (
+                    <div className="flex items-center gap-3">
+                      <p className="font-mono text-xs text-dark opacity-60 truncate max-w-[16rem]">{p.value}</p>
+                      {googleConnected && availCount > 0 && (
+                        <button
+                          onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
+                          className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-50 hover:opacity-100"
+                        >
+                          {pickerOpen ? "Cancel" : "Change"}
+                        </button>
+                      )}
+                    </div>
+                  ) : connection === undefined ? (
+                    <span className="font-mono text-xs text-dark opacity-40">…</span>
+                  ) : !googleConnected ? (
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40">
+                      Not connected
+                    </span>
+                  ) : availCount === 0 ? (
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-40">
+                      None available
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setOpenPicker(pickerOpen ? null : p.key)}
+                      className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5"
+                    >
+                      <Plus size={13} /> {pickerOpen ? "Cancel" : "Choose"}
+                    </button>
+                  )}
+                  <Toggle
+                    checked={enabled}
+                    disabled={assigned}
+                    onChange={toggle}
+                    title={
+                      assigned
+                        ? "Mapped to an account — clear it to turn this off"
+                        : enabled
+                        ? "Turn off for this business"
+                        : "Turn on for this business"
+                    }
+                  />
+                </div>
               </div>
-              {googleConnected && pickerOpen && (
+              {enabled && googleConnected && pickerOpen && (
                 <div className="pb-4">
                   <AccountPicker
                     workspaceId={workspaceId}

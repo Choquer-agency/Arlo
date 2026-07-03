@@ -4,8 +4,8 @@ import Link from "next/link";
 import { TriangleAlert } from "lucide-react";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import {
-  GOOGLE_SOURCES,
   liveCount,
+  enabledSourcesFor,
   sourceState,
   type Account,
 } from "@/lib/googleSources";
@@ -29,6 +29,8 @@ export function BusinessCard({
   googleConnected: boolean;
   availableAccounts: Account[];
 }) {
+  const enabled = enabledSourcesFor(client);
+  const enabledDenom = Math.max(enabled.length, 1);
   const live = liveCount(client);
   const hasGa4 = !!client.ga4PropertyId;
   const hasGsc = !!client.gscSiteUrl;
@@ -62,7 +64,7 @@ export function BusinessCard({
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <StatusPill live={live} googleConnected={googleConnected} />
+          <StatusPill live={live} total={enabled.length} googleConnected={googleConnected} />
           <Link
             href={href}
             className="font-mono text-[11px] uppercase tracking-wider text-dark/70 hover:text-dark border border-dark-faded rounded px-3 py-1.5"
@@ -72,27 +74,30 @@ export function BusinessCard({
         </div>
       </div>
 
-      {/* Progress */}
+      {/* Sources this business opts into */}
       <div className="mt-5">
         <div className="flex items-center justify-between mb-2">
           <span className="font-mono text-[11px] uppercase tracking-wider text-dark/60">
-            Google sources connected
+            {live} of {enabled.length} connected
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-wider text-dark/60">
-            {live} / {GOOGLE_SOURCES.length}
-          </span>
+          <Link
+            href={href}
+            className="font-mono text-[11px] uppercase tracking-wider text-dark/60 hover:text-dark inline-flex items-center gap-1"
+          >
+            + Connect more
+          </Link>
         </div>
         <div className="h-1.5 bg-grey border border-dark-faded rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-to-r from-brand to-brand-lime transition-[width]"
-            style={{ width: `${Math.max(4, (live / GOOGLE_SOURCES.length) * 100)}%` }}
+            style={{ width: `${Math.max(4, (live / enabledDenom) * 100)}%` }}
           />
         </div>
       </div>
 
-      {/* Source chips */}
+      {/* Source chips — only the sources this business opts into */}
       <div className="flex flex-wrap gap-2 mt-4">
-        {GOOGLE_SOURCES.map((s) => {
+        {enabled.map((s) => {
           const { state, availCount } = sourceState(client, s, availableAccounts);
           return (
             <span
@@ -148,14 +153,14 @@ export function BusinessCard({
   );
 }
 
-function StatusPill({ live, googleConnected }: { live: number; googleConnected: boolean }) {
+function StatusPill({ live, total, googleConnected }: { live: number; total: number; googleConnected: boolean }) {
   if (!googleConnected) {
     return <Pill className="bg-grey text-dark/60">Not connected</Pill>;
   }
   if (live === 0) {
     return <Pill className="bg-bg-yellow/40 text-dark">Needs setup</Pill>;
   }
-  return <Pill className="bg-mint text-brand">{live} of {GOOGLE_SOURCES.length} live</Pill>;
+  return <Pill className="bg-mint text-brand">{live} of {total} live</Pill>;
 }
 
 function Pill({ children, className }: { children: React.ReactNode; className: string }) {

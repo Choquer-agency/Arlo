@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { BusinessCard } from "@/components/app/dashboard/BusinessCard";
-import { GOOGLE_SOURCES, liveCount, type Account } from "@/lib/googleSources";
+import { liveCount, enabledSourcesFor, type Account } from "@/lib/googleSources";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -48,8 +48,10 @@ export default function DashboardPage() {
   const googleConnected = googleConn?.status === "active";
   const availableAccounts: Account[] = googleConn?.availableAccounts ?? [];
 
-  // Portfolio aggregates
-  const totalSourceSlots = (clients?.length ?? 0) * GOOGLE_SOURCES.length;
+  // Portfolio aggregates — denominator is the sources each business opts into,
+  // not a fixed 5 (a client that only wants GA4 + GSC shouldn't read as 2/5).
+  const totalSourceSlots =
+    clients?.reduce((sum, c) => sum + enabledSourcesFor(c).length, 0) ?? 0;
   const liveSources =
     clients?.reduce((sum, c) => sum + liveCount(c), 0) ?? 0;
 

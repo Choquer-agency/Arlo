@@ -156,6 +156,20 @@ export const updateAssignments = mutation({
   },
 });
 
+export const setEnabledSources = mutation({
+  args: {
+    workspaceId: v.id("workspaces"),
+    clientId: v.id("clients"),
+    enabledSources: v.array(v.string()),
+  },
+  handler: async (ctx, { workspaceId, clientId, enabledSources }) => {
+    await requireMembership(ctx, workspaceId);
+    const client = await ctx.db.get(clientId);
+    if (!client || client.workspaceId !== workspaceId) throw new Error("Client not found");
+    await ctx.db.patch(clientId, { enabledSources });
+  },
+});
+
 export const archive = mutation({
   args: { workspaceId: v.id("workspaces"), clientId: v.id("clients") },
   handler: async (ctx, { workspaceId, clientId }) => {
