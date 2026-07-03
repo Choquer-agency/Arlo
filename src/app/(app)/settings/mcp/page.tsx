@@ -96,9 +96,10 @@ export default function ConnectToClaudePage() {
               onClick={() => setConfirmRotate(true)}
               disabled={rotating}
               title="Rotate — create a new link and disable the old one"
-              className="shrink-0 p-2 rounded text-white/60 hover:text-white hover:bg-light-faded disabled:opacity-40"
+              className="shrink-0 flex items-center gap-1.5 pl-2.5 pr-3 py-2 rounded text-white/70 hover:text-white hover:bg-light-faded disabled:opacity-40"
             >
-              <RotateCw size={16} className={rotating ? "animate-spin" : ""} />
+              <RotateCw size={14} className={rotating ? "animate-spin" : ""} />
+              <span className="font-mono text-[11px] uppercase tracking-wider">Rotate</span>
             </button>
           </div>
           <button
