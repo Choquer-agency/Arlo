@@ -27,6 +27,27 @@ export const getByProvider = query({
   },
 });
 
+/**
+ * Service-secret variant of `getByProvider`, for trusted server code
+ * (buildConnectorContext) that loads a connection outside a user session.
+ */
+export const getByProviderForService = query({
+  args: {
+    _serviceSecret: v.string(),
+    workspaceId: v.id("workspaces"),
+    provider: v.string(),
+  },
+  handler: async (ctx, { _serviceSecret, workspaceId, provider }) => {
+    requireServiceSecret(_serviceSecret);
+    return ctx.db
+      .query("platformConnections")
+      .withIndex("by_workspace_provider", (q) =>
+        q.eq("workspaceId", workspaceId).eq("provider", provider)
+      )
+      .first();
+  },
+});
+
 export const upsert = mutation({
   args: {
     _serviceSecret: v.string(),

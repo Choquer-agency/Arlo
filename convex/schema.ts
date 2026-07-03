@@ -290,4 +290,30 @@ export default defineSchema({
   })
     .index("by_destination_started", ["destinationId", "startedAt"])
     .index("by_workspace_started", ["workspaceId", "startedAt"]),
+
+  // ── MCP OAuth (RFC 7591/8414/9728 + OAuth 2.1 PKCE) ──────────────────
+  // Dynamically-registered OAuth clients (e.g. Claude connectors).
+  oauthClients: defineTable({
+    clientId: v.string(),
+    clientName: v.optional(v.string()),
+    redirectUris: v.array(v.string()),
+    createdAt: v.string(),
+  }).index("by_client_id", ["clientId"]),
+
+  // Short-lived, single-use authorization codes. Bound to the user who
+  // approved (via their Convex Auth session) so the token endpoint — which
+  // runs unauthenticated on Claude's back channel — can mint a workspace-
+  // scoped access token without trusting any client-supplied identity.
+  oauthCodes: defineTable({
+    codeHash: v.string(),
+    clientId: v.string(),
+    userId: v.id("users"),
+    workspaceId: v.id("workspaces"),
+    redirectUri: v.string(),
+    codeChallenge: v.string(), // PKCE S256 challenge
+    scope: v.optional(v.string()),
+    expiresAt: v.number(),
+    usedAt: v.optional(v.string()),
+    createdAt: v.string(),
+  }).index("by_hash", ["codeHash"]),
 });

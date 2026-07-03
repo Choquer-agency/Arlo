@@ -21,6 +21,7 @@ import type * as lib_serviceAuth from "../lib/serviceAuth.js";
 import type * as mcpAuditLog from "../mcpAuditLog.js";
 import type * as mcpTokens from "../mcpTokens.js";
 import type * as members from "../members.js";
+import type * as oauth from "../oauth.js";
 import type * as platformConnections from "../platformConnections.js";
 import type * as shareableDashboards from "../shareableDashboards.js";
 import type * as usageCounters from "../usageCounters.js";
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   mcpAuditLog: typeof mcpAuditLog;
   mcpTokens: typeof mcpTokens;
   members: typeof members;
+  oauth: typeof oauth;
   platformConnections: typeof platformConnections;
   shareableDashboards: typeof shareableDashboards;
   usageCounters: typeof usageCounters;

@@ -18,6 +18,7 @@ import {
 import type { MetricResult, DateRangeInput } from "../connectors/types";
 import { resolveDateRange } from "../date-ranges";
 import { buildConnectorContext } from "../mcp-context";
+import { getServiceSecret } from "../serviceSecret";
 
 export interface FetchDatasetInput {
   workspaceId: Id<"workspaces">;
@@ -31,7 +32,8 @@ export interface FetchDatasetInput {
 }
 
 export async function fetchDataset(input: FetchDatasetInput): Promise<MetricResult> {
-  const client = await fetchQuery(api.clients.get, {
+  const client = await fetchQuery(api.clients.getForService, {
+    _serviceSecret: getServiceSecret(),
     workspaceId: input.workspaceId,
     clientId: input.clientId,
   });

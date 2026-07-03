@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireMembership } from "./lib/currentUser";
+import { requireServiceSecret } from "./lib/serviceAuth";
 import { clientCap, planLabel } from "./lib/planLimits";
 
 function slugify(s: string): string {
@@ -26,6 +27,27 @@ export const get = query({
   args: { workspaceId: v.id("workspaces"), clientId: v.id("clients") },
   handler: async (ctx, { workspaceId, clientId }) => {
     await requireMembership(ctx, workspaceId);
+    const client = await ctx.db.get(clientId);
+    if (!client || client.workspaceId !== workspaceId) return null;
+    return client;
+  },
+});
+
+/**
+ * Service-secret variant of `get`, for trusted Next.js server code (widgets API,
+ * destination runner, share page, MCP) that resolves a client outside a user
+ * session. Access control is enforced by the caller (which verifies workspace
+ * membership before calling fetchDataset) plus the locked (workspace, client)
+ * pair below.
+ */
+export const getForService = query({
+  args: {
+    _serviceSecret: v.string(),
+    workspaceId: v.id("workspaces"),
+    clientId: v.id("clients"),
+  },
+  handler: async (ctx, { _serviceSecret, workspaceId, clientId }) => {
+    requireServiceSecret(_serviceSecret);
     const client = await ctx.db.get(clientId);
     if (!client || client.workspaceId !== workspaceId) return null;
     return client;

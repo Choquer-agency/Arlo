@@ -84,7 +84,8 @@ export async function buildConnectorContext(
   client: Doc<"clients">
 ): Promise<ConnectorContext> {
   const getConnection = async (provider: OAuthProvider, accountId?: string) => {
-    const conn = await fetchQuery(api.platformConnections.getByProvider, {
+    const conn = await fetchQuery(api.platformConnections.getByProviderForService, {
+      _serviceSecret: getServiceSecret(),
       workspaceId,
       provider,
     });

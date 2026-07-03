@@ -1,7 +1,15 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
+
+/** Only allow same-origin relative paths as a post-login redirect target. */
+function safeRedirectTo(raw: string | null): string {
+  if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return "/dashboard";
+}
 
 export default function SignInPage() {
   // Guard: Convex hooks crash when no ConvexProvider is wrapping the tree.
@@ -11,7 +19,11 @@ export default function SignInPage() {
   if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
     return <ConvexNotConfigured />;
   }
-  return <SignInForm />;
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
 }
 
 function ConvexNotConfigured() {
@@ -84,6 +96,7 @@ function ConvexNotConfigured() {
 
 function SignInForm() {
   const { signIn } = useAuthActions();
+  const redirectTo = safeRedirectTo(useSearchParams().get("redirectTo"));
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-mint px-6">
@@ -97,7 +110,7 @@ function SignInForm() {
         </p>
 
         <button
-          onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+          onClick={() => signIn("google", { redirectTo })}
           className="w-full btn-secondary text-base py-4 flex items-center justify-center gap-3"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

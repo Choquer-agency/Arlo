@@ -50,11 +50,16 @@ export async function authenticateMcpRequest(
 }
 
 function unauthorized(reason: string): Response {
+  // Point clients at our Protected Resource Metadata (RFC 9728) so Claude and
+  // other MCP clients can discover the OAuth authorization server and run the
+  // full auth-code + PKCE flow instead of failing.
+  const resourceMetadata =
+    "https://askarlo.app/.well-known/oauth-protected-resource";
   return new Response(JSON.stringify({ error: "Unauthorized", reason }), {
     status: 401,
     headers: {
       "Content-Type": "application/json",
-      "WWW-Authenticate": 'Bearer realm="arlo-mcp"',
+      "WWW-Authenticate": `Bearer realm="arlo-mcp", resource_metadata="${resourceMetadata}"`,
     },
   });
 }
