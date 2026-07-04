@@ -71,7 +71,7 @@ export function DemoSidebar() {
     <aside className="w-64 shrink-0 flex flex-col">
       <div className="px-6 py-6 border-b border-dark/5">
         <Link href="/" className="flex items-center gap-2 text-dark">
-          <ArloMark className="h-7 w-auto" />
+          <ArloMark className="h-[1.4rem] w-auto" />
           <span className="font-display text-fluid-h5">ARLO</span>
         </Link>
         <p className="font-mono text-[10px] uppercase tracking-wider text-dark/40 mt-1">

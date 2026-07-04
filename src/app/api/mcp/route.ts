@@ -43,7 +43,17 @@ async function handle(req: Request): Promise<Response> {
     sessionIdGenerator: undefined,
     enableJsonResponse: true,
   });
-  const server = new McpServer({ name: "arlo", version: "0.1.0" });
+  const server = new McpServer({
+    name: "Arlo",
+    version: "0.1.0",
+    title: "Arlo",
+    description: "Ask Claude about your marketing data — GA4, Search Console, Ads, and more.",
+    websiteUrl: "https://askarlo.app",
+    // Connector icon shown by MCP clients (Claude) — the Arlo mark.
+    icons: [
+      { src: "https://askarlo.app/arlo-icon.svg", mimeType: "image/svg+xml", sizes: ["any"] },
+    ],
+  });
   registerTools(server, auth.caller);
   await server.connect(transport);
   return transport.handleRequest(req);
