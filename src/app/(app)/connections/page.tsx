@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { ChevronDown, Plus, Check, X, Minus } from "lucide-react";
+import { ChevronDown, Plus, Check, X } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { AccountPicker } from "@/components/app/dashboard/AccountPicker";
@@ -150,9 +150,9 @@ export default function ConnectionsPage() {
   );
 }
 
-type BadgeState = "live" | "partial" | "off" | "neutral";
+type BadgeState = "live" | "off" | "neutral";
 
-/** Small green-check / amber / red status pill used across the connections UI. */
+/** Green-check (live) / red-X (issue) / neutral status pill. */
 function StatusBadge({ state, label }: { state: BadgeState; label: string }) {
   const styles: Record<BadgeState, { wrap: string; dot: string; text: string; icon: React.ReactNode }> = {
     live: {
@@ -160,12 +160,6 @@ function StatusBadge({ state, label }: { state: BadgeState; label: string }) {
       dot: "bg-emerald-500",
       text: "text-emerald-700",
       icon: <Check size={11} strokeWidth={3} className="text-white" />,
-    },
-    partial: {
-      wrap: "bg-amber-50",
-      dot: "bg-amber-500",
-      text: "text-amber-700",
-      icon: <Minus size={11} strokeWidth={3} className="text-white" />,
     },
     off: {
       wrap: "bg-red-50",
@@ -213,16 +207,17 @@ function SourceGroup({
   const liveN = list.filter(
     (c) => sourceState(c, source, availableAccounts).state === "live"
   ).length;
+  const notLive = total - liveN;
 
+  // High-level, no "0 of 1" counting: either it's all set up (green) or
+  // something needs attention (red). Detail lives one level down, per business.
   const badge: { state: BadgeState; label: string } = !googleConnected
     ? { state: "off", label: "Not connected" }
     : total === 0
       ? { state: "neutral", label: "No businesses yet" }
-      : liveN === total
-        ? { state: "live", label: `${liveN} of ${total} live` }
-        : liveN === 0
-          ? { state: "off", label: `0 of ${total} live` }
-          : { state: "partial", label: `${liveN} of ${total} live` };
+      : notLive === 0
+        ? { state: "live", label: total === 1 ? "Connected" : `${liveN} connected` }
+        : { state: "off", label: notLive === 1 ? "Connection issue" : `${notLive} need attention` };
 
   return (
     <div className="bg-white border border-dark-faded rounded-lg overflow-hidden">
@@ -322,8 +317,10 @@ function BusinessRow({
           ) : state === "available" ? (
             <>
               <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-amber-500" />
-                <span className="font-mono text-[10px] uppercase tracking-wider text-amber-600">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 shrink-0">
+                  <X size={12} strokeWidth={3} className="text-white" />
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-red-600">
                   Not mapped
                 </span>
               </span>
@@ -335,9 +332,11 @@ function BusinessRow({
               </button>
             </>
           ) : (
-            <span className="inline-flex items-center gap-1.5 text-dark/40">
-              <span className="h-2 w-2 rounded-full bg-dark/20" />
-              <span className="font-mono text-[11px] uppercase tracking-wider">None on account</span>
+            <span className="inline-flex items-center gap-1.5 text-red-600">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 shrink-0">
+                <X size={12} strokeWidth={3} className="text-white" />
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider">None on account</span>
             </span>
           )}
         </div>

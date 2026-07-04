@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation } from "convex/react";
-import { Check, RefreshCw } from "lucide-react";
+import { Check, RefreshCw, Search, ChevronDown } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { track } from "@/lib/posthog";
@@ -11,6 +11,127 @@ interface Account {
   id: string;
   name: string;
   kind: string;
+}
+
+/**
+ * Searchable dropdown. A native <select> is unusable once an agency has dozens
+ * of GA4 properties, so this opens a panel with a search field that filters the
+ * options (by name or id) as you type.
+ */
+function SearchableSelect({
+  options,
+  value,
+  onChange,
+  placeholder,
+}: {
+  options: Account[];
+  value: string;
+  onChange: (id: string) => void;
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const selected = options.find((o) => o.id === value);
+
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return options;
+    return options.filter(
+      (o) => o.name.toLowerCase().includes(q) || o.id.toLowerCase().includes(q)
+    );
+  }, [options, query]);
+
+  // Close on outside click.
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  // Focus the search field whenever the panel opens.
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  return (
+    <div ref={wrapRef} className="relative flex-1 min-w-[14rem]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 border border-dark-faded rounded bg-white font-sans text-sm text-left focus:outline-none focus:border-brand"
+      >
+        <span className={`truncate ${selected ? "text-dark" : "text-dark/40"}`}>
+          {selected
+            ? `${selected.name}${selected.id !== selected.name ? ` · ${selected.id}` : ""}`
+            : placeholder}
+        </span>
+        <ChevronDown
+          size={16}
+          className={`shrink-0 text-dark/40 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="mt-1 w-full rounded-lg border border-dark-faded bg-white shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-dark-faded">
+            <Search size={14} className="shrink-0 text-dark/40" />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search…"
+              className="w-full bg-transparent font-sans text-sm focus:outline-none placeholder:text-dark/40"
+            />
+            {query && (
+              <span className="shrink-0 font-mono text-[10px] text-dark/40 tabular-nums">
+                {matches.length}
+              </span>
+            )}
+          </div>
+          <ul className="max-h-64 overflow-auto py-1">
+            {matches.length === 0 ? (
+              <li className="px-3 py-2 text-sm text-dark/50">No matches</li>
+            ) : (
+              matches.map((o) => (
+                <li key={o.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(o.id);
+                      setOpen(false);
+                      setQuery("");
+                    }}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-grey ${
+                      o.id === value ? "bg-mint" : ""
+                    }`}
+                  >
+                    <Check
+                      size={14}
+                      className={`shrink-0 ${o.id === value ? "text-brand" : "text-transparent"}`}
+                    />
+                    <span className="truncate">
+                      {o.name}
+                      {o.id !== o.name && (
+                        <span className="text-dark/40"> · {o.id}</span>
+                      )}
+                    </span>
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /**
@@ -44,8 +165,8 @@ export function AccountPicker({
   onSaved?: () => void;
 }) {
   const updateAssignments = useMutation(api.clients.updateAssignments);
-  const filtered = accounts.filter((a) => a.kind === accountKind);
-  const [selected, setSelected] = useState<string>(filtered[0]?.id ?? "");
+  const options = accounts.filter((a) => a.kind === accountKind);
+  const [selected, setSelected] = useState<string>(options[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
@@ -77,7 +198,7 @@ export function AccountPicker({
     }
   }
 
-  if (filtered.length === 0) {
+  if (options.length === 0) {
     return (
       <div className="rounded-lg bg-grey p-5 text-sm text-dark/70">
         <p>
@@ -122,17 +243,12 @@ export function AccountPicker({
         Google connected — pick which {label.toLowerCase()} maps to your business.
       </p>
       <div className="flex gap-2 flex-wrap">
-        <select
+        <SearchableSelect
+          options={options}
           value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-          className="flex-1 min-w-[14rem] px-3 py-2 border border-dark-faded rounded bg-white font-sans text-sm focus:outline-none focus:border-brand"
-        >
-          {filtered.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name} {a.id !== a.name ? `· ${a.id}` : ""}
-            </option>
-          ))}
-        </select>
+          onChange={setSelected}
+          placeholder={`Select a ${label.toLowerCase()}…`}
+        />
         <button
           onClick={save}
           disabled={!selected || saving}
