@@ -206,12 +206,26 @@ export default function AdminPage() {
   );
 }
 
+// Fun, memorable temp passwords — AdjectiveNoun + number + symbol, e.g.
+// "SpaceCat24!". Still random enough for a one-time password the client resets.
+const FUN_ADJ = [
+  "Space", "Turbo", "Funky", "Cosmic", "Sneaky", "Jolly", "Zippy", "Groovy",
+  "Mighty", "Wobbly", "Sassy", "Cheeky", "Bouncy", "Dapper", "Nifty", "Rowdy",
+  "Snazzy", "Peppy", "Quirky", "Breezy",
+];
+const FUN_NOUN = [
+  "Cat", "Llama", "Otter", "Panda", "Narwhal", "Penguin", "Waffle", "Taco",
+  "Yeti", "Goose", "Raccoon", "Wombat", "Pickle", "Noodle", "Muffin", "Walrus",
+  "Gecko", "Dumpling", "Biscuit", "Hedgehog",
+];
 function genPassword(): string {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
-  const bytes = new Uint8Array(10);
+  const bytes = new Uint8Array(4);
   crypto.getRandomValues(bytes);
-  const body = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
-  return `arlo-${body.slice(0, 5)}-${body.slice(5)}`;
+  const adj = FUN_ADJ[bytes[0] % FUN_ADJ.length];
+  const noun = FUN_NOUN[bytes[1] % FUN_NOUN.length];
+  const num = 10 + (bytes[2] % 90); // 10–99
+  const sym = "!?$*"[bytes[3] % 4];
+  return `${adj}${noun}${num}${sym}`;
 }
 
 function ProvisionModal({ onClose }: { onClose: () => void }) {
@@ -301,7 +315,9 @@ function ProvisionModal({ onClose }: { onClose: () => void }) {
                   <Label>Comp plan</Label>
                   <select value={plan} onChange={(e) => setPlan(e.target.value)} className="w-full border border-dark-faded rounded px-3 py-2.5 text-sm bg-white">
                     {["solo", "studio", "agency", "scale"].map((p) => (
-                      <option key={p} value={p}>{p}</option>
+                      <option key={p} value={p}>
+                        {getPlan(p).label} · {getPlan(p).price}
+                      </option>
                     ))}
                   </select>
                 </div>
