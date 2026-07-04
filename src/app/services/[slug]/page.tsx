@@ -5,7 +5,9 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
 import { getServiceConfig, services } from "@/content/services";
+import { getConnectorBySlug } from "@/content/connectors";
 import HeroGridAnimation from "@/components/HeroGridAnimation";
+import Link from "next/link";
 
 const iconMap: Record<string, string> = {
   Users: "/images/icons/Group 1707479797.svg",
@@ -52,6 +54,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
   if (!service) {
     notFound();
   }
+
+  const relatedConnector = service.relatedConnectorSlug
+    ? getConnectorBySlug(service.relatedConnectorSlug)
+    : null;
 
   return (
     <ClientLayout>
@@ -202,6 +208,19 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </div>
         </div>
       </section>
+
+      {relatedConnector && (
+        <section className="section-space-small">
+          <div className="u-container text-center">
+            <Link
+              href={`/connect/${relatedConnector.slug}`}
+              className="font-sans text-fluid-main text-brand hover:opacity-70 transition-opacity"
+            >
+              &rarr; How to connect {relatedConnector.sourceShortName} to Claude
+            </Link>
+          </div>
+        </section>
+      )}
 
       <FAQ items={service.faqs} />
       <Footer />

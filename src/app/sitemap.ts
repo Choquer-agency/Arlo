@@ -4,6 +4,7 @@ import { services } from "@/content/services";
 import { getAllCaseStudySlugs } from "@/content/case-studies";
 import { getAllBlogPosts } from "@/content/blog";
 import { getAllComparisonSlugs } from "@/content/comparisons";
+import { getAllConnectorSlugs } from "@/content/connectors";
 import { DESTINATION_CATALOG } from "@/lib/destinations/catalog";
 
 // Stable lastmod for static/marketing pages. Using `new Date()` stamped every
@@ -16,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const caseStudySlugs = getAllCaseStudySlugs();
   const blogPosts = await getAllBlogPosts();
   const comparisonSlugs = getAllComparisonSlugs();
+  const connectorSlugs = getAllConnectorSlugs();
   const destinationSlugs = DESTINATION_CATALOG.map((d) => d.id);
 
   const serviceEntries: MetadataRoute.Sitemap = serviceSlugs.map((slug) => ({
@@ -85,6 +87,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...comparisonSlugs.map((slug) => ({
       url: `${SITE_URL}/compare/${slug}`,
+      lastModified: STATIC_LASTMOD,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
+    ...connectorSlugs.map((slug) => ({
+      url: `${SITE_URL}/connect/${slug}`,
       lastModified: STATIC_LASTMOD,
       changeFrequency: "monthly" as const,
       priority: 0.9,

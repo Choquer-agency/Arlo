@@ -136,6 +136,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     metaDescription:
       "Ask Claude Desktop about rankings, indexation, Core Web Vitals, and local SEO across every client. ARLO connects GSC, GA4, PageSpeed, and GBP in one prompt.",
     tier: 1,
+    relatedConnectorSlug: "google-analytics-mcp",
   },
 
   "google-ads-specialist": {
@@ -272,6 +273,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     metaDescription:
       "Ask Claude Desktop about spend, Quality Score, search terms, and conversions across every Google Ads account in your MCC. One prompt, every client.",
     tier: 1,
+    relatedConnectorSlug: "google-ads-mcp",
   },
 
   "meta-ads-specialist": {
@@ -545,6 +547,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     metaDescription:
       "Answer client pings in under a minute. ARLO connects GA4, Google Ads, Search Console, and GBP to Claude Desktop so account managers can reply live, not later.",
     tier: 1,
+    relatedConnectorSlug: "google-analytics-mcp",
   },
 
   "agency-owner": {

@@ -18,6 +18,8 @@ export interface ServicePillar {
   metaTitle: string;
   metaDescription: string;
   tier: 1 | 2;
+  /** Optional link to a matching /connect/[slug] MCP integration page. */
+  relatedConnectorSlug?: string;
 }
 
 export interface CaseStudy {
