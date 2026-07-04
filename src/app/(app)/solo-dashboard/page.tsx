@@ -2,14 +2,26 @@
 
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import { Ga4Widget } from "@/components/app/dashboard/Ga4Widget";
 import { GscWidget } from "@/components/app/dashboard/GscWidget";
 import { GoogleAdsWidget } from "@/components/app/dashboard/GoogleAdsWidget";
 import { YoutubeWidget } from "@/components/app/dashboard/YoutubeWidget";
 import { GbpWidget } from "@/components/app/dashboard/GbpWidget";
+import { ClaudeHero, StatusPanel } from "@/components/app/dashboard/ClaudeHero";
+import { ConnectorsBar } from "@/components/app/dashboard/ConnectorsBar";
+import { GOOGLE_SOURCES } from "@/lib/googleSources";
 import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
+
+// Solo dashboard only renders these five; keyed by GOOGLE_SOURCES[].key.
+const WIDGET_BY_KEY = {
+  ga4: Ga4Widget,
+  gsc: GscWidget,
+  ads: GoogleAdsWidget,
+  yt: YoutubeWidget,
+  gbp: GbpWidget,
+} as const;
 
 export default function SoloDashboardPage() {
   const { ws } = useActiveWorkspace();
@@ -22,8 +34,11 @@ export default function SoloDashboardPage() {
     api.platformConnections.listForWorkspace,
     ws ? { workspaceId: ws._id } : "skip"
   );
+  const mcpTokens = useQuery(
+    api.mcpTokens.listMine,
+    ws ? { workspaceId: ws._id } : "skip"
+  );
 
-  // Loading state — wait for everything to hydrate
   if (ws === undefined || clients === undefined || connections === undefined) {
     return <div className="max-w-container mx-auto p-8 text-dark/40">Loading…</div>;
   }
@@ -38,7 +53,6 @@ export default function SoloDashboardPage() {
     );
   }
 
-  // Solo persona: clients[0] is "the business". If none yet, prompt them to add one.
   const client = clients[0];
   if (!client) {
     return (
@@ -58,9 +72,23 @@ export default function SoloDashboardPage() {
   const googleConnection =
     connections.find((c: { provider: string }) => c.provider === "google") ?? null;
 
+  // A source is "live" once it's mapped to an account; only those get a data
+  // widget. Unmapped sources are pointed to Connections via the bottom bar.
+  const liveSources = GOOGLE_SOURCES.filter((s) => !!client[s.field]);
+  const moreSources = GOOGLE_SOURCES.filter((s) => !client[s.field]);
+
+  // Whether this user has actually used their MCP inside Claude — lastUsedAt is
+  // stamped on every MCP call, so its presence means Claude has connected.
+  const usedTokens = (mcpTokens ?? []).filter((t) => t.lastUsedAt);
+  const connectedToClaude = usedTokens.length > 0;
+  const lastUsedAt =
+    usedTokens.map((t) => t.lastUsedAt!).sort().at(-1) ?? null;
+
+  const gridCols = liveSources.length > 1 ? "lg:grid-cols-2" : "grid-cols-1";
+
   return (
     <div className="max-w-container mx-auto">
-      <div className="flex items-baseline justify-between mb-8 gap-4 flex-wrap">
+      <div className="flex items-baseline justify-between mb-6 gap-4 flex-wrap">
         <div>
           <p className="font-mono text-xs uppercase tracking-wider text-dark opacity-60 mb-2">
             {ws.name}
@@ -75,59 +103,51 @@ export default function SoloDashboardPage() {
         </Link>
       </div>
 
-      <DashboardIntro />
-
-      <Ga4Widget
-        workspaceId={ws._id}
-        client={client}
-        googleConnection={googleConnection}
-      />
-      <GscWidget
-        workspaceId={ws._id}
-        client={client}
-        googleConnection={googleConnection}
-      />
-      <GoogleAdsWidget
-        workspaceId={ws._id}
-        client={client}
-        googleConnection={googleConnection}
-      />
-      <YoutubeWidget
-        workspaceId={ws._id}
-        client={client}
-        googleConnection={googleConnection}
-      />
-      <GbpWidget
-        workspaceId={ws._id}
-        client={client}
-        googleConnection={googleConnection}
-      />
-    </div>
-  );
-}
-
-function DashboardIntro() {
-  return (
-    <div className="bg-dark text-white rounded-lg p-6 mb-6 flex items-start justify-between gap-6 flex-wrap">
-      <div className="flex-1 min-w-0 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-wider text-brand-lime mb-2">
-          Live data · last 28 days
-        </p>
-        <p className="font-sans text-fluid-h5 leading-snug mb-2">
-          Your real numbers, pulled on demand.
-        </p>
-        <p className="text-white/70 text-sm">
-          Each widget calls the source directly when this page loads — no warehouse,
-          no sync delay. Connect a source once and Claude can answer questions about
-          it in Claude Desktop too.
-        </p>
+      {/* Bento hero: push to Claude (loud) + quick status */}
+      <div className="grid gap-4 lg:grid-cols-3 mb-6">
+        <ClaudeHero
+          workspaceId={ws._id}
+          businessName={client.name}
+          connectedToClaude={connectedToClaude}
+        />
+        <StatusPanel
+          liveLabels={liveSources.map((s) => s.label)}
+          connectedToClaude={connectedToClaude}
+          lastUsedAt={lastUsedAt}
+        />
       </div>
-      <Link
-        href="/settings/mcp"
-        className="inline-flex items-center gap-2 bg-brand-lime text-dark px-5 py-3 rounded font-mono text-xs uppercase tracking-wider hover:opacity-90 shrink-0"
-      >
-        Copy MCP URL <ArrowUpRight size={14} />
-      </Link>
+
+      {/* Live data — only mapped sources */}
+      {liveSources.length > 0 ? (
+        <div className={`grid gap-4 mb-6 ${gridCols}`}>
+          {liveSources.map((s) => {
+            const Widget = WIDGET_BY_KEY[s.key as keyof typeof WIDGET_BY_KEY];
+            if (!Widget) return null;
+            return (
+              <Widget
+                key={s.key}
+                workspaceId={ws._id}
+                client={client}
+                googleConnection={googleConnection}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div className="rounded-lg border border-dark-faded bg-white p-8 text-center mb-6">
+          <p className="font-sans text-fluid-h5 text-dark mb-2">No live sources yet</p>
+          <p className="text-dark/60 text-sm mb-5 max-w-md mx-auto">
+            Map a Google Analytics property or Search Console site to start seeing
+            live numbers here.
+          </p>
+          <Link href="/connections" className="btn-secondary px-5 py-2.5 text-sm inline-block">
+            Set up connections
+          </Link>
+        </div>
+      )}
+
+      {/* Everything not mapped → Connections */}
+      <ConnectorsBar sources={moreSources} />
     </div>
   );
 }

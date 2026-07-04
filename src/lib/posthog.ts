@@ -27,6 +27,7 @@ export type ArloEvent =
   | "connect_claude_viewed"
   | "mcp_url_copied"
   | "mcp_token_rotated"
+  | "open_claude"
   | "prompt_copied";
 
 export function track(event: ArloEvent, props?: Record<string, unknown>) {

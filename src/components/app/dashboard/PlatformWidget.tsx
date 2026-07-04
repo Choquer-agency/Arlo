@@ -36,7 +36,7 @@ export function PlatformWidget({
   prompts,
 }: Props) {
   return (
-    <section className="bg-white border border-dark-faded rounded-lg p-8 mb-6">
+    <section className="bg-white border border-dark-faded rounded-lg p-6 h-full flex flex-col">
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           <div
@@ -60,7 +60,7 @@ export function PlatformWidget({
 
       {children}
 
-      <div className="border-t border-dark-faded pt-4 mt-6">
+      <div className="border-t border-dark-faded pt-4 mt-auto">
         <p className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-60 mb-2">
           Try asking Claude
         </p>
@@ -164,7 +164,7 @@ export function MetricGrid({
   metrics: { label: string; value: string; sub?: string }[];
 }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div className="grid grid-cols-2 gap-3 mb-6">
       {metrics.map((m) => (
         <div key={m.label} className="bg-grey rounded-lg p-4">
           <p className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-60 mb-1">
