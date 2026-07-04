@@ -18,7 +18,7 @@ import {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { ws } = useActiveWorkspace();
+  const { ws, impersonating } = useActiveWorkspace();
   const isAdmin = useQuery(api.admin.amISuperAdmin);
   const isSolo = ws?.workspaceType === "solo";
 
@@ -77,7 +77,7 @@ export function Sidebar() {
             </Link>
           );
         })}
-        {isAdmin && (
+        {isAdmin && !impersonating && (
           <Link
             href="/admin"
             className={`flex items-center gap-3 px-3 py-2.5 mb-1 mt-2 rounded-lg font-mono text-sm uppercase tracking-wider transition-colors border-t border-dark/5 pt-4 ${
