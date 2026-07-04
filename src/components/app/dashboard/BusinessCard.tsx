@@ -9,8 +9,12 @@ import {
   type Account,
 } from "@/lib/googleSources";
 import { useWidgetData } from "./useWidgetData";
+import { dailySeries } from "@/lib/trend";
+import { Sparkline } from "./Sparkline";
 
 const RANGE = { preset: "last_28_days" as const };
+const GA4_COLOR = "#E37400";
+const GSC_COLOR = "#4285F4";
 
 /**
  * One business in the portfolio dashboard. Shows setup progress + per-source
@@ -48,6 +52,20 @@ export function BusinessCard({
     workspaceId,
     clientId: client._id,
     kind: "gsc_overview",
+    dateRange: RANGE,
+    enabled: googleConnected && hasGsc,
+  });
+  const ga4Trend = useWidgetData({
+    workspaceId,
+    clientId: client._id,
+    kind: "ga4_trend",
+    dateRange: RANGE,
+    enabled: googleConnected && hasGa4,
+  });
+  const gscTrend = useWidgetData({
+    workspaceId,
+    clientId: client._id,
+    kind: "gsc_trend",
     dateRange: RANGE,
     enabled: googleConnected && hasGsc,
   });
@@ -121,13 +139,13 @@ export function BusinessCard({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-4">
           {hasGa4 && (
             <>
-              <Metric label="Sessions · 28d" value={fmt(ga4.data?.totals.sessions)} loading={ga4.loading} error={!!ga4.error} />
-              <Metric label="New users" value={fmt(ga4.data?.totals.newUsers)} loading={ga4.loading} error={!!ga4.error} />
+              <Metric label="Sessions · 28d" value={fmt(ga4.data?.totals.sessions)} loading={ga4.loading} error={!!ga4.error} series={dailySeries(ga4Trend.data, "sessions")} seriesColor={GA4_COLOR} seriesLoading={ga4Trend.loading || !ga4Trend.data} />
+              <Metric label="New users" value={fmt(ga4.data?.totals.newUsers)} loading={ga4.loading} error={!!ga4.error} series={dailySeries(ga4Trend.data, "newUsers")} seriesColor={GA4_COLOR} seriesLoading={ga4Trend.loading || !ga4Trend.data} />
             </>
           )}
           {hasGsc && (
             <>
-              <Metric label="GSC clicks" value={fmt(gsc.data?.totals.clicks)} loading={gsc.loading} error={!!gsc.error} />
+              <Metric label="GSC clicks" value={fmt(gsc.data?.totals.clicks)} loading={gsc.loading} error={!!gsc.error} series={dailySeries(gscTrend.data, "clicks")} seriesColor={GSC_COLOR} seriesLoading={gscTrend.loading || !gscTrend.data} />
               <Metric label="Avg. position" value={fmt1(gsc.data?.totals.position)} loading={gsc.loading} error={!!gsc.error} />
             </>
           )}
@@ -175,19 +193,34 @@ function Metric({
   value,
   loading,
   error,
+  series,
+  seriesColor,
+  seriesLoading,
 }: {
   label: string;
   value: string;
   loading: boolean;
   error: boolean;
+  series?: number[];
+  seriesColor?: string;
+  seriesLoading?: boolean;
 }) {
   return (
-    <div className="bg-grey border border-dark-faded rounded-lg p-3">
+    <div className="bg-grey border border-dark-faded rounded-lg p-3 flex flex-col">
       <p className="font-mono text-[10px] uppercase tracking-wider text-dark/60">{label}</p>
       {loading ? (
         <div className="h-6 w-16 bg-dark/10 rounded animate-pulse mt-1.5" />
       ) : (
         <p className="font-sans text-fluid-h5 text-dark mt-1 tabular-nums">{error ? "—" : value}</p>
+      )}
+      {series && !error && (
+        <div className="mt-2 -mb-0.5">
+          {seriesLoading && series.length < 2 ? (
+            <div className="h-[26px] w-full bg-dark/5 rounded animate-pulse" />
+          ) : (
+            <Sparkline values={series} color={seriesColor} height={26} />
+          )}
+        </div>
       )}
     </div>
   );
