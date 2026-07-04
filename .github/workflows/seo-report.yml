@@ -1,0 +1,49 @@
+name: SEO Report Email
+
+# Fires when the autonomous SEO routine commits a report to reports/outbox/,
+# and can be run manually. GitHub Actions has outbound internet (Resend);
+# the Claude cloud-routine sandbox does not.
+on:
+  push:
+    paths:
+      - "reports/outbox/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-report
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Send queued reports
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REPORTS_FROM: ${{ secrets.REPORTS_FROM }}
+          REPORTS_TO: ${{ secrets.REPORTS_TO }}
+        run: node scripts/send-seo-reports.mjs
+
+      - name: Commit archived (sent) reports
+        run: |
+          git config user.name "arlo-seo-bot"
+          git config user.email "seo-bot@askarlo.app"
+          git add reports/outbox reports/sent
+          if git diff --staged --quiet; then
+            echo "No report files to archive."
+          else
+            git commit -m "seo: archive sent reports [skip ci]"
+            git push
+          fi
