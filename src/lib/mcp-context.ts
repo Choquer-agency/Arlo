@@ -79,6 +79,37 @@ async function refreshProviderToken(
   return json.access_token;
 }
 
+/**
+ * Return a valid (refreshed-if-needed) access token for a workspace's provider
+ * connection, without needing a full ConnectorContext. Used by server routes
+ * that act on the connection directly (e.g. re-probing available accounts).
+ */
+export async function getWorkspaceAccessToken(
+  provider: OAuthProvider,
+  workspaceId: Id<"workspaces">,
+  accountId?: string
+): Promise<string> {
+  const conn = await fetchQuery(api.platformConnections.getByProviderForService, {
+    _serviceSecret: getServiceSecret(),
+    workspaceId,
+    provider,
+  });
+  if (!conn) {
+    throw new Error(
+      `No ${provider} connection for this workspace. Connect it on the Connections page.`
+    );
+  }
+  if (accountId && conn.accountId && conn.accountId !== accountId) {
+    throw new Error(`No ${provider} connection matching account ${accountId}.`);
+  }
+  const creds = JSON.parse(decryptCredentials(conn.encryptedTokens, conn.tokensIv));
+  const expiresAt = conn.tokenExpiresAt ?? 0;
+  if (expiresAt - Date.now() > 60_000 && creds.accessToken) {
+    return creds.accessToken;
+  }
+  return refreshProviderToken(provider, conn);
+}
+
 export async function buildConnectorContext(
   workspaceId: Id<"workspaces">,
   client: Doc<"clients">
@@ -94,20 +125,8 @@ export async function buildConnectorContext(
     return conn;
   };
 
-  const getAccessToken = async (provider: OAuthProvider, accountId?: string): Promise<string> => {
-    const conn = await getConnection(provider, accountId);
-    if (!conn) {
-      throw new Error(
-        `No ${provider} connection for this workspace. Connect it on the Connections page.`
-      );
-    }
-    const creds = JSON.parse(decryptCredentials(conn.encryptedTokens, conn.tokensIv));
-    const expiresAt = conn.tokenExpiresAt ?? 0;
-    if (expiresAt - Date.now() > 60_000 && creds.accessToken) {
-      return creds.accessToken;
-    }
-    return refreshProviderToken(provider, conn);
-  };
+  const getAccessToken = (provider: OAuthProvider, accountId?: string): Promise<string> =>
+    getWorkspaceAccessToken(provider, workspaceId, accountId);
 
   return { workspaceId, client, getAccessToken, getConnection };
 }

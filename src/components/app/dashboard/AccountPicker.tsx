@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation } from "convex/react";
-import { Check } from "lucide-react";
+import { Check, RefreshCw } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { track } from "@/lib/posthog";
@@ -47,12 +47,52 @@ export function AccountPicker({
   const filtered = accounts.filter((a) => a.kind === accountKind);
   const [selected, setSelected] = useState<string>(filtered[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
+
+  // Re-probe Google for newly-created properties/sites/etc. The connection's
+  // availableAccounts is a reactive Convex query, so a successful refresh flows
+  // back into `accounts` and re-renders this list automatically.
+  async function refresh() {
+    setRefreshing(true);
+    setRefreshMsg(null);
+    try {
+      const res = await fetch("/api/oauth/google/refresh-accounts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspaceId }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setRefreshMsg(data.error ?? "Couldn't refresh — try again in a moment.");
+      } else {
+        setRefreshMsg(
+          "List refreshed. Just created it? New properties can take a minute to appear in Google — try again shortly."
+        );
+      }
+    } catch {
+      setRefreshMsg("Couldn't refresh — check your connection and try again.");
+    } finally {
+      setRefreshing(false);
+    }
+  }
 
   if (filtered.length === 0) {
     return (
       <div className="rounded-lg bg-grey p-5 text-sm text-dark/70">
-        Your Google account doesn&apos;t have any {label.toLowerCase()} we can read.
-        Make sure the right account has access in Google.
+        <p>
+          Your Google account doesn&apos;t have any {label.toLowerCase()} we can read.
+          Make sure the right account has access in Google.
+        </p>
+        <button
+          onClick={refresh}
+          disabled={refreshing}
+          className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-dark/60 hover:text-dark disabled:opacity-50"
+        >
+          <RefreshCw size={12} className={refreshing ? "animate-spin" : ""} />
+          {refreshing ? "Refreshing…" : "Refresh list"}
+        </button>
+        {refreshMsg && <p className="mt-2 text-xs text-dark/60">{refreshMsg}</p>}
       </div>
     );
   }
@@ -105,6 +145,20 @@ export function AccountPicker({
           )}
         </button>
       </div>
+      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+        <button
+          onClick={refresh}
+          disabled={refreshing}
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-dark/60 hover:text-dark disabled:opacity-50"
+        >
+          <RefreshCw size={12} className={refreshing ? "animate-spin" : ""} />
+          {refreshing ? "Refreshing…" : "Refresh list"}
+        </button>
+        <span className="text-xs text-dark/50">
+          Don&apos;t see it? Just-created {label.toLowerCase()} can take a minute to appear.
+        </span>
+      </div>
+      {refreshMsg && <p className="mt-2 text-xs text-dark/60">{refreshMsg}</p>}
     </div>
   );
 }
