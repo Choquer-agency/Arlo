@@ -10,7 +10,7 @@ import { AGENCY_NAME } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   title: `Case Studies | ${AGENCY_NAME}`,
   description:
-    "Real results from real companies. See how mid-market businesses replaced expensive SaaS with custom software they own.",
+    "Real results from real companies using ARLO to turn hours of dashboard-building and CSV exports into questions they just ask Claude.",
 };
 
 export default function WorkHub() {
@@ -24,11 +24,11 @@ export default function WorkHub() {
         <div className="u-container">
           <p className="eyebrow text-brand mb-4">Case Studies</p>
           <h1 className="font-sans font-medium text-fluid-h1 leading-[1.1] tracking-tight text-dark max-w-[16ch] mb-6">
-            Real results. Real savings.
+            Real teams. Real time saved.
           </h1>
           <p className="font-sans text-fluid-large text-dark opacity-60 max-w-[48ch] leading-relaxed">
-            See how companies replaced expensive SaaS subscriptions with custom
-            software they own — and the measurable impact on their bottom line.
+            See how agencies and businesses use {AGENCY_NAME} to get live marketing
+            answers straight from Claude — no exports, no dashboards, no warehouse.
           </p>
         </div>
       </header>

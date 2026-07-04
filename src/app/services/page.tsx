@@ -9,7 +9,7 @@ import { ServicePillars } from "@/components/ServicePillars";
 export const metadata: Metadata = {
   title: `Services | ${AGENCY_NAME}`,
   description:
-    "Custom software that replaces your expensive SaaS subscriptions. CRM, ERP, AI agents, workflow automation, BI, and legacy modernization.",
+    "How each role at your agency uses ARLO — SEO and Google Ads specialists, account managers, agency owners, and solo business owners — to query live marketing data from Claude, no exports or dashboards required.",
 };
 
 export default function ServicesHub() {
@@ -23,11 +23,12 @@ export default function ServicesHub() {
         <div className="u-container">
           <p className="eyebrow text-brand mb-4">Services</p>
           <h1 className="font-sans font-medium text-fluid-h1 leading-[1.1] tracking-tight text-dark max-w-[18ch] mb-6">
-            Software you own. SaaS you don&apos;t need.
+            One connector. Every role at your agency.
           </h1>
           <p className="font-sans text-fluid-large text-dark opacity-60 max-w-[48ch] leading-relaxed">
-            We build AI-powered custom software across 10 service pillars — each one
-            designed to replace expensive SaaS subscriptions with platforms you own.
+            See how SEO specialists, paid-media managers, account managers, and agency
+            owners each use {AGENCY_NAME} to get live answers from GA4, Search Console,
+            Google Ads, and more — without leaving Claude.
           </p>
         </div>
       </header>
@@ -37,7 +38,7 @@ export default function ServicesHub() {
       <section className="section-space-main" style={{ backgroundColor: "#EBFFF6" }}>
         <div className="u-container">
           <h2 className="font-sans font-medium text-fluid-h3 text-dark mb-8">
-            Specialized Services
+            More roles
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tier2.map((service) => (
