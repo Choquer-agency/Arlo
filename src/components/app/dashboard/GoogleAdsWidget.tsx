@@ -51,7 +51,7 @@ export function GoogleAdsWidget({
   if (!isConnected) {
     status = <NotConnectedPill />;
     body = (
-      <ConnectGoogleCta valueProp="Spend, conversions, ROAS, CPA, and search-term insights — see what's working and what's wasting budget." />
+      <ConnectGoogleCta workspaceId={workspaceId} valueProp="Spend, conversions, ROAS, CPA, and search-term insights — see what's working and what's wasting budget." />
     );
   } else if (!isAssigned) {
     status = <NeedsAssignmentPill />;

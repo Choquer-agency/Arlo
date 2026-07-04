@@ -20,6 +20,7 @@ import type * as lib_admin from "../lib/admin.js";
 import type * as lib_currentUser from "../lib/currentUser.js";
 import type * as lib_planLimits from "../lib/planLimits.js";
 import type * as lib_serviceAuth from "../lib/serviceAuth.js";
+import type * as lib_superadmin from "../lib/superadmin.js";
 import type * as mcpAuditLog from "../mcpAuditLog.js";
 import type * as mcpTokens from "../mcpTokens.js";
 import type * as members from "../members.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   "lib/currentUser": typeof lib_currentUser;
   "lib/planLimits": typeof lib_planLimits;
   "lib/serviceAuth": typeof lib_serviceAuth;
+  "lib/superadmin": typeof lib_superadmin;
   mcpAuditLog: typeof mcpAuditLog;
   mcpTokens: typeof mcpTokens;
   members: typeof members;

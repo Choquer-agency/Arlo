@@ -61,7 +61,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Auth check failed" }, { status: 401 });
   }
   if (!workspaces.some((w: { _id: string }) => w._id === body.workspaceId)) {
-    return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+    // Allow an Arlo admin acting inside a client workspace (Enter workspace).
+    let admin = false;
+    try {
+      admin = await fetchQuery(api.admin.amISuperAdmin, {}, { token });
+    } catch {
+      admin = false;
+    }
+    if (!admin) {
+      return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
+    }
   }
 
   const spec = getWidgetSpec(body.kind);

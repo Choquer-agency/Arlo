@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import {
   LayoutDashboard,
   Users,
@@ -17,9 +18,8 @@ import {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const workspaces = useQuery(api.workspaces.listMine);
+  const { ws } = useActiveWorkspace();
   const isAdmin = useQuery(api.admin.amISuperAdmin);
-  const ws = workspaces?.[0];
   const isSolo = ws?.workspaceType === "solo";
 
   const nav = isSolo

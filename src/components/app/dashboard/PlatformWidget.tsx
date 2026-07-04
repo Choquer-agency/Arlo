@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { Check, Copy, Plus, RefreshCw, AlertTriangle } from "lucide-react";
+import { googleStartHref } from "@/lib/oauth";
 
 interface Props {
   icon: ReactNode;
@@ -101,12 +102,12 @@ export function NeedsAssignmentPill() {
 
 /* ─── Body states ──────────────────────────────────── */
 
-export function ConnectGoogleCta({ valueProp }: { valueProp: string }) {
+export function ConnectGoogleCta({ valueProp, workspaceId }: { valueProp: string; workspaceId?: string }) {
   return (
     <div className="rounded-lg border border-dashed border-dark/20 p-6">
       <p className="text-dark text-sm mb-4 max-w-xl">{valueProp}</p>
       <a
-        href="/api/oauth/google/start"
+        href={googleStartHref(workspaceId)}
         className="inline-flex items-center gap-2 btn-secondary px-5 py-2.5 text-sm"
       >
         <Plus size={14} /> Connect Google

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { Clock } from "lucide-react";
 
 /**
@@ -10,8 +9,7 @@ import { Clock } from "lucide-react";
  * date; turns urgent in the final stretch. Hidden once expired or on paid plans.
  */
 export function TrialBanner() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   if (!ws?.trialEndsAt) return null;
 
   const daysLeft = Math.ceil((new Date(ws.trialEndsAt).getTime() - Date.now()) / 86400000);

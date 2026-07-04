@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
+import { googleStartHref } from "@/lib/oauth";
 import type { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { Plus, MessageSquare, Pause, Play, Trash2, PlayCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { findDestination, SYNC_MODE_LABELS } from "@/lib/destinations/catalog";
@@ -19,8 +21,7 @@ export default function ClientDetailPage() {
   const rawId = params?.id;
   const clientId = (Array.isArray(rawId) ? rawId[0] : rawId) as Id<"clients"> | undefined;
 
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   const client = useQuery(
     api.clients.get,
     ws && clientId ? { workspaceId: ws._id, clientId } : "skip"
@@ -198,7 +199,7 @@ function ClientOverview({
             <span className="truncate">Google connected as {connection?.accountEmail}</span>
           </p>
           <a
-            href="/api/oauth/google/start"
+            href={googleStartHref(workspaceId)}
             className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-50 hover:opacity-100 shrink-0"
           >
             Reconnect
@@ -208,7 +209,7 @@ function ClientOverview({
         <div className="flex items-center justify-between gap-3 rounded-lg bg-grey border border-dark-faded px-4 py-3 mb-6">
           <p className="text-dark/70 text-sm">Connect Google to assign accounts to this client.</p>
           <a
-            href="/api/oauth/google/start"
+            href={googleStartHref(workspaceId)}
             className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5 shrink-0"
           >
             <Plus size={13} /> Connect Google

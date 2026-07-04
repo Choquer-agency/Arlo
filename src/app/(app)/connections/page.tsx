@@ -14,10 +14,11 @@ import {
   type Account,
   type GoogleSourceDef,
 } from "@/lib/googleSources";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
+import { googleStartHref } from "@/lib/oauth";
 
 export default function ConnectionsPage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   const connections = useQuery(
     api.platformConnections.listForWorkspace,
     ws ? { workspaceId: ws._id } : "skip"
@@ -76,14 +77,14 @@ export default function ConnectionsPage() {
               ● Connected as {googleConn?.accountEmail}
             </span>
             <a
-              href="/api/oauth/google/start"
+              href={googleStartHref(ws?._id)}
               className="font-mono text-[11px] uppercase tracking-wider text-dark/50 hover:text-dark"
             >
               Reconnect
             </a>
           </div>
         ) : (
-          <a href="/api/oauth/google/start" className="btn-secondary px-6 py-3 shrink-0">
+          <a href={googleStartHref(ws?._id)} className="btn-secondary px-6 py-3 shrink-0">
             Connect Google
           </a>
         )}
@@ -187,7 +188,7 @@ function SourceGroup({
           {!googleConnected ? (
             <div className="px-5 py-6 flex items-center justify-between gap-4">
               <p className="text-dark/70 text-sm">Connect Google to map {source.label} accounts.</p>
-              <a href="/api/oauth/google/start" className="btn-secondary px-4 py-2 text-sm shrink-0">
+              <a href={googleStartHref(workspaceId)} className="btn-secondary px-4 py-2 text-sm shrink-0">
                 Connect Google
               </a>
             </div>

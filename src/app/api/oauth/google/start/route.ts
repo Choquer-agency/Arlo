@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "../../../../../../convex/_generated/api";
+import type { Id } from "../../../../../../convex/_generated/dataModel";
 import { signState } from "@/lib/oauth-state";
 
 export const runtime = "nodejs";
@@ -24,8 +25,27 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  const workspaces = await fetchQuery(api.workspaces.listMine, {}, { token });
-  const ws = workspaces[0];
+  // Optional target workspace — used when an admin connects Google on a client's
+  // behalf via "Enter workspace". workspaces.get authorizes member-or-superadmin.
+  const requested = new URL(req.url).searchParams.get("workspaceId");
+  let ws:
+    | Awaited<ReturnType<typeof fetchQuery<typeof api.workspaces.get>>>
+    | undefined;
+  if (requested) {
+    try {
+      ws = await fetchQuery(
+        api.workspaces.get,
+        { workspaceId: requested as Id<"workspaces"> },
+        { token }
+      );
+    } catch {
+      ws = undefined;
+    }
+  }
+  if (!ws) {
+    const workspaces = await fetchQuery(api.workspaces.listMine, {}, { token });
+    ws = workspaces[0];
+  }
   if (!ws) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }

@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUserId, requireMembership } from "./lib/currentUser";
+import { isSuperAdminEmail } from "./lib/superadmin";
 
 function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48) || "workspace";
@@ -29,6 +30,37 @@ export const get = query({
   handler: async (ctx, { workspaceId }) => {
     await requireMembership(ctx, workspaceId);
     return ctx.db.get(workspaceId);
+  },
+});
+
+/**
+ * The workspace the app should operate on right now. Normally the user's own
+ * first workspace. If a super-admin passes `actingWorkspaceId` (via "Enter
+ * workspace"), returns that client's workspace instead, flagged as impersonating
+ * — every workspace-scoped query then targets it. Non-admins can't impersonate.
+ */
+export const resolveActive = query({
+  args: { actingWorkspaceId: v.optional(v.id("workspaces")) },
+  handler: async (ctx, { actingWorkspaceId }) => {
+    const userId = await requireUserId(ctx);
+
+    if (actingWorkspaceId) {
+      const me = await ctx.db.get(userId);
+      if (isSuperAdminEmail(me?.email)) {
+        const ws = await ctx.db.get(actingWorkspaceId);
+        if (ws) return { ...ws, role: "owner", impersonating: true };
+      }
+      // Not an admin (or workspace gone) — fall through to own workspace.
+    }
+
+    const membership = await ctx.db
+      .query("members")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .first();
+    if (!membership) return null;
+    const ws = await ctx.db.get(membership.workspaceId);
+    if (!ws) return null;
+    return { ...ws, role: membership.role, impersonating: false };
   },
 });
 

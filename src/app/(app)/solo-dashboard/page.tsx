@@ -9,10 +9,10 @@ import { GscWidget } from "@/components/app/dashboard/GscWidget";
 import { GoogleAdsWidget } from "@/components/app/dashboard/GoogleAdsWidget";
 import { YoutubeWidget } from "@/components/app/dashboard/YoutubeWidget";
 import { GbpWidget } from "@/components/app/dashboard/GbpWidget";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 
 export default function SoloDashboardPage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
 
   const clients = useQuery(
     api.clients.list,
@@ -24,7 +24,7 @@ export default function SoloDashboardPage() {
   );
 
   // Loading state — wait for everything to hydrate
-  if (workspaces === undefined || clients === undefined || connections === undefined) {
+  if (ws === undefined || clients === undefined || connections === undefined) {
     return <div className="max-w-container mx-auto p-8 text-dark/40">Loading…</div>;
   }
   if (!ws) {

@@ -2,10 +2,10 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 
 export default function TeamPage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   const members = useQuery(
     api.members.list,
     ws ? { workspaceId: ws._id } : "skip"

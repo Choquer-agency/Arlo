@@ -51,7 +51,7 @@ export function Ga4Widget({
   if (!isConnected) {
     status = <NotConnectedPill />;
     body = (
-      <ConnectGoogleCta valueProp="Track sessions, new users, conversion rate, and where your traffic comes from. The baseline for almost every question Claude can answer." />
+      <ConnectGoogleCta workspaceId={workspaceId} valueProp="Track sessions, new users, conversion rate, and where your traffic comes from. The baseline for almost every question Claude can answer." />
     );
   } else if (!isAssigned) {
     status = <NeedsAssignmentPill />;

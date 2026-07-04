@@ -9,11 +9,11 @@ import { ArrowUpRight, Plus } from "lucide-react";
 import { BusinessCard } from "@/components/app/dashboard/BusinessCard";
 import { liveCount, enabledSourcesFor, type Account } from "@/lib/googleSources";
 import { track } from "@/lib/posthog";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
 
   const usage = useQuery(
     api.usageCounters.getCurrentPeriod,
@@ -29,22 +29,21 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    if (workspaces === undefined) return;
-    if (workspaces.length === 0) {
+    if (ws === undefined) return;
+    if (ws === null) {
       router.replace("/onboarding");
       return;
     }
     // Solo workspaces have a dedicated single-business dashboard
-    if (workspaces[0]?.workspaceType === "solo") {
+    if (ws.workspaceType === "solo") {
       router.replace("/solo-dashboard");
       return;
     }
     track("dashboard_viewed", { clients: clients?.length ?? 0 });
-  }, [workspaces, router, clients]);
+  }, [ws, router, clients]);
 
-  if (workspaces === undefined) return <Skeleton />;
-  if (workspaces.length === 0) return null;
-  if (!ws) return <Skeleton />;
+  if (ws === undefined) return <Skeleton />;
+  if (ws === null) return null;
   if (ws.workspaceType === "solo") return <Skeleton />;
 
   const googleConn = connections?.find((c) => c.provider === "google");

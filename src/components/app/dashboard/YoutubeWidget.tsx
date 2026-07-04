@@ -51,7 +51,7 @@ export function YoutubeWidget({
   if (!isConnected) {
     status = <NotConnectedPill />;
     body = (
-      <ConnectGoogleCta valueProp="Watch time, subscriber growth, top videos, and traffic-source breakdowns. Useful if YouTube is part of how customers find you." />
+      <ConnectGoogleCta workspaceId={workspaceId} valueProp="Watch time, subscriber growth, top videos, and traffic-source breakdowns. Useful if YouTube is part of how customers find you." />
     );
   } else if (!isAssigned) {
     status = <NeedsAssignmentPill />;

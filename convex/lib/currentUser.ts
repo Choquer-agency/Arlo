@@ -1,6 +1,7 @@
 import { QueryCtx, MutationCtx } from "../_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Doc, Id } from "../_generated/dataModel";
+import { isSuperAdminEmail } from "./superadmin";
 
 export async function requireUserId(ctx: QueryCtx | MutationCtx): Promise<Id<"users">> {
   const userId = await getAuthUserId(ctx);
@@ -27,8 +28,22 @@ export async function requireMembership(
       q.eq("workspaceId", workspaceId).eq("userId", userId)
     )
     .unique();
-  if (!member) throw new Error("Not a member of this workspace");
-  return member;
+  if (member) return member;
+
+  // Super-admin "act as workspace" bypass: an Arlo admin can operate inside any
+  // client workspace (to connect sources, troubleshoot, etc.) without being a
+  // member. Stand in as the workspace's owner membership (unrestricted access).
+  const user = await ctx.db.get(userId);
+  if (isSuperAdminEmail(user?.email)) {
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_workspace", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+    const stand = members.find((m) => m.role === "owner") ?? members[0];
+    if (stand) return stand;
+  }
+
+  throw new Error("Not a member of this workspace");
 }
 
 const ROLE_TIER: Record<string, number> = { owner: 30, admin: 20, member: 10 };

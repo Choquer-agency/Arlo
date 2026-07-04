@@ -2,11 +2,11 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { getPlan, PLAN_LIMITS } from "@/lib/billing";
 
 export default function BillingPage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   const usage = useQuery(
     api.usageCounters.getCurrentPeriod,
     ws ? { workspaceId: ws._id } : "skip"

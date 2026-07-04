@@ -51,7 +51,7 @@ export function GscWidget({
   if (!isConnected) {
     status = <NotConnectedPill />;
     body = (
-      <ConnectGoogleCta valueProp="See the queries people search to find you, your CTR by position, and which pages are ranking on page 2 and close to breaking into page 1." />
+      <ConnectGoogleCta workspaceId={workspaceId} valueProp="See the queries people search to find you, your CTR by position, and which pages are ranking on page 2 and close to breaking into page 1." />
     );
   } else if (!isAssigned) {
     status = <NeedsAssignmentPill />;

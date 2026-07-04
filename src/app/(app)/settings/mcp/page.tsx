@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { Copy, RotateCw, Check, AlertTriangle } from "lucide-react";
 import { track } from "@/lib/posthog";
 
 export default function ConnectToClaudePage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
 
   const [token, setToken] = useState<string | null | undefined>(undefined); // undefined = loading
   const [copied, setCopied] = useState(false);

@@ -2,12 +2,12 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { useState } from "react";
 import Link from "next/link";
 
 export default function ClientsPage() {
-  const workspaces = useQuery(api.workspaces.listMine);
-  const ws = workspaces?.[0];
+  const { ws } = useActiveWorkspace();
   const clients = useQuery(
     api.clients.list,
     ws ? { workspaceId: ws._id } : "skip"

@@ -51,7 +51,7 @@ export function GbpWidget({
   if (!isConnected) {
     status = <NotConnectedPill />;
     body = (
-      <ConnectGoogleCta valueProp="Track Maps views, direction requests, calls, and reviews. Critical for any business with a physical location — Claude can tell you what's driving foot traffic." />
+      <ConnectGoogleCta workspaceId={workspaceId} valueProp="Track Maps views, direction requests, calls, and reviews. Critical for any business with a physical location — Claude can tell you what's driving foot traffic." />
     );
   } else if (!isAssigned) {
     status = <NeedsAssignmentPill />;

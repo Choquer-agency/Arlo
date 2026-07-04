@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { getPlan } from "@/lib/billing";
-import { ShieldAlert, Search, UserPlus, Copy, Check } from "lucide-react";
+import { useActing } from "@/components/providers/ActingWorkspaceProvider";
+import { ShieldAlert, Search, UserPlus, Copy, Check, LogIn } from "lucide-react";
 
 type Row = {
   _id: Id<"workspaces">;
@@ -394,6 +396,8 @@ function WorkspaceDrawer({
   const extendTrial = useMutation(api.admin.extendTrial);
   const setPlan = useMutation(api.admin.setPlan);
   const setManaged = useMutation(api.admin.setManaged);
+  const { enter } = useActing();
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
 
   async function run(fn: () => Promise<unknown>) {
@@ -489,6 +493,23 @@ function WorkspaceDrawer({
                 ))
               )}
             </Section>
+
+            {/* Enter workspace — see & operate exactly what the client sees */}
+            <div className="mt-2 pt-5 border-t border-dark-faded">
+              <button
+                onClick={() => {
+                  enter(workspaceId);
+                  router.push("/dashboard");
+                }}
+                className="w-full bg-dark text-white py-3.5 rounded font-mono text-sm uppercase tracking-wider hover:opacity-90 inline-flex items-center justify-center gap-2"
+              >
+                <LogIn size={16} /> Enter workspace
+              </button>
+              <p className="text-dark/50 text-xs text-center mt-2">
+                Opens {ws.name}&apos;s account as it looks to them — connect sources, troubleshoot,
+                fix things. You stay signed in as you.
+              </p>
+            </div>
           </>
         )}
       </div>
