@@ -25,6 +25,7 @@ import type * as oauth from "../oauth.js";
 import type * as platformConnections from "../platformConnections.js";
 import type * as shareableDashboards from "../shareableDashboards.js";
 import type * as usageCounters from "../usageCounters.js";
+import type * as users from "../users.js";
 import type * as workspaces from "../workspaces.js";
 
 import type {
@@ -51,6 +52,7 @@ declare const fullApi: ApiFromModules<{
   platformConnections: typeof platformConnections;
   shareableDashboards: typeof shareableDashboards;
   usageCounters: typeof usageCounters;
+  users: typeof users;
   workspaces: typeof workspaces;
 }>;
 

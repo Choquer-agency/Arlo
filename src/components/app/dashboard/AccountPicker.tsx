@@ -5,6 +5,7 @@ import { useMutation } from "convex/react";
 import { Check } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
+import { track } from "@/lib/posthog";
 
 interface Account {
   id: string;
@@ -65,6 +66,7 @@ export function AccountPicker({
         clientId,
         [assignmentField]: selected,
       });
+      track("source_mapped", { field: assignmentField, kind: accountKind });
       onSaved?.();
     } finally {
       setSaving(false);

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { BusinessCard } from "@/components/app/dashboard/BusinessCard";
 import { liveCount, enabledSourcesFor, type Account } from "@/lib/googleSources";
+import { track } from "@/lib/posthog";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -36,8 +37,10 @@ export default function DashboardPage() {
     // Solo workspaces have a dedicated single-business dashboard
     if (workspaces[0]?.workspaceType === "solo") {
       router.replace("/solo-dashboard");
+      return;
     }
-  }, [workspaces, router]);
+    track("dashboard_viewed", { clients: clients?.length ?? 0 });
+  }, [workspaces, router, clients]);
 
   if (workspaces === undefined) return <Skeleton />;
   if (workspaces.length === 0) return null;

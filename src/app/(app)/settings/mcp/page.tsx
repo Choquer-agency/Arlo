@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Copy, RotateCw, Check, AlertTriangle } from "lucide-react";
+import { track } from "@/lib/posthog";
 
 export default function ConnectToClaudePage() {
   const workspaces = useQuery(api.workspaces.listMine);
@@ -31,7 +32,7 @@ export default function ConnectToClaudePage() {
         setToken(data.token);
       } else if (!generatedRef.current) {
         generatedRef.current = true;
-        await rotate();
+        await rotate(false);
       } else {
         setToken(null);
       }
@@ -42,7 +43,7 @@ export default function ConnectToClaudePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ws?._id]);
 
-  async function rotate() {
+  async function rotate(manual = false) {
     if (!ws) return;
     setRotating(true);
     try {
@@ -52,7 +53,10 @@ export default function ConnectToClaudePage() {
         body: JSON.stringify({ workspaceId: ws._id }),
       });
       const data = await res.json();
-      if (data.token) setToken(data.token);
+      if (data.token) {
+        setToken(data.token);
+        if (manual) track("mcp_token_rotated");
+      }
     } finally {
       setRotating(false);
       setConfirmRotate(false);
@@ -62,6 +66,7 @@ export default function ConnectToClaudePage() {
   async function copyUrl() {
     if (!mcpUrl) return;
     await navigator.clipboard.writeText(mcpUrl);
+    track("mcp_url_copied");
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   }
@@ -161,7 +166,7 @@ export default function ConnectToClaudePage() {
         <RotateConfirm
           rotating={rotating}
           onCancel={() => setConfirmRotate(false)}
-          onConfirm={rotate}
+          onConfirm={() => rotate(true)}
         />
       )}
     </div>

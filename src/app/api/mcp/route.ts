@@ -2,13 +2,42 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { authenticateMcpRequest } from "@/lib/mcp-auth";
 import { registerTools } from "@/lib/mcp-tools";
+import { captureServer } from "@/lib/posthog-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+/** Best-effort usage analytics — never allowed to block or break the MCP call. */
+async function trackMcpUsage(req: Request, caller: { userId: string; workspaceId: string }) {
+  if (req.method !== "POST") return;
+  try {
+    const body = await req.clone().json();
+    const method: string | undefined = body?.method;
+    if (!method) return;
+    if (method === "tools/call") {
+      await captureServer({
+        distinctId: caller.userId,
+        workspaceId: caller.workspaceId,
+        event: "mcp_tool_called",
+        properties: { tool: body?.params?.name },
+      });
+    } else if (method === "initialize") {
+      await captureServer({
+        distinctId: caller.userId,
+        workspaceId: caller.workspaceId,
+        event: "mcp_session_started",
+      });
+    }
+  } catch {
+    // ignore — analytics must never affect the response
+  }
+}
+
 async function handle(req: Request): Promise<Response> {
   const auth = await authenticateMcpRequest(req);
   if ("response" in auth) return auth.response;
+
+  await trackMcpUsage(req, { userId: auth.caller.userId, workspaceId: auth.caller.workspaceId });
 
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
