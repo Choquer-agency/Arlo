@@ -14,24 +14,24 @@ export const metadata: Metadata = {
 
 const values = [
   {
-    title: "Own Your Code",
+    title: "Ask, don't export",
     description:
-      "Every project delivers full IP ownership. No licensing fees, no vendor lock-in, no strings attached.",
+      "Marketing data should answer questions, not live in spreadsheets. ARLO turns every connected account into something you just ask Claude about — in plain English.",
   },
   {
-    title: "AI-Native From Day One",
+    title: "One connector, every platform",
     description:
-      "Every system we build is designed with AI capabilities at the foundation — not as an afterthought.",
+      "Connect once with Google OAuth and every client's GA4, Search Console, Google Ads, YouTube, and Business Profile comes with it. Add Meta, Shopify, and more.",
   },
   {
-    title: "Outcomes Over Hours",
+    title: "Live, never warehoused",
     description:
-      "We sell financial outcomes: reduced SaaS spend, increased efficiency, and technology you control.",
+      "ARLO is pass-through. Every answer hits the source API in real time — no ETL, no dashboards, no stored client data, nothing to go stale.",
   },
   {
-    title: "Build What You Need",
+    title: "Your data stays yours",
     description:
-      "We build the features you actually use, plus custom capabilities your SaaS vendor can't offer.",
+      "Per-user MCP tokens you can rotate and revoke, plus a full audit log of every question asked — each scoped to exactly what that teammate should see.",
   },
 ];
 
@@ -47,7 +47,7 @@ export default function AboutPage() {
             <div>
               <p className="eyebrow text-brand mb-4">About {AGENCY_NAME}</p>
               <h1 className="font-sans font-medium text-fluid-h1 leading-[1.1] tracking-tight text-dark max-w-[16ch] mb-6">
-                We build software you own.
+                Marketing data should be a conversation.
               </h1>
               <p className="font-sans text-fluid-large text-dark opacity-60 max-w-[50ch] leading-relaxed">
                 {siteConfig.description}
@@ -76,25 +76,27 @@ export default function AboutPage() {
             <div className="md:col-span-3">
               <p className="eyebrow text-brand mb-4">The Mission</p>
               <h2 className="font-sans font-medium text-fluid-h3 text-dark mb-6">
-                Mid-market companies deserve better than renting their technology.
+                Agencies were never supposed to live in dashboards.
               </h2>
               <div className="space-y-4 font-sans text-fluid-main text-dark opacity-60 leading-relaxed">
                 <p>
-                  The average mid-market company spends $75K–$1.5M annually on SaaS
-                  subscriptions. Every year, those prices go up 10–15%. Over half the
-                  licenses purchased go unused. And at the end of every year, you own
-                  exactly none of it.
+                  A modern agency runs a dozen platforms per client — GA4, Search Console,
+                  Google Ads, Meta, YouTube, and more. Answering one simple question,
+                  &ldquo;how did last month go?&rdquo;, means tab-hopping across all of them,
+                  exporting CSVs, or paying for yet another dashboard nobody opens.
                 </p>
                 <p>
-                  We started {AGENCY_NAME} because we believe there&apos;s a better model.
-                  AI-accelerated development has fundamentally changed the economics — what
-                  took 6 months to build now ships in 6–12 weeks. Custom software is no
-                  longer a luxury reserved for enterprises.
+                  We built {AGENCY_NAME} because Claude changed what&apos;s possible. The
+                  Model Context Protocol lets an AI assistant read your live accounts
+                  directly — so instead of building reports, you just ask. One OAuth grant
+                  connects every platform; assign each client&apos;s properties once; and
+                  everyone on the team queries in plain English from Claude.
                 </p>
                 <p>
-                  We build AI-powered custom software that replaces your most expensive SaaS
-                  subscriptions. You own every line of code. Break even in 2–3 years. Save
-                  millions over 5.
+                  No exports. No dashboards. No data warehouse. {AGENCY_NAME} never stores
+                  your clients&apos; data — every answer is live, pulled on demand, and
+                  scoped to exactly who should see it. Priced per business you track, not
+                  per seat.
                 </p>
               </div>
             </div>
@@ -185,21 +187,23 @@ export default function AboutPage() {
               <h2 className="font-sans font-medium text-fluid-h3 text-dark mb-6">
                 {siteConfig.founder}
               </h2>
+              <p className="font-mono text-xs uppercase tracking-wider text-dark opacity-40 mb-6">
+                Founder &amp; CEO, {AGENCY_NAME}
+              </p>
               <div className="space-y-4 font-sans text-fluid-main text-dark opacity-60 leading-relaxed">
                 <p>
-                  Bryce has led 40+ custom software projects across healthcare,
-                  construction, e-commerce, and professional services, helping
-                  mid-market companies eliminate over $2M in combined annual SaaS
-                  spend. He founded {AGENCY_NAME} to solve a problem he saw
-                  repeatedly: companies paying $75K&ndash;$1.5M per year for SaaS
-                  tools that didn&apos;t fit their workflows.
+                  Bryce Choquer is the founder and CEO of {AGENCY_NAME}. He built it after
+                  watching marketing teams and agencies burn hours every week stitching the
+                  same numbers together from GA4, Search Console, Google Ads, and a
+                  half-dozen other platforms — just to answer a question a client asked in a
+                  single sentence.
                 </p>
                 <p>
-                  The thesis is simple: AI-accelerated development has made custom
-                  software economically viable for mid-market companies for the first
-                  time. What took 6 months to build now ships in 6&ndash;12 weeks.
-                  The companies that own their technology stack will outcompete those
-                  that rent it.
+                  {AGENCY_NAME} is his answer: connect once, then ask. The moment Anthropic
+                  shipped the Model Context Protocol, it became possible to hand Claude a
+                  live, secure line into every account an agency runs — no warehouse, no
+                  exports, no dashboard busywork. The teams that spend their time acting on
+                  data, instead of assembling it, win.
                 </p>
               </div>
             </div>
@@ -225,14 +229,15 @@ export default function AboutPage() {
       <section className="section-space-small" style={{ backgroundColor: "#EBFFF6" }}>
         <div className="u-container">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="eyebrow text-brand mb-4">Technology</p>
+            <p className="eyebrow text-brand mb-4">Under the hood</p>
             <h2 className="font-sans font-medium text-fluid-h3 text-dark mb-6">
-              Modern stack. Proven tools.
+              Built on the Model Context Protocol. Connects to everything.
             </h2>
             <div className="flex flex-wrap justify-center gap-3">
               {[
-                "Next.js", "React", "TypeScript", "Node.js", "Python",
-                "PostgreSQL", "AWS", "Vercel", "OpenAI", "Anthropic",
+                "Model Context Protocol", "Claude", "GA4", "Search Console",
+                "Google Ads", "YouTube", "Business Profile", "Meta Ads",
+                "Shopify", "Stripe", "HubSpot",
               ].map((tech) => (
                 <span
                   key={tech}

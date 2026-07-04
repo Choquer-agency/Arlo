@@ -38,8 +38,8 @@ export interface BlogPost {
 export const authors: Record<string, AuthorProfile> = {
   bryce: {
     name: "Bryce Choquer",
-    role: "Founder",
-    bio: "Bryce Choquer is the founder of ARLO, a Claude Desktop connector that lets agencies query every client's analytics, ads, and marketing platforms in plain English. Previously built Choquer Agency's internal MCP that now handles live queries across GA4, Search Console, Google Ads, YouTube, and Google Business Profile for dozens of SMB clients.",
+    role: "Founder & CEO",
+    bio: "Bryce Choquer is the founder and CEO of ARLO, the MCP connector that lets agencies query every client's analytics, ads, and marketing platforms — GA4, Search Console, Google Ads, YouTube, Business Profile, and more — from Claude in plain English. He built ARLO to end the weekly grind of exports, dashboards, and tab-hopping between platforms.",
     image: "/images/authors/bryce.jpg",
     socials: {
       linkedin: "https://linkedin.com/in/brycechoquer",
