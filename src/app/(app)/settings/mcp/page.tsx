@@ -123,7 +123,15 @@ export default function ConnectToClaudePage() {
           <ol className="space-y-5">
             <SubStep>
               Open <b>Claude Desktop</b>. In the <b>left menu</b>, click{" "}
-              <b>Customize → Connectors</b>.
+              <a
+                href="https://claude.ai/new#settings/customize-skills"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand underline font-semibold"
+              >
+                Customize → Connectors
+              </a>
+              .
             </SubStep>
             <SubStep>
               Click the <b>+</b>, then <b>Add custom connector</b>.
