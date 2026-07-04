@@ -1,0 +1,54 @@
+ARLO SEO WORKLOG — append-only, NEWEST ON TOP.
+Format per entry:  PAGE / CHANGE / TARGET / WHY / VERIFY.  End each session with NEXT:.
+Read 12-week-strategy.md + README.md + audits/* before picking up NEXT.
+Hard rules: build-gate every deploy; stage only files you changed; never 301 sister domains
+(choquer.agency/choquer.app/futurlabs.dev); keep ARLO a standalone entity (no FuturLabs/Choquer copy).
+
+=====================================================================================
+
+## 2026-07-04 (Sat) — Phase 1 audit + P0 + P1 foundation
+
+AUDIT
+- Ran full multi-specialist audit (technical, content, schema, geo, sxo, keyword, competitor,
+  backlinks) → docs/seo-strategy/audits/* + README.md (health ~47/100). Thesis: win the low-KD
+  MCP-integration cluster via a connector-page matrix + comparison hub; don't fight DA-88 incumbents.
+
+P0 — CRITICAL (all shipped, build-gated)
+- PAGE: root layout + homepage / CHANGE: removed hardcoded site-wide canonical (was inherited by ~17
+  pages as homepage duplicates), added metadataBase + per-page canonical / TARGET: indexation /
+  WHY: ~17 inner pages self-reported as homepage dupes / VERIFY: inner pages now emit own canonical.
+- PAGE: homepage / CHANGE: removed fabricated testimonials (fake names marked "placeholder"); section
+  auto-hides / WHY: trust/compliance / VERIFY: no testimonials render.
+- PAGE: public/llms.txt / CHANGE: corrected pricing tiers + removed dead /pricing,/docs links /
+  TARGET: AI citation / VERIFY: llms.txt accurate.
+- PAGE: /services/meta-ads-specialist / CHANGE: launched (tier-2 config was complete but slug route
+  404'd) / VERIFY: page 200 + in static build.
+- PAGE: homepage / CHANGE: replaced dead+wrong JSON-LD with correct ARLO Organization +
+  SoftwareApplication+Offers + Person + WebSite + BreadcrumbList; wired into homepage /
+  TARGET: entity clarity / VERIFY: view-source shows SoftwareApplication.
+- PAGE: /about, /services, /work, blog author / CHANGE: purged all FuturLabs/Choquer custom-software
+  copy; rewrote for standalone ARLO; founder = Bryce Choquer, Founder & CEO / TARGET: entity identity /
+  VERIFY: grep for futurlabs/custom-software/mid-market = clean.
+  (KEPT the homepage TrustBar — those 40+ logos are real ARLO beta users, confirmed by owner.)
+
+P1 — HIGH (shipped this session)
+- PAGE: /compare/supermetrics-vs-arlo / CHANGE: new comparison page (TCO + FAQPage) from windsor
+  template / TARGET: "supermetrics alternative" (KD 16, $33.76 CPC) / VERIFY: page builds + FAQ schema.
+- PAGE: FAQ component / CHANGE: emit FAQPage JSON-LD (propagates to homepage + all service pages);
+  removed duplicate FAQPage from homepage generateSchema / TARGET: AI Overviews / VERIFY: FAQ schema
+  on service pages.
+- PAGE: /contact / CHANGE: real metadata via contact/layout.tsx (was inheriting homepage) / VERIFY:
+  unique title/desc.
+- PAGE: app/auth/demo/token routes / CHANGE: noindex via robots.txt disallow + X-Robots-Tag header /
+  WHY: keep app routes out of the index / VERIFY: X-Robots-Tag: noindex on /sign-in etc.
+- SITE: added GA4 gtag (G-CP22NBPLFP) — analytics baseline now collecting.
+
+NEXT (Week 1 — finish foundation; see 12-week-strategy.md):
+1. Static-render marketing pages — move ConvexAuthNextjsServerProvider into an app-only route group so
+   /, /services/*, /compare/*, /work/*, /blog/*, /about, /contact stop returning Cache-Control:no-store.
+   TEST AUTH END-TO-END after (do not break the app login/MCP OAuth).
+2. Add a default 1200×630 OG image in public/ + reference in root metadata (0 pages have one today).
+3. Fix sitemap.ts lastModified (all URLs currently stamped "now"); submit sitemap in GSC + request
+   indexing for homepage + top 5 pages.
+4. Then Week 2: build the /connect/[slug] connector-page template + ship "Connect GA4 to Claude" and
+   "Google Ads MCP" (the wedge).
