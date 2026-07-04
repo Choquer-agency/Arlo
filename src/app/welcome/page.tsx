@@ -118,9 +118,9 @@ export default function WelcomePage() {
               What happens next
             </p>
             <ul className="space-y-2 text-sm text-dark/70">
-              <NextItem>Your Google Analytics &amp; Search Console are already being connected.</NextItem>
-              <NextItem>Open your dashboard to see your live numbers.</NextItem>
-              <NextItem>Connect Claude in two clicks and just ask questions.</NextItem>
+              <NextItem>Connect your Google Analytics &amp; Search Console in a couple of clicks.</NextItem>
+              <NextItem>See your real numbers on your dashboard.</NextItem>
+              <NextItem>Connect Claude and just ask questions in plain English.</NextItem>
             </ul>
           </div>
 
