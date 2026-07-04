@@ -86,6 +86,77 @@ export const comparisons: Record<string, ComparisonPage> = {
       ],
     },
   },
+
+  "supermetrics-vs-arlo": {
+    slug: "supermetrics-vs-arlo",
+    title: "Supermetrics vs. ARLO: Ask Claude instead of building another report",
+    metaTitle: "Supermetrics Alternative | ARLO — Live Claude Queries (2026)",
+    metaDescription:
+      "Supermetrics pipes marketing data into Sheets, Looker, and BigQuery you still have to build reports on. ARLO lets agencies ask Claude for live numbers — no exports, no dashboards, no warehouse.",
+    tldr:
+      "Supermetrics is a data pipeline: it moves GA4, Google Ads, Meta, and 100+ sources into Google Sheets, Looker Studio, Excel, or a warehouse — where you then build and maintain the actual reports. ARLO removes that whole layer. Claude queries each platform live through MCP and answers in plain English in seconds, with no destinations to configure, no scheduled refreshes, and no per-connector pricing that balloons as you add clients. If your team's real question is \"how did this client do last month?\", ARLO answers it directly instead of feeding another dashboard.",
+    saasName: "Supermetrics",
+    saasCategory: "Marketing data pipeline / ETL",
+    serviceSlug: "account-manager",
+    lastUpdated: "2026-07-04",
+    sections: {
+      problem: {
+        heading: "You don't need another dashboard — you need the answer",
+        body: "Supermetrics is the category leader for one job: getting marketing data out of dozens of platforms and into a destination — Google Sheets, Looker Studio, Excel, BigQuery. It does that well. But the destination is not the answer; it's a place where you still have to build the report, keep the template current, and wait for the next scheduled refresh before the numbers are trustworthy. Pricing also scales by connectors and data sources, so a growing agency's bill climbs fast. ARLO takes a different path: there's no destination and no report to build. Claude reads each connected account live through the Model Context Protocol, so anyone on the team just asks — \"compare this client's sessions and conversions to last month\" — and gets the number on the spot, scoped to exactly what they're allowed to see.",
+      },
+      table: {
+        headers: ["Feature", "Supermetrics", "ARLO"],
+        rows: [
+          { feature: "Entry price", values: ["~$29/mo (single destination)", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "Pricing model", values: ["Per connector + data source, scales up fast", "Per business tracked — unlimited sources"] },
+          { feature: "What you get", values: ["Data in Sheets / Looker / BigQuery", "Live answers in Claude"] },
+          { feature: "Reports / dashboards", values: ["You build & maintain them", "None — you ask questions"] },
+          { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
+          { feature: "Data freshness", values: ["Scheduled refresh", "Live on every query"] },
+          { feature: "Setup per client", values: ["Configure queries + destination", "Pick a property from a dropdown"] },
+          { feature: "Data warehouse", values: ["Common (BigQuery/Snowflake)", "None — pass-through, nothing stored"] },
+        ],
+      },
+      whenCustom: [
+        "Your team's real workflow is asking questions, not building reports",
+        "You want one price per client, not per-connector bills that climb",
+        "You already work inside Claude and want live data there",
+        "You want fast per-client setup, not a query + destination per client",
+      ],
+      whenSaas: [
+        "You specifically need data warehoused in Sheets/Looker/BigQuery for scheduled, shareable dashboards",
+        "You have templated client reports that must render the same way every week",
+        "You rely on Supermetrics' long tail of 100+ niche connectors ARLO doesn't cover yet",
+      ],
+      tco: {
+        heading: "What it actually costs at 10 clients",
+        rows: [
+          { label: "Software", saas: "Supermetrics team plan + per-source add-ons", custom: "ARLO Studio, $99/mo flat for 10 clients" },
+          { label: "Report building", saas: "Ongoing — someone maintains the templates", custom: "None — questions replace reports" },
+          { label: "Warehouse / storage", saas: "BigQuery or Sheets overhead", custom: "$0 — nothing stored" },
+        ],
+        savingsNote:
+          "The bigger saving usually isn't the subscription — it's the recurring hours nobody has to spend building and babysitting reports.",
+      },
+      faqs: [
+        {
+          question: "Is ARLO a full Supermetrics replacement?",
+          answer:
+            "For the common case — agencies answering questions about client performance across GA4, Search Console, Google Ads, Meta, YouTube and more — yes. Where Supermetrics still wins is when you specifically need data warehoused for scheduled BI dashboards or one of its long-tail niche connectors. Some teams keep both: Supermetrics for templated reporting, ARLO for day-to-day questions.",
+        },
+        {
+          question: "How is ARLO's pricing different?",
+          answer:
+            "Supermetrics prices by connectors and data sources, which grows with your stack. ARLO prices per business you track and includes unlimited sources per client, so the bill is predictable as you add platforms.",
+        },
+        {
+          question: "Does ARLO store my clients' data?",
+          answer:
+            "No. ARLO is pass-through — OAuth tokens are encrypted at rest, but raw analytics and ads data is fetched live on each query and discarded after it's returned to Claude. There's no warehouse and no persistent client data.",
+        },
+      ],
+    },
+  },
 };
 
 export function getComparisonBySlug(slug: string): ComparisonPage | null {

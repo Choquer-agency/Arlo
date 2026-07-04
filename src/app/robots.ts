@@ -2,9 +2,28 @@ import { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/siteConfig";
 
 export default function robots(): MetadataRoute.Robots {
+  // App / auth / demo / token routes carry no SEO value and shouldn't be
+  // indexed (also enforced with an X-Robots-Tag: noindex header in next.config).
+  const disallow = [
+    "/api/",
+    "/sign-in",
+    "/welcome",
+    "/onboarding",
+    "/oauth/",
+    "/dashboard",
+    "/solo-dashboard",
+    "/clients",
+    "/connections",
+    "/team",
+    "/settings/",
+    "/demo/",
+    "/preview/",
+    "/share/",
+  ];
+
   return {
     rules: [
-      { userAgent: "*", allow: "/" },
+      { userAgent: "*", allow: "/", disallow },
       // OpenAI crawlers
       { userAgent: "GPTBot", allow: "/" },
       { userAgent: "ChatGPT-User", allow: "/" },

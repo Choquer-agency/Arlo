@@ -1,5 +1,5 @@
 import { siteConfig, SITE_URL, AGENCY_NAME, CONTACT_EMAIL } from "@/lib/siteConfig";
-import { faqs, pricingTiers } from "@/content/shared";
+import { pricingTiers } from "@/content/shared";
 
 /**
  * Site-level JSON-LD for ARLO (a SaaS MCP connector — NOT an agency). Rendered
@@ -120,16 +120,6 @@ export function generateSchema() {
         description: siteConfig.description,
         isPartOf: { "@id": `${SITE_URL}/#website` },
         about: { "@id": `${SITE_URL}/#business` },
-      },
-
-      {
-        "@type": "FAQPage",
-        "@id": `${SITE_URL}/#faq`,
-        mainEntity: faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
       },
 
       {

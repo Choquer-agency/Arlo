@@ -44,6 +44,22 @@ export function FAQ({ items }: FAQProps) {
 
   return (
     <section ref={ref} id="faq" className="section-space-main">
+      {/* FAQPage structured data — eligible for Google/AI FAQ rich results.
+          Emitted wherever the FAQ component renders (homepage + service pages). */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: { "@type": "Answer", text: faq.answer },
+            })),
+          }),
+        }}
+      />
       <div className="u-container">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">

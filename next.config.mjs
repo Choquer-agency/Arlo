@@ -5,6 +5,29 @@ const nextConfig = {
       "/*": ["./src/content/blog/posts/**/*.md"],
     },
   },
+  async headers() {
+    // Reliably de-index app/auth/demo/token routes (robots.txt disallow only
+    // prevents crawl, not indexing of externally-linked URLs).
+    const noindex = [
+      "/sign-in",
+      "/welcome",
+      "/onboarding",
+      "/oauth/:path*",
+      "/dashboard/:path*",
+      "/solo-dashboard/:path*",
+      "/clients/:path*",
+      "/connections/:path*",
+      "/team/:path*",
+      "/settings/:path*",
+      "/demo/:path*",
+      "/preview/:path*",
+      "/share/:path*",
+    ];
+    return noindex.map((source) => ({
+      source,
+      headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+    }));
+  },
   async rewrites() {
     return [
       // MCP OAuth discovery (RFC 9728 / 8414). Served from normal route
