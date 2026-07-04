@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus, Check, X, Minus } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { AccountPicker } from "@/components/app/dashboard/AccountPicker";
@@ -73,8 +73,11 @@ export default function ConnectionsPage() {
         </div>
         {googleConnected ? (
           <div className="flex items-center gap-3 shrink-0">
-            <span className="font-mono text-xs uppercase tracking-wider text-brand bg-mint px-3 py-1.5 rounded">
-              ● Connected as {googleConn?.accountEmail}
+            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 pl-1.5 pr-3 py-1.5 rounded-full">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500">
+                <Check size={11} strokeWidth={3} className="text-white" />
+              </span>
+              Connected as {googleConn?.accountEmail}
             </span>
             <a
               href={googleStartHref(ws?._id)}
@@ -84,9 +87,17 @@ export default function ConnectionsPage() {
             </a>
           </div>
         ) : (
-          <a href={googleStartHref(ws?._id)} className="btn-secondary px-6 py-3 shrink-0">
-            Connect Google
-          </a>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-red-600 bg-red-50 pl-1.5 pr-3 py-1.5 rounded-full">
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500">
+                <X size={11} strokeWidth={3} className="text-white" />
+              </span>
+              Not connected
+            </span>
+            <a href={googleStartHref(ws?._id)} className="btn-secondary px-6 py-3">
+              Connect Google
+            </a>
+          </div>
         )}
       </div>
 
@@ -139,6 +150,47 @@ export default function ConnectionsPage() {
   );
 }
 
+type BadgeState = "live" | "partial" | "off" | "neutral";
+
+/** Small green-check / amber / red status pill used across the connections UI. */
+function StatusBadge({ state, label }: { state: BadgeState; label: string }) {
+  const styles: Record<BadgeState, { wrap: string; dot: string; text: string; icon: React.ReactNode }> = {
+    live: {
+      wrap: "bg-emerald-50",
+      dot: "bg-emerald-500",
+      text: "text-emerald-700",
+      icon: <Check size={11} strokeWidth={3} className="text-white" />,
+    },
+    partial: {
+      wrap: "bg-amber-50",
+      dot: "bg-amber-500",
+      text: "text-amber-700",
+      icon: <Minus size={11} strokeWidth={3} className="text-white" />,
+    },
+    off: {
+      wrap: "bg-red-50",
+      dot: "bg-red-500",
+      text: "text-red-600",
+      icon: <X size={11} strokeWidth={3} className="text-white" />,
+    },
+    neutral: {
+      wrap: "bg-grey",
+      dot: "bg-dark/25",
+      text: "text-dark/50",
+      icon: null,
+    },
+  };
+  const s = styles[state];
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full pl-1 pr-2.5 py-1 ${s.wrap}`}>
+      <span className={`inline-flex h-4 w-4 items-center justify-center rounded-full ${s.dot}`}>
+        {s.icon}
+      </span>
+      <span className={`font-mono text-[11px] uppercase tracking-wider ${s.text}`}>{label}</span>
+    </span>
+  );
+}
+
 function SourceGroup({
   source,
   clients,
@@ -157,9 +209,20 @@ function SourceGroup({
   onToggle: () => void;
 }) {
   const list = clients ?? [];
+  const total = list.length;
   const liveN = list.filter(
     (c) => sourceState(c, source, availableAccounts).state === "live"
   ).length;
+
+  const badge: { state: BadgeState; label: string } = !googleConnected
+    ? { state: "off", label: "Not connected" }
+    : total === 0
+      ? { state: "neutral", label: "No businesses yet" }
+      : liveN === total
+        ? { state: "live", label: `${liveN} of ${total} live` }
+        : liveN === 0
+          ? { state: "off", label: `0 of ${total} live` }
+          : { state: "partial", label: `${liveN} of ${total} live` };
 
   return (
     <div className="bg-white border border-dark-faded rounded-lg overflow-hidden">
@@ -173,9 +236,7 @@ function SourceGroup({
           <span className="font-sans text-dark">{source.label}</span>
         </span>
         <span className="flex items-center gap-3 shrink-0">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-dark/50">
-            {googleConnected ? `${liveN} of ${list.length} live` : "Not connected"}
-          </span>
+          <StatusBadge state={badge.state} label={badge.label} />
           <ChevronDown
             size={16}
             className={`text-dark/50 transition-transform ${open ? "rotate-180" : ""}`}
@@ -243,7 +304,9 @@ function BusinessRow({
         <div className="flex items-center gap-3 shrink-0">
           {state === "live" ? (
             <>
-              <span className="font-mono text-[9px] uppercase tracking-wider text-brand">✓ Live</span>
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 shrink-0">
+                <Check size={12} strokeWidth={3} className="text-white" />
+              </span>
               <span className="font-mono text-[11px] text-dark/70 truncate max-w-[18rem]" title={value}>
                 {value}
               </span>
@@ -257,14 +320,25 @@ function BusinessRow({
               )}
             </>
           ) : state === "available" ? (
-            <button
-              onClick={() => setEditing((v) => !v)}
-              className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5"
-            >
-              <Plus size={13} /> {editing ? "Cancel" : "Choose"}
-            </button>
+            <>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                <span className="font-mono text-[10px] uppercase tracking-wider text-amber-600">
+                  Not mapped
+                </span>
+              </span>
+              <button
+                onClick={() => setEditing((v) => !v)}
+                className="btn-secondary px-3 py-1.5 text-xs inline-flex items-center gap-1.5"
+              >
+                <Plus size={13} /> {editing ? "Cancel" : "Choose"}
+              </button>
+            </>
           ) : (
-            <span className="font-mono text-[11px] text-dark/35">— none on account</span>
+            <span className="inline-flex items-center gap-1.5 text-dark/40">
+              <span className="h-2 w-2 rounded-full bg-dark/20" />
+              <span className="font-mono text-[11px] uppercase tracking-wider">None on account</span>
+            </span>
           )}
         </div>
       </div>
