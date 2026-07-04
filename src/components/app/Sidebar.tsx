@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
+import { ArloMark } from "@/components/ArloMark";
 import {
   LayoutDashboard,
   Users,
@@ -43,8 +44,9 @@ export function Sidebar() {
   return (
     <aside className="w-64 shrink-0 flex flex-col">
       <div className="px-6 py-6 border-b border-dark/5">
-        <Link href="/dashboard" className="font-display text-fluid-h5 text-dark block">
-          ARLO
+        <Link href="/dashboard" className="flex items-center gap-2 text-dark">
+          <ArloMark className="h-7 w-auto" />
+          <span className="font-display text-fluid-h5">ARLO</span>
         </Link>
         {isSolo && (
           <p className="font-mono text-[10px] uppercase tracking-wider text-dark/50 mt-1">

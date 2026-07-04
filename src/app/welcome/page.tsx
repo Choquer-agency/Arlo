@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Sparkles, Check, ArrowRight } from "lucide-react";
+import { ArloMark } from "@/components/ArloMark";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -64,7 +65,7 @@ export default function WelcomePage() {
     <main className="min-h-screen bg-mint px-6 py-12 flex items-center justify-center">
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-2 mb-6">
-          <span className="font-display text-fluid-h4 text-dark">ARLO</span>
+          <ArloMark className="h-8 w-auto text-dark" /><span className="font-display text-fluid-h4 text-dark">ARLO</span>
         </div>
 
         <div className="bg-dark text-white rounded-lg p-6 mb-6">

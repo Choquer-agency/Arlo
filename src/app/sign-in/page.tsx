@@ -4,6 +4,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import { ArloMark } from "@/components/ArloMark";
 
 /** Only allow same-origin relative paths as a post-login redirect target. */
 function safeRedirectTo(raw: string | null): string {
@@ -30,12 +31,7 @@ function ConvexNotConfigured() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-mint px-6">
       <div className="w-full max-w-md bg-white border border-dark-faded rounded-lg p-10 shadow-sm">
-        <Link
-          href="/"
-          className="font-display text-fluid-h4 text-dark block mb-8"
-        >
-          ARLO
-        </Link>
+        <Link href="/" className="flex items-center gap-2 text-dark mb-8"><ArloMark className="h-8 w-auto" /><span className="font-display text-fluid-h4">ARLO</span></Link>
         <p className="font-mono text-xs uppercase tracking-wider text-brand mb-3">
           Setup required
         </p>
@@ -126,9 +122,7 @@ function SignInForm() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-mint px-6 py-12">
       <div className="w-full max-w-md bg-white border border-dark-faded rounded-lg p-10 shadow-sm">
-        <Link href="/" className="font-display text-fluid-h4 text-dark block mb-8">
-          ARLO
-        </Link>
+        <Link href="/" className="flex items-center gap-2 text-dark mb-8"><ArloMark className="h-8 w-auto" /><span className="font-display text-fluid-h4">ARLO</span></Link>
         <h1 className="font-sans text-fluid-h3 text-dark mb-3">
           {mode === "signIn" ? "Sign in" : "Create your account"}
         </h1>
