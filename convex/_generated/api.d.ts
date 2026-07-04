@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as clients from "../clients.js";
 import type * as customConnectors from "../customConnectors.js";
@@ -15,6 +16,7 @@ import type * as destinationRuns from "../destinationRuns.js";
 import type * as destinationSyncs from "../destinationSyncs.js";
 import type * as destinations from "../destinations.js";
 import type * as http from "../http.js";
+import type * as lib_admin from "../lib/admin.js";
 import type * as lib_currentUser from "../lib/currentUser.js";
 import type * as lib_planLimits from "../lib/planLimits.js";
 import type * as lib_serviceAuth from "../lib/serviceAuth.js";
@@ -35,6 +37,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  admin: typeof admin;
   auth: typeof auth;
   clients: typeof clients;
   customConnectors: typeof customConnectors;
@@ -42,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   destinationSyncs: typeof destinationSyncs;
   destinations: typeof destinations;
   http: typeof http;
+  "lib/admin": typeof lib_admin;
   "lib/currentUser": typeof lib_currentUser;
   "lib/planLimits": typeof lib_planLimits;
   "lib/serviceAuth": typeof lib_serviceAuth;

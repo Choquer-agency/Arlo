@@ -16,6 +16,10 @@ export default defineSchema({
     stripeSubscriptionId: v.optional(v.string()),
     trialEndsAt: v.optional(v.string()),
     createdAt: v.string(),
+    // Set when an agency (e.g. Choquer) provisioned this workspace on a client's
+    // behalf. Points at the agency owner's user id. Used by the admin console and
+    // analytics to distinguish managed clients from self-serve signups.
+    managedByAgencyUserId: v.optional(v.id("users")),
   })
     .index("by_slug", ["slug"])
     .index("by_stripeCustomer", ["stripeCustomerId"]),

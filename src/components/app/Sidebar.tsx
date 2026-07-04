@@ -12,11 +12,13 @@ import {
   Settings,
   Sparkles,
   Building2,
+  ShieldCheck,
 } from "lucide-react";
 
 export function Sidebar() {
   const pathname = usePathname();
   const workspaces = useQuery(api.workspaces.listMine);
+  const isAdmin = useQuery(api.admin.amISuperAdmin);
   const ws = workspaces?.[0];
   const isSolo = ws?.workspaceType === "solo";
 
@@ -67,6 +69,19 @@ export function Sidebar() {
             </Link>
           );
         })}
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className={`flex items-center gap-3 px-3 py-2.5 mb-1 mt-2 rounded-lg font-mono text-sm uppercase tracking-wider transition-colors border-t border-dark/5 pt-4 ${
+              pathname.startsWith("/admin")
+                ? "bg-dark text-brand-lime"
+                : "text-dark hover:bg-white/60"
+            }`}
+          >
+            <ShieldCheck size={16} />
+            Admin
+          </Link>
+        )}
       </nav>
       <div className="p-6 border-t border-dark/5 text-xs font-mono text-dark/40">
         v0.1 · askarlo.app
