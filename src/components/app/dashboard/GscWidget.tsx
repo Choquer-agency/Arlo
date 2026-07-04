@@ -14,8 +14,10 @@ import {
 } from "./PlatformWidget";
 import { AccountPicker } from "./AccountPicker";
 import { useWidgetData } from "./useWidgetData";
+import { dailySeries } from "@/lib/trend";
 
 const RANGE = { preset: "last_28_days" as const };
+const GSC_COLOR = "#4285F4";
 
 export function GscWidget({
   workspaceId,
@@ -40,6 +42,13 @@ export function GscWidget({
     workspaceId,
     clientId: client._id,
     kind: "gsc_top_queries",
+    dateRange: RANGE,
+    enabled: isConnected && isAssigned,
+  });
+  const trend = useWidgetData({
+    workspaceId,
+    clientId: client._id,
+    kind: "gsc_trend",
     dateRange: RANGE,
     enabled: isConnected && isAssigned,
   });
@@ -75,9 +84,11 @@ export function GscWidget({
       <>
         <MetricGrid
           loading={overview.loading || !overview.data}
+          seriesColor={GSC_COLOR}
+          seriesLoading={trend.loading || !trend.data}
           metrics={[
-            { label: "Clicks", value: fmt(totals.clicks) },
-            { label: "Impressions", value: fmt(totals.impressions) },
+            { label: "Clicks · 28d", value: fmt(totals.clicks), series: dailySeries(trend.data, "clicks") },
+            { label: "Impressions", value: fmt(totals.impressions), series: dailySeries(trend.data, "impressions") },
             { label: "Avg CTR", value: pct(totals.ctr) },
             { label: "Avg position", value: totals.position ? totals.position.toFixed(1) : "—" },
           ]}

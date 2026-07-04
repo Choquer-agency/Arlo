@@ -3,6 +3,7 @@
 import { ReactNode, useState } from "react";
 import { Check, Copy, Plus, RefreshCw, AlertTriangle } from "lucide-react";
 import { googleStartHref } from "@/lib/oauth";
+import { Sparkline } from "./Sparkline";
 
 interface Props {
   icon: ReactNode;
@@ -159,14 +160,20 @@ export function WidgetError({
 export function MetricGrid({
   loading,
   metrics,
+  seriesColor,
+  seriesLoading,
 }: {
   loading: boolean;
-  metrics: { label: string; value: string; sub?: string }[];
+  metrics: { label: string; value: string; sub?: string; series?: number[] }[];
+  /** Accent color for the sparklines (defaults to ink). */
+  seriesColor?: string;
+  /** Trend is fetched separately from headline totals, so it loads on its own. */
+  seriesLoading?: boolean;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3 mb-6">
       {metrics.map((m) => (
-        <div key={m.label} className="bg-grey rounded-lg p-4">
+        <div key={m.label} className="bg-grey rounded-lg p-4 flex flex-col">
           <p className="font-mono text-[11px] uppercase tracking-wider text-dark opacity-60 mb-1">
             {m.label}
           </p>
@@ -177,6 +184,15 @@ export function MetricGrid({
           )}
           {m.sub && !loading && (
             <p className="font-mono text-xs text-dark/50 mt-1">{m.sub}</p>
+          )}
+          {m.series && (
+            <div className="mt-3 -mb-1">
+              {seriesLoading && m.series.length < 2 ? (
+                <div className="h-[30px] w-full bg-dark/5 rounded animate-pulse" />
+              ) : (
+                <Sparkline values={m.series} color={seriesColor} />
+              )}
+            </div>
           )}
         </div>
       ))}

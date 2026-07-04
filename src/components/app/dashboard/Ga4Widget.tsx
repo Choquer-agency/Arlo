@@ -14,8 +14,10 @@ import {
 } from "./PlatformWidget";
 import { AccountPicker } from "./AccountPicker";
 import { useWidgetData } from "./useWidgetData";
+import { dailySeries } from "@/lib/trend";
 
 const RANGE = { preset: "last_28_days" as const };
+const GA4_COLOR = "#E37400";
 
 export function Ga4Widget({
   workspaceId,
@@ -40,6 +42,13 @@ export function Ga4Widget({
     workspaceId,
     clientId: client._id,
     kind: "ga4_top_pages",
+    dateRange: RANGE,
+    enabled: isConnected && isAssigned,
+  });
+  const trend = useWidgetData({
+    workspaceId,
+    clientId: client._id,
+    kind: "ga4_trend",
     dateRange: RANGE,
     enabled: isConnected && isAssigned,
   });
@@ -78,10 +87,12 @@ export function Ga4Widget({
       <>
         <MetricGrid
           loading={headline.loading || !headline.data}
+          seriesColor={GA4_COLOR}
+          seriesLoading={trend.loading || !trend.data}
           metrics={[
-            { label: "Sessions", value: fmt(totals.sessions) },
-            { label: "New users", value: fmt(totals.newUsers) },
-            { label: "Conversions", value: fmt(totals.conversions) },
+            { label: "Sessions · 28d", value: fmt(totals.sessions), series: dailySeries(trend.data, "sessions") },
+            { label: "New users", value: fmt(totals.newUsers), series: dailySeries(trend.data, "newUsers") },
+            { label: "Conversions", value: fmt(totals.conversions), series: dailySeries(trend.data, "conversions") },
             {
               label: "Avg session",
               value: dur ? `${minutes}m ${seconds}s` : "—",

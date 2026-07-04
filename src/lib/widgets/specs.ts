@@ -11,8 +11,10 @@ import type { MarketingPlatform } from "@/lib/connectors/types";
 export type WidgetKind =
   | "ga4_headline"
   | "ga4_top_pages"
+  | "ga4_trend"
   | "gsc_overview"
   | "gsc_top_queries"
+  | "gsc_trend"
   | "google_ads_overview"
   | "google_ads_top_campaigns"
   | "youtube_overview"
@@ -39,6 +41,12 @@ export const WIDGET_SPECS: Record<WidgetKind, WidgetSpec> = {
     dimensions: ["landingPage"],
     limit: 5,
   },
+  ga4_trend: {
+    platform: "ga4",
+    metrics: ["sessions", "newUsers", "conversions"],
+    dimensions: ["date"],
+    limit: 400,
+  },
 
   // ─── Search Console ───────────────────────────────
   gsc_overview: {
@@ -50,6 +58,12 @@ export const WIDGET_SPECS: Record<WidgetKind, WidgetSpec> = {
     metrics: ["clicks", "impressions", "position"],
     dimensions: ["query"],
     limit: 5,
+  },
+  gsc_trend: {
+    platform: "gsc",
+    metrics: ["clicks", "impressions"],
+    dimensions: ["date"],
+    limit: 400,
   },
 
   // ─── Google Ads ───────────────────────────────────
