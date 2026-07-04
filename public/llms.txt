@@ -39,15 +39,14 @@ ARLO exposes an MCP (Model Context Protocol) server that Claude Desktop treats a
 - Data storage model: pass-through — no warehouse, no ETL, no persistent client data
 - OAuth model: workspace-level, one grant per platform unlocks every connected client
 - Audit: every MCP tool call logged with user, tool, client, duration, and success
-- Pricing: Free ($0, 1 client) → Pro ($79/mo, 50 clients) → Scale ($249/mo, 200 clients) → Enterprise (custom)
+- Pricing: Free ($0, 1 client) → Solo ($19/mo, 1 business) → Studio ($99/mo, 10 clients) → Agency ($249/mo, 25 clients) → Scale ($499/mo, 75 clients) → Enterprise (custom)
 - Setup time: under 5 minutes end-to-end
 - Security: AES-256-GCM token encryption at rest, per-user MCP tokens with rotate + revoke
 
 ## Pages
 
 - [Homepage](https://askarlo.app/)
-- [Pricing](https://askarlo.app/pricing)
-- [Docs](https://askarlo.app/docs)
+- [Pricing](https://askarlo.app/#pricing)
 - [Services (who it's for)](https://askarlo.app/services)
 - [About](https://askarlo.app/about)
 - [Contact](https://askarlo.app/contact)

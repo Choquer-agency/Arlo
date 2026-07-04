@@ -35,35 +35,13 @@ export const processSteps: ProcessStep[] = [
   },
 ];
 
-/* ─── Testimonials (placeholder — swap with real ones post-beta) ─── */
-
-export const testimonials: Testimonial[] = [
-  {
-    quote:
-      "We run 47 clients. Before ARLO, answering \"how was last month?\" meant 20 minutes in five dashboards. Now I ask Claude and have the answer before my coffee's done.",
-    name: "Marcus Hale",
-    title: "Founder",
-    company: "Northpoint Digital",
-    color: "#EBFFF6",
-    featured: true,
-  },
-  {
-    quote:
-      "The audit log is the reason I bought it. Every team member gets their own token, I can see exactly what they're querying, and our clients' data never touches a warehouse.",
-    name: "Priya Sundaram",
-    title: "Head of Analytics",
-    company: "Relay Performance",
-    color: "#D0FF71",
-  },
-  {
-    quote:
-      "Windsor was costing us more per month than our office rent and nobody on the team was using it. ARLO replaced it for a tenth of the price and we actually look at our data now.",
-    name: "Jordan Flores",
-    title: "Managing Director",
-    company: "Staircase Studio",
-    color: "#27EAA6",
-  },
-];
+/* ─── Testimonials ───
+ * Real, attributed testimonials only. The previous entries were fabricated
+ * placeholders (fake names/companies) shown as real customer quotes — removed
+ * for trust/compliance. The Testimonials section hides itself while this is
+ * empty. Add genuine quotes post-beta (the /work/choquer-agency case study is
+ * the one real, attributed reference today). */
+export const testimonials: Testimonial[] = [];
 
 /* ─── Stats ─── */
 

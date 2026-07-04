@@ -35,6 +35,9 @@ export function Testimonials() {
     });
   }
 
+  // Hide the whole section until there are real testimonials to show.
+  if (testimonials.length === 0) return null;
+
   return (
     <section ref={ref} className="py-16 md:py-20" style={{ backgroundColor: "#ffffff" }}>
       <div className="u-container">

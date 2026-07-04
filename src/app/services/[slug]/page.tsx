@@ -4,7 +4,7 @@ import { ClientLayout } from "@/components/ClientLayout";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
-import { getServiceConfig, getTier1Services } from "@/content/services";
+import { getServiceConfig, services } from "@/content/services";
 import HeroGridAnimation from "@/components/HeroGridAnimation";
 
 const iconMap: Record<string, string> = {
@@ -30,7 +30,7 @@ interface ServicePageProps {
 }
 
 export function generateStaticParams() {
-  return getTier1Services().map((s) => ({ slug: s.slug }));
+  return services.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
@@ -49,7 +49,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   const { slug } = await params;
   const service = getServiceConfig(slug);
 
-  if (!service || service.tier !== 1) {
+  if (!service) {
     notFound();
   }
 

@@ -15,6 +15,11 @@ import { PixelReveal } from "@/components/PixelReveal";
 import HeroGridAnimation from "@/components/HeroGridAnimation";
 import { ConnectSection } from "@/components/ConnectSection";
 import { DestinationsTeaser } from "@/components/DestinationsTeaser";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

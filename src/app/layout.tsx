@@ -9,6 +9,8 @@ import { ConvexClientProvider } from "@/components/providers/ConvexClientProvide
 import "./globals.css";
 
 export const metadata: Metadata = {
+  // metadataBase lets per-page relative canonicals/OG resolve to absolute URLs.
+  metadataBase: new URL(siteConfig.url),
   title: `${siteConfig.name} | Ask Claude about any client, any platform`,
   description:
     "ARLO plugs Claude into every account your agency runs. Connect GA4, Search Console, Google Ads, Meta, YouTube, Shopify and more in one URL. Live data, every client, every platform — no exports, no dashboards, no warehouse.",
@@ -27,9 +29,10 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} | Ask Claude about any client, any platform`,
     description: siteConfig.description,
   },
-  alternates: {
-    canonical: siteConfig.url,
-  },
+  // NOTE: no site-wide canonical here. A hardcoded homepage canonical in the
+  // root layout was being inherited by every page (Next.js shallow-merges
+  // metadata), telling Google ~17 inner pages were duplicates of the homepage.
+  // Each page now self-canonicalizes (or sets its own alternates.canonical).
 };
 
 export default function RootLayout({
