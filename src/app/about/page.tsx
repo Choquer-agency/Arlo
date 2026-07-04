@@ -6,9 +6,10 @@ import { Footer } from "@/components/Footer";
 import { AGENCY_NAME, siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: `About ${AGENCY_NAME} | AI Software Development Agency`,
+  title: `About ${AGENCY_NAME} | The MCP connector for agency marketing data`,
   description:
-    "FuturLabs is a custom AI software development agency founded by Bryce Choquer. Based in Canada, serving mid-market companies ($10M–$250M revenue) across North America. 40+ projects delivered, 25+ SaaS tools replaced, $180K average annual client savings. Full code ownership.",
+    "ARLO plugs Claude into every marketing account an agency runs — GA4, Search Console, Google Ads, Meta, YouTube, Shopify — for live conversational reporting with no exports, dashboards, or warehouse. Founded by Bryce Choquer. Priced per business tracked.",
+  alternates: { canonical: "/about" },
 };
 
 const values = [
