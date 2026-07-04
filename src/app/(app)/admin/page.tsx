@@ -7,7 +7,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { getPlan } from "@/lib/billing";
 import { useActing } from "@/components/providers/ActingWorkspaceProvider";
-import { ShieldAlert, Search, UserPlus, Copy, Check, LogIn } from "lucide-react";
+import { ShieldAlert, Search, UserPlus, Copy, Check, LogIn, RefreshCw } from "lucide-react";
 
 type Row = {
   _id: Id<"workspaces">;
@@ -236,7 +236,7 @@ function ProvisionModal({ onClose }: { onClose: () => void }) {
   const [website, setWebsite] = useState("");
   const [plan, setPlan] = useState("studio");
   const [trialDays, setTrialDays] = useState(30);
-  const [tempPassword] = useState(genPassword());
+  const [tempPassword, setTempPassword] = useState(genPassword());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -333,8 +333,16 @@ function ProvisionModal({ onClose }: { onClose: () => void }) {
               </div>
               <div>
                 <Label>Temporary password (auto-generated)</Label>
-                <div className="font-mono text-sm bg-grey border border-dark-faded rounded px-3 py-2.5 text-dark">
-                  {tempPassword}
+                <div className="flex items-center gap-2 bg-grey border border-dark-faded rounded pl-3 pr-2 py-1.5">
+                  <span className="flex-1 font-mono text-sm text-dark">{tempPassword}</span>
+                  <button
+                    type="button"
+                    onClick={() => setTempPassword(genPassword())}
+                    title="Generate a new password"
+                    className="p-1.5 rounded text-dark/50 hover:text-dark hover:bg-white transition-colors"
+                  >
+                    <RefreshCw size={14} />
+                  </button>
                 </div>
               </div>
               {error && <p className="text-bg-red text-sm">{error}</p>}

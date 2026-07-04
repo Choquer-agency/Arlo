@@ -124,7 +124,7 @@ export default function ConnectToClaudePage() {
             <SubStep>
               Open <b>Claude Desktop</b>. In the <b>left menu</b>, click{" "}
               <a
-                href="https://claude.ai/new#settings/customize-skills"
+                href="https://claude.ai/new?modal=add-custom-connector#settings/customize-connectors"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-brand underline font-semibold"
