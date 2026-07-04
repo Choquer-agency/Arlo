@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { getPlan } from "@/lib/billing";
-import { ShieldAlert, Search } from "lucide-react";
+import { ShieldAlert, Search, UserPlus, Copy, Check } from "lucide-react";
 
 type Row = {
   _id: Id<"workspaces">;
@@ -49,6 +49,7 @@ export default function AdminPage() {
   const rows = useQuery(api.admin.listWorkspaces, isAdmin ? {} : "skip") as Row[] | undefined;
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<Id<"workspaces"> | null>(null);
+  const [provisioning, setProvisioning] = useState(false);
 
   const filtered = useMemo(() => {
     if (!rows) return [];
@@ -86,10 +87,20 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-container mx-auto">
-      <p className="font-mono text-xs uppercase tracking-wider text-dark opacity-60 mb-2">
-        Admin · Arlo + Choquer
-      </p>
-      <h1 className="font-sans text-fluid-h2 text-dark mb-8">Command center</h1>
+      <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-wider text-dark opacity-60 mb-2">
+            Admin · Arlo + Choquer
+          </p>
+          <h1 className="font-sans text-fluid-h2 text-dark">Command center</h1>
+        </div>
+        <button
+          onClick={() => setProvisioning(true)}
+          className="btn-secondary px-5 py-2.5 inline-flex items-center gap-2"
+        >
+          <UserPlus size={16} /> Provision client
+        </button>
+      </div>
 
       {totals && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
@@ -188,6 +199,173 @@ export default function AdminPage() {
       </div>
 
       {selected && <WorkspaceDrawer workspaceId={selected} onClose={() => setSelected(null)} />}
+      {provisioning && <ProvisionModal onClose={() => setProvisioning(false)} />}
+    </div>
+  );
+}
+
+function genPassword(): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  const bytes = new Uint8Array(10);
+  crypto.getRandomValues(bytes);
+  const body = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+  return `arlo-${body.slice(0, 5)}-${body.slice(5)}`;
+}
+
+function ProvisionModal({ onClose }: { onClose: () => void }) {
+  const provision = useAction(api.provisioning.provisionClient);
+  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [website, setWebsite] = useState("");
+  const [plan, setPlan] = useState("studio");
+  const [trialDays, setTrialDays] = useState(30);
+  const [tempPassword] = useState(genPassword());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await provision({
+        email: email.trim().toLowerCase(),
+        tempPassword,
+        businessName: businessName.trim(),
+        websiteUrl: website.trim() || undefined,
+        contactName: contactName.trim() || undefined,
+        plan,
+        trialDays,
+      });
+      if (res.ok) setDone(true);
+      else setError(res.error ?? "Failed to provision.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to provision.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const loginBlurb = `You're set up on Arlo. Sign in at https://askarlo.app/sign-in\nEmail: ${email.trim().toLowerCase()}\nTemporary password: ${tempPassword}\nYou'll pick your own password on first login.`;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-dark/50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-lg max-w-lg w-full p-7 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        {done ? (
+          <>
+            <div className="flex items-center gap-2 mb-3">
+              <Check size={20} className="text-brand" />
+              <h2 className="font-sans text-fluid-h4 text-dark">Client provisioned</h2>
+            </div>
+            <p className="text-dark/70 text-sm mb-5">
+              Send these credentials to your client. They&apos;ll set their own password on first
+              login and see a {trialDays}-day complimentary trial.
+            </p>
+            <pre className="bg-grey border border-dark-faded rounded-lg p-4 text-xs font-mono text-dark whitespace-pre-wrap mb-3">
+              {loginBlurb}
+            </pre>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(loginBlurb);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                className="btn-secondary px-5 py-2.5 inline-flex items-center gap-2"
+              >
+                {copied ? <Check size={15} /> : <Copy size={15} />} {copied ? "Copied" : "Copy for client"}
+              </button>
+              <button onClick={onClose} className="px-5 py-2.5 font-mono text-xs uppercase tracking-wider text-dark/60 hover:text-dark">
+                Done
+              </button>
+            </div>
+          </>
+        ) : (
+          <form onSubmit={submit}>
+            <h2 className="font-sans text-fluid-h4 text-dark mb-1">Provision a client</h2>
+            <p className="text-dark/60 text-sm mb-5">
+              Creates their Arlo account, a single-business workspace, and a complimentary trial.
+            </p>
+            <div className="space-y-3">
+              <Field label="Business name" value={businessName} onChange={setBusinessName} placeholder="Penni Cart" required />
+              <Field label="Client email" value={email} onChange={setEmail} placeholder="owner@business.com" type="email" required />
+              <Field label="Contact name (optional)" value={contactName} onChange={setContactName} placeholder="Jane Doe" />
+              <Field label="Website (optional)" value={website} onChange={setWebsite} placeholder="business.com" />
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <Label>Comp plan</Label>
+                  <select value={plan} onChange={(e) => setPlan(e.target.value)} className="w-full border border-dark-faded rounded px-3 py-2.5 text-sm bg-white">
+                    {["solo", "studio", "agency", "scale"].map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="w-32">
+                  <Label>Trial days</Label>
+                  <input
+                    type="number"
+                    value={trialDays}
+                    onChange={(e) => setTrialDays(Number(e.target.value))}
+                    className="w-full border border-dark-faded rounded px-3 py-2.5 text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label>Temporary password (auto-generated)</Label>
+                <div className="font-mono text-sm bg-grey border border-dark-faded rounded px-3 py-2.5 text-dark">
+                  {tempPassword}
+                </div>
+              </div>
+              {error && <p className="text-bg-red text-sm">{error}</p>}
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button type="button" onClick={onClose} className="px-5 py-2.5 font-mono text-xs uppercase tracking-wider text-dark/60 hover:text-dark">
+                Cancel
+              </button>
+              <button type="submit" disabled={busy} className="btn-secondary px-6 py-2.5 disabled:opacity-50">
+                {busy ? "Provisioning…" : "Provision"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return <p className="font-mono text-[11px] uppercase tracking-wider text-dark/60 mb-1">{children}</p>;
+}
+
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  required,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <Label>{label}</Label>
+      <input
+        type={type}
+        required={required}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full border border-dark-faded rounded px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+      />
     </div>
   );
 }

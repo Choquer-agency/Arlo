@@ -25,6 +25,7 @@ import type * as mcpTokens from "../mcpTokens.js";
 import type * as members from "../members.js";
 import type * as oauth from "../oauth.js";
 import type * as platformConnections from "../platformConnections.js";
+import type * as provisioning from "../provisioning.js";
 import type * as shareableDashboards from "../shareableDashboards.js";
 import type * as usageCounters from "../usageCounters.js";
 import type * as users from "../users.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   members: typeof members;
   oauth: typeof oauth;
   platformConnections: typeof platformConnections;
+  provisioning: typeof provisioning;
   shareableDashboards: typeof shareableDashboards;
   usageCounters: typeof usageCounters;
   users: typeof users;

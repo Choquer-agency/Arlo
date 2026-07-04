@@ -20,6 +20,9 @@ export default defineSchema({
     // behalf. Points at the agency owner's user id. Used by the admin console and
     // analytics to distinguish managed clients from self-serve signups.
     managedByAgencyUserId: v.optional(v.id("users")),
+    // True from provisioning until the client completes first-login setup
+    // (chooses their own password + sees onboarding). Gates the /welcome flow.
+    provisioningPending: v.optional(v.boolean()),
   })
     .index("by_slug", ["slug"])
     .index("by_stripeCustomer", ["stripeCustomerId"]),
