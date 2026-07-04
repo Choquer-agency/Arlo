@@ -21,6 +21,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: false, // we send $pageview manually on route change
       capture_pageleave: true,
       persistence: "localStorage+cookie",
+      person_profiles: "identified_only", // only create profiles for signed-in users
     });
     initialized.current = true;
     track("session_started");
