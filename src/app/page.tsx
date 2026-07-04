@@ -15,6 +15,7 @@ import { PixelReveal } from "@/components/PixelReveal";
 import HeroGridAnimation from "@/components/HeroGridAnimation";
 import { ConnectSection } from "@/components/ConnectSection";
 import { DestinationsTeaser } from "@/components/DestinationsTeaser";
+import { generateSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,6 +25,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <ClientLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateSchema()) }}
+      />
       <HeroGridAnimation>
         <Nav />
         <PixelReveal immediate duration={0.7} intensity={6}>

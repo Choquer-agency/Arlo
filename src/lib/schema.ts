@@ -1,39 +1,57 @@
-import { siteConfig, SITE_URL, AGENCY_NAME, CONTACT_EMAIL, PHONE } from "@/lib/siteConfig";
-import { faqs, processSteps } from "@/content/shared";
-import { getTier1Services } from "@/content/services";
+import { siteConfig, SITE_URL, AGENCY_NAME, CONTACT_EMAIL } from "@/lib/siteConfig";
+import { faqs, pricingTiers } from "@/content/shared";
 
+/**
+ * Site-level JSON-LD for ARLO (a SaaS MCP connector — NOT an agency). Rendered
+ * on the homepage. Describes the real product, entity, founder, pricing offers,
+ * and FAQ so Google and AI answer engines model Arlo correctly and as a
+ * STANDALONE product (not Choquer Agency / FuturLabs).
+ */
 export function generateSchema() {
-  const services = getTier1Services();
+  // Map the real pricing tiers to Offers.
+  const offers = pricingTiers.map((t) => {
+    const num = t.priceRange.replace(/[^0-9.]/g, "");
+    const isCustom = t.priceRange.toLowerCase().includes("custom") || num === "";
+    return {
+      "@type": "Offer",
+      name: t.name,
+      priceCurrency: "USD",
+      price: isCustom ? "0" : num,
+      description: t.description,
+      availability: "https://schema.org/InStock",
+      url: `${SITE_URL}/#pricing`,
+      ...(isCustom ? { eligibleCustomerType: "Enterprise (custom pricing)" } : {}),
+    };
+  });
 
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["Organization", "ProfessionalService"],
+        "@type": "Organization",
         "@id": `${SITE_URL}/#business`,
         name: AGENCY_NAME,
+        legalName: "ARLO",
         description: siteConfig.description,
         url: SITE_URL,
-        telephone: PHONE,
         email: CONTACT_EMAIL,
         founder: { "@id": `${SITE_URL}/#founder` },
+        foundingDate: "2026",
         areaServed: [
-          { "@type": "Country", name: "Canada" },
           { "@type": "Country", name: "United States" },
+          { "@type": "Country", name: "Canada" },
         ],
-        priceRange: "$15,000 - $400,000+",
-        serviceType: services.map((s) => s.title),
         knowsAbout: [
-          "Custom Software Development",
-          "AI Agent Development",
-          "AI Development Agency",
-          "SaaS Replacement",
-          "CRM Development",
-          "ERP Development",
-          "Business Process Automation",
-          "Workflow Automation",
-          "Business Intelligence",
-          "Legacy System Modernization",
+          "Model Context Protocol",
+          "MCP server",
+          "Claude connector",
+          "AI marketing analytics",
+          "Marketing agency reporting",
+          "GA4 reporting",
+          "Google Search Console",
+          "Google Ads reporting",
+          "Meta Ads reporting",
+          "Conversational analytics",
         ],
         sameAs: [
           siteConfig.social.linkedin,
@@ -43,23 +61,46 @@ export function generateSchema() {
       },
 
       {
+        "@type": "SoftwareApplication",
+        "@id": `${SITE_URL}/#software`,
+        name: AGENCY_NAME,
+        applicationCategory: "BusinessApplication",
+        applicationSubCategory: "Marketing analytics / MCP connector",
+        operatingSystem: "Web, Claude Desktop (MCP)",
+        url: SITE_URL,
+        description: siteConfig.description,
+        publisher: { "@id": `${SITE_URL}/#business` },
+        featureList: [
+          "One OAuth connects GA4, Search Console, Google Ads, YouTube, and Business Profile",
+          "Live conversational reporting inside Claude via MCP — no exports, no dashboards, no warehouse",
+          "Per-client account assignment across every connected platform",
+          "Per-user MCP tokens with rotate + revoke and full audit log",
+          "Pass-through data model — no ETL, no persistent client data",
+        ],
+        offers: {
+          "@type": "AggregateOffer",
+          priceCurrency: "USD",
+          lowPrice: "0",
+          highPrice: "499",
+          offerCount: pricingTiers.length,
+          offers,
+        },
+      },
+
+      {
         "@type": "Person",
         "@id": `${SITE_URL}/#founder`,
         name: siteConfig.founder,
-        jobTitle: "Founder & CEO",
+        jobTitle: "Founder",
         url: `${SITE_URL}/about`,
         worksFor: { "@id": `${SITE_URL}/#business` },
         knowsAbout: [
-          "AI Software Development",
-          "Custom Software Architecture",
-          "SaaS Replacement Strategy",
-          "AI Agent Development",
-          "Enterprise Software",
-          "Mid-Market Technology",
+          "Model Context Protocol",
+          "AI marketing analytics",
+          "Marketing agency operations",
+          "Claude / MCP development",
         ],
-        sameAs: [
-          "https://linkedin.com/in/brycechoquer",
-        ],
+        sameAs: ["https://linkedin.com/in/brycechoquer"],
       },
 
       {
@@ -67,6 +108,7 @@ export function generateSchema() {
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: AGENCY_NAME,
+        description: siteConfig.description,
         publisher: { "@id": `${SITE_URL}/#business` },
       },
 
@@ -74,7 +116,7 @@ export function generateSchema() {
         "@type": "WebPage",
         "@id": `${SITE_URL}/#webpage`,
         url: SITE_URL,
-        name: `${AGENCY_NAME} | AI-Powered Custom Software That Replaces SaaS`,
+        name: `${AGENCY_NAME} | Ask Claude about any client, any platform`,
         description: siteConfig.description,
         isPartOf: { "@id": `${SITE_URL}/#website` },
         about: { "@id": `${SITE_URL}/#business` },
@@ -86,56 +128,14 @@ export function generateSchema() {
         mainEntity: faqs.map((faq) => ({
           "@type": "Question",
           name: faq.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer,
-          },
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
         })),
       },
-
-      {
-        "@type": "HowTo",
-        name: "Our Custom Software Development Process",
-        description: "Our five-step process for replacing SaaS with custom software you own.",
-        step: processSteps.map((s) => ({
-          "@type": "HowToStep",
-          position: s.step,
-          name: s.title,
-          text: s.description,
-        })),
-      },
-
-      ...services.map((service) => ({
-        "@type": "Service",
-        serviceType: service.title,
-        name: service.title,
-        description: service.description,
-        url: `${SITE_URL}/services/${service.slug}`,
-        provider: { "@id": `${SITE_URL}/#business` },
-        areaServed: [
-          { "@type": "Country", name: "Canada" },
-          { "@type": "Country", name: "United States" },
-        ],
-        audience: {
-          "@type": "BusinessAudience",
-          audienceType: "Mid-market companies ($10M–$250M revenue)",
-        },
-        offers: {
-          "@type": "Offer",
-          description: `Custom ${service.shortTitle} development — replaces ${service.replaces.join(", ")}`,
-          priceCurrency: "USD",
-        },
-      })),
 
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Home",
-            item: SITE_URL,
-          },
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
         ],
       },
     ],
