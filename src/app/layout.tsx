@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { neueMontreal, neueBit, ibmPlexMono } from "./fonts";
 import { siteConfig } from "@/lib/siteConfig";
-import { GoogleTagManager, GoogleTagManagerNoscript } from "@/components/GoogleTagManager";
+import { GoogleTagManager, GoogleTagManagerNoscript, GoogleAnalytics } from "@/components/GoogleTagManager";
+
+const GA4_MEASUREMENT_ID = "G-CP22NBPLFP";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 import "./globals.css";
 
@@ -46,6 +48,7 @@ export default function RootLayout({
     >
       <head suppressHydrationWarning>
         {siteConfig.gtmId && <GoogleTagManager gtmId={siteConfig.gtmId} />}
+        <GoogleAnalytics measurementId={GA4_MEASUREMENT_ID} />
       </head>
       <body className="font-sans" suppressHydrationWarning>
         {siteConfig.gtmId && <GoogleTagManagerNoscript gtmId={siteConfig.gtmId} />}

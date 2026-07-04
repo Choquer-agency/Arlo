@@ -18,6 +18,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   );
 }
 
+/**
+ * GA4 (gtag.js) loaded directly so the property collects data regardless of
+ * GTM container config. Measurement ID is public, so it's fine in the client.
+ */
+export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
+  return (
+    <>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+        strategy="afterInteractive"
+      />
+      <Script
+        id="ga4-init"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${measurementId}');`,
+        }}
+      />
+    </>
+  );
+}
+
 export function GoogleTagManagerNoscript({ gtmId }: { gtmId: string }) {
   return (
     <noscript>
