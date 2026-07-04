@@ -1,0 +1,4 @@
+{
+  "subject": "ARLO SEO — automation pipeline test ✅",
+  "html": "<div style='font:15px/1.5 system-ui;color:#193133;max-width:560px'><h2 style='margin:0 0 8px'>Automation test</h2><p>If you're reading this, the ARLO SEO reporting pipeline works end to end:</p><table style='border-collapse:collapse;width:100%'><tr><td style='padding:6px 0'>Routine writes report → <code>reports/outbox/</code></td><td>✅</td></tr><tr><td style='padding:6px 0'>Push triggers <b>SEO Report Email</b> Action</td><td>✅</td></tr><tr><td style='padding:6px 0'>Resend sends from arlo@choquer.agency</td><td>✅</td></tr></table><p style='color:#5a6b67'>Next: this becomes your Mon/Thu change reports + weekly/monthly pulses.</p></div>"
+}
