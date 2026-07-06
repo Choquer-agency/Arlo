@@ -111,7 +111,7 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["seo-specialist", "account-manager"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-ads-mcp"],
+    relatedConnectorSlugs: ["google-ads-mcp", "search-console-mcp"],
   },
 
   "google-ads-mcp": {
@@ -199,7 +199,96 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["google-ads-specialist"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-analytics-mcp"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp"],
+  },
+
+  "search-console-mcp": {
+    slug: "search-console-mcp",
+    sourceName: "Google Search Console",
+    sourceShortName: "Search Console",
+    color: "#4285F4",
+    title: "Search Console MCP: Connect GSC to Claude",
+    metaTitle: "Search Console MCP | Connect Google Search Console to Claude — ARLO",
+    metaDescription:
+      "Connect Google Search Console to Claude Desktop through ARLO's MCP server. Ask Claude about clicks, impressions, and average position for any client — no exports, no dashboards.",
+    tldr:
+      "ARLO is an MCP server that gives Claude live, read-only access to Google Search Console through the Search Analytics API. Connect once with Google OAuth, assign a property to a client, and Claude can answer questions about clicks, impressions, CTR, and average position by query or page — nothing is exported, warehoused, or scheduled.",
+    lastUpdated: "2026-07-06",
+    sections: {
+      why: {
+        heading: "Why connect Search Console to Claude instead of digging through the GSC UI",
+        body:
+          "Search Console's Performance report is powerful but slow to work with: you pick a date range, filter by query or page, then export to compare periods by hand. Most agencies re-run the same checks every week — which queries gained or lost clicks, whether a page's average position moved, which URLs dropped out of the index. An MCP connector skips the UI: Claude calls the Search Analytics API directly, so \"which queries lost the most clicks this month\" becomes a sentence instead of a manual comparison across two exported CSVs.",
+      },
+      steps: [
+        {
+          title: "Connect Google",
+          description:
+            "Sign in to ARLO and grant Google OAuth once. The same grant also unlocks GA4, Google Ads, YouTube, and Business Profile — no separate Search Console-only integration to configure.",
+        },
+        {
+          title: "Assign the Search Console property",
+          description:
+            "Pick the verified property from a searchable dropdown for each client or business you track. Multi-client agencies assign as many properties as they have Search Console access to.",
+        },
+        {
+          title: "Paste your MCP URL into Claude Desktop",
+          description:
+            "ARLO generates a personal MCP URL. Add it under Claude Desktop → Settings → Connectors and Search Console shows up as a tool Claude can call.",
+        },
+      ],
+      prompts: [
+        "How did clicks and impressions trend for [Client] over the last 28 days?",
+        "Which queries lost the most clicks compared to last month?",
+        "What's the average position for [Client]'s top 10 landing pages?",
+        "Break down this month's Search Console clicks by device.",
+        "Which pages have high impressions but a low click-through rate?",
+      ],
+      metrics: [
+        { name: "Clicks", description: "Times a user clicked through from search results" },
+        { name: "Impressions", description: "Times a URL appeared in search results" },
+        { name: "CTR", description: "Click-through rate — clicks divided by impressions" },
+        { name: "Position", description: "Average ranking position for a query or page" },
+      ],
+      dimensions: [
+        { name: "Query", description: "The search term that triggered the impression" },
+        { name: "Page", description: "The specific URL that appeared in results" },
+        { name: "Country", description: "Where the search took place" },
+        { name: "Device", description: "Desktop, mobile, or tablet" },
+        { name: "Date", description: "Trend and period comparisons" },
+        { name: "Search appearance", description: "Rich result type (e.g. FAQ, video, AMP)" },
+      ],
+      faqs: [
+        {
+          question: "Is this Google's official Search Console MCP server?",
+          answer:
+            "No. ARLO is a third-party MCP connector built on the public Search Console Search Analytics API. It requires you to grant OAuth access to your own verified properties — it isn't an official Google product.",
+        },
+        {
+          question: "Do I need to know the Search Console API to use this?",
+          answer:
+            "No. You ask Claude in plain English; ARLO translates the request into the correct Search Analytics API call and returns the numbers Claude uses to answer you.",
+        },
+        {
+          question: "Is my Search Console data stored anywhere?",
+          answer:
+            "No. ARLO is pass-through — each query fetches live data from Search Console and returns it to Claude for that one response. Nothing is warehoused or cached long-term.",
+        },
+        {
+          question: "Can I connect Search Console for more than one client?",
+          answer:
+            "Yes. One Google OAuth grant per team member covers every verified property you assign. Add a client, pick their property from the dropdown, and Claude can query it immediately.",
+        },
+        {
+          question: "Does this cover URL Inspection or indexing status?",
+          answer:
+            "Not yet. Today's connector covers Search Analytics data — clicks, impressions, CTR, and position by query, page, country, device, and date. URL Inspection is not currently supported.",
+        },
+      ],
+    },
+    relatedServiceSlugs: ["seo-specialist"],
+    relatedComparisonSlugs: ["supermetrics-vs-arlo"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "google-ads-mcp"],
   },
 };
 

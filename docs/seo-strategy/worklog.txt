@@ -6,6 +6,51 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-06 — Week 2 cont'd: Search Console MCP connector page
+
+SHIPPED — third page in the connector-page matrix (see keyword-research.md CLUSTER 1,
+worklog NEXT item 1 from 2026-07-04). Skipped "Meta Ads MCP" from that NEXT item this
+session: `src/lib/connectors/catalog.ts` still marks `meta_ads` status `"coming_soon"`
+(ETA "May 2026", already past) even though `src/lib/connectors/meta-ads.ts` has a real
+implementation wired into the registry — ambiguous enough (feature-flagged vs. just a
+stale catalog entry) that shipping a page claiming live Meta Ads support risked
+overclaiming, which the prior NEXT note explicitly warned against. Flagging for a human
+to confirm actual Meta Ads launch status before that page gets built.
+
+- PAGE: /connect/search-console-mcp (new) / CHANGE: new connector page from the
+  `src/content/connectors.ts` + `src/app/connect/[slug]/page.tsx` template, sourced from
+  the real `src/lib/connectors/gsc.ts` implementation (metrics: clicks, impressions, ctr,
+  position; dimensions: query, page, country, device, date, searchAppearance — no
+  fabricated features) / TARGET: "search console mcp" / "google search console mcp"
+  (no measurable US volume yet per keyword-research.md, but named explicitly in the
+  README's CLUSTER-1 wedge list — seeding ahead of the MCP-adoption growth curve, same
+  rationale as the GA4/Google Ads pages) / WHY: completes the 3-page Google-OAuth trio
+  (GA4, Google Ads, Search Console) so the wedge covers every `provider: "google"` live
+  connector / VERIFY: builds, FAQPage+HowTo JSON-LD present, own canonical
+  (`/connect/search-console-mcp`), unique title.
+- INTERNAL LINKS (orphan-page risk): added `"search-console-mcp"` to the
+  `relatedConnectorSlugs` of both `google-analytics-mcp` and `google-ads-mcp` (already-
+  indexed, already-linked-from-service-pages), and set the new page's own
+  `relatedConnectorSlugs` back to both siblings + `relatedServiceSlugs: ["seo-specialist"]`.
+  Confirmed present in built HTML both directions (GA4/Google Ads pages link to the new
+  page; new page links to /services/seo-specialist).
+- VERIFY (whole session): `npm install && npm run build` — compiles clean; only the
+  pre-existing `(app)/*` authenticated-route prerender failures (missing Convex env vars
+  locally, confirmed as pre-existing in the prior session's log too) — not a regression.
+  `npm run lint` clean. `git status` shows only `src/content/connectors.ts` touched.
+
+NEXT (continue Week 2 → Week 3, see 12-week-strategy.md):
+1. Confirm real Meta Ads launch status with the product owner, then either ship
+   "Meta Ads MCP" (if actually live) or leave it out of the connector matrix until it is.
+2. Build `/compare/agencyanalytics-vs-arlo` (KD 7) from the compare template —
+   still the next comparison-hub page per the 2026-07-04 NEXT list.
+3. Still open (deferred twice now): static-render the marketing pages (move
+   ConvexAuthNextjsServerProvider into an app-only route group so `/`, `/services/*`,
+   `/compare/*`, `/connect/*`, `/work/*`, `/blog/*`, `/about`, `/contact` stop returning
+   Cache-Control:no-store). Test auth end-to-end after — do not break login/MCP OAuth.
+4. Submit the new /connect pages + sitemap in GSC; request indexing (needs a human with
+   GSC access — this sandbox has no outbound web access).
+
 ## 2026-07-04 — Week 2: connector-page template + GA4/Google Ads MCP pages
 
 CONTEXT: Week 1 foundation items (stable sitemap lastmod, default OG image, automation
