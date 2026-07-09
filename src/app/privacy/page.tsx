@@ -117,10 +117,6 @@ export default function PrivacyPage() {
             conversions, and campaign performance.
           </li>
           <li>
-            <strong>youtube.readonly + yt-analytics.readonly</strong> —
-            read-only access to your YouTube channel performance.
-          </li>
-          <li>
             <strong>business.manage</strong> — read your Google Business
             Profile insights (Maps views, direction requests, calls, reviews).
             We do not modify your Business Profile.

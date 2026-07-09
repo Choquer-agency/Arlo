@@ -175,11 +175,12 @@ function ClientOverview({
     { key: "ga4", enableKey: "ga4", label: "GA4 property", value: client.ga4PropertyId, accountKind: "ga4_property", assignmentField: "ga4PropertyId", pickerLabel: "GA4 property" },
     { key: "gsc", enableKey: "gsc", label: "Search Console", value: client.gscSiteUrl, accountKind: "gsc_site", assignmentField: "gscSiteUrl", pickerLabel: "Search Console site" },
     { key: "ga", enableKey: "ads", label: "Google Ads", value: client.googleAdsCustomerId, accountKind: "ads_customer", assignmentField: "googleAdsCustomerId", pickerLabel: "Ads customer" },
-    { key: "yt", enableKey: "yt", label: "YouTube channel", value: client.youtubeChannelId, accountKind: "yt_channel", assignmentField: "youtubeChannelId", pickerLabel: "YouTube channel" },
     { key: "gbp", enableKey: "gbp", label: "Business Profile", value: client.gbpLocationName, accountKind: "gbp_location", assignmentField: "gbpLocationName", pickerLabel: "Business Profile location" },
   ];
   const enabledBase = client.enabledSources ?? DEFAULT_ENABLED_KEYS;
   const comingSoon = [
+    // YouTube paused while its OAuth scopes are off the consent screen.
+    { key: "yt", label: "YouTube channel", value: client.youtubeChannelId },
     { key: "meta", label: "Meta ad account", value: client.metaAdAccountId },
     { key: "shopify", label: "Shopify store", value: client.shopifyStoreDomain },
   ];

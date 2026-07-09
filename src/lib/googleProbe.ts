@@ -63,20 +63,21 @@ export async function probeGoogleAccounts(accessToken: string): Promise<Availabl
     console.error("[google probe] gsc sites.list failed:", e);
   }
 
-  // YouTube channels
-  try {
-    const yt = google.youtube({ version: "v3", auth: oauth2Client });
-    const channels = await yt.channels.list({ part: ["id", "snippet"], mine: true });
-    for (const c of channels.data.items ?? []) {
-      accounts.push({
-        id: c.id ?? "",
-        name: c.snippet?.title ?? c.id ?? "",
-        kind: "yt_channel",
-      });
-    }
-  } catch (e) {
-    console.error("[google probe] youtube channels.list failed:", e);
-  }
+  // YouTube channels — paused while the youtube scopes are off the consent
+  // screen (re-enable together with the scopes in api/oauth/google/start).
+  // try {
+  //   const yt = google.youtube({ version: "v3", auth: oauth2Client });
+  //   const channels = await yt.channels.list({ part: ["id", "snippet"], mine: true });
+  //   for (const c of channels.data.items ?? []) {
+  //     accounts.push({
+  //       id: c.id ?? "",
+  //       name: c.snippet?.title ?? c.id ?? "",
+  //       kind: "yt_channel",
+  //     });
+  //   }
+  // } catch (e) {
+  //   console.error("[google probe] youtube channels.list failed:", e);
+  // }
 
   // GBP accounts + locations
   try {

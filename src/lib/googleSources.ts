@@ -1,7 +1,7 @@
 import type { Doc } from "../../convex/_generated/dataModel";
 
 /**
- * The five Google sources one OAuth unlocks, described once so the dashboard
+ * The Google sources one OAuth unlocks, described once so the dashboard
  * (portfolio) and connections (matrix) render them identically. `field` is the
  * assignment column on the client doc; `kind` matches availableAccounts[].kind.
  */
@@ -27,12 +27,14 @@ export const GOOGLE_SOURCES: GoogleSourceDef[] = [
   { key: "ga4", label: "Google Analytics 4", short: "GA4", field: "ga4PropertyId", kind: "ga4_property", icon: "/sources/ga4.svg", pickerLabel: "GA4 property" },
   { key: "gsc", label: "Search Console", short: "Search Console", field: "gscSiteUrl", kind: "gsc_site", icon: "/sources/gsc.svg", pickerLabel: "Search Console site" },
   { key: "ads", label: "Google Ads", short: "Ads", field: "googleAdsCustomerId", kind: "ads_customer", icon: "/sources/ads.svg", pickerLabel: "Ads customer" },
-  { key: "yt", label: "YouTube", short: "YouTube", field: "youtubeChannelId", kind: "yt_channel", icon: "/sources/youtube.svg", pickerLabel: "YouTube channel" },
   { key: "gbp", label: "Business Profile", short: "GBP", field: "gbpLocationName", kind: "gbp_location", icon: "/sources/gbp.svg", pickerLabel: "Business Profile location" },
 ];
 
 /** Sources not yet buildable, shown as "coming soon" with their brand logos. */
 export const COMING_SOON_SOURCES = [
+  // YouTube paused while its OAuth scopes are out of the consent screen (re-add
+  // key "yt" to GOOGLE_SOURCES + the scopes in api/oauth/google/start to restore).
+  { name: "YouTube", detail: "Channel & video analytics", icon: "/sources/youtube.svg" },
   { name: "Meta", detail: "Ads + Instagram / Facebook organic", icon: "/sources/meta.svg" },
   { name: "LinkedIn", detail: "Ads + organic", icon: "/sources/linkedin.svg" },
   { name: "Shopify", detail: "Orders & storefront", icon: "/sources/shopify.svg" },
