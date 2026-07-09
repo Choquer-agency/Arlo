@@ -123,12 +123,19 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p>
-          We do not use Google user data for advertising, do not transfer it to
-          third parties except to provide the service you requested, and do not
-          allow humans to read it except (a) with your explicit consent, (b) as
-          needed for security or to comply with law, or (c) when the data is
-          aggregated and used for internal operations in a way that cannot
-          identify you.
+          We do not use Google user data for advertising, do not sell Google
+          user data to anyone, do not transfer it to third parties except to
+          provide the service you requested, and do not allow humans to read
+          it except (a) with your explicit consent, (b) as needed for security
+          or to comply with law, or (c) when the data is aggregated and used
+          for internal operations in a way that cannot identify you.
+        </p>
+        <p>
+          Google user data is never used to train or improve AI or machine
+          learning models — ours or anyone else&apos;s. When you ask a question
+          through your AI assistant, the requested data is fetched live,
+          returned only to your own session, and discarded after the answer is
+          delivered.
         </p>
 
         <h2>3. Sub-processors</h2>
@@ -162,8 +169,7 @@ export default function PrivacyPage() {
             removes all your data within 30 days.
           </li>
           <li>
-            Audit logs are retained for up to 3 years depending on your plan
-            (see your plan&apos;s details).
+            Audit logs are retained for up to 3 years.
           </li>
         </ul>
 
