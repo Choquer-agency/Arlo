@@ -6,6 +6,58 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-09 (Thu) — Week 3: AgencyAnalytics comparison page
+
+NOTE ON THIS SESSION: this routine's checkout started before the 2026-07-06 Search Console
+MCP session had pushed. Its first pass duplicated the already-shipped connector-matrix work
+(GA4/Google Ads MCP pages) almost line-for-line — caught it at push time (`git fetch` showed
+origin ahead), discarded the redundant local commit with `git reset --hard origin/main`
+before pushing anything, and re-picked the next open item from the *current* worklog instead.
+No duplicate content shipped. Flagging in case the trigger cadence is producing overlapping
+runs — worth a human look if this recurs.
+
+SHIPPED — `/compare/agencyanalytics-vs-arlo`, per NEXT item 2 from the 2026-07-06 entry.
+- PAGE: /compare/agencyanalytics-vs-arlo (new) / CHANGE: new comparison page in
+  `src/content/comparisons.ts`, cloned from the existing `/compare/[slug]` template (no
+  template changes needed — comparisons.ts + sitemap.ts already handle new slugs generically).
+  Positioning deliberately differs from the Supermetrics/Windsor pages (those argue "no
+  warehouse"; AgencyAnalytics isn't a warehouse/ETL tool, it's a white-label dashboard
+  builder) — argues "no dashboard to configure/brand/maintain, ask Claude instead" per
+  competitor.md's actual profile of AgencyAnalytics ("agency dashboards + white-label client
+  reporting"). FAQ is honest about the tradeoff: AgencyAnalytics still wins when a client
+  needs a self-serve branded login or a recurring PDF deliverable — ARLO doesn't do
+  dashboards at all. Did NOT fabricate AgencyAnalytics' current pricing (couldn't verify it —
+  no outbound web access in this sandbox); the feature table describes it qualitatively
+  ("per-client/seat pricing, scales with client count") instead of inventing a dollar figure.
+  / TARGET: "agencyanalytics alternative" (KD 7, 480/mo per competitor.md §3B, $9.54 CPC) /
+  WHY: softest-KD comparison term in the whole keyword set, explicit NEXT item / VERIFY:
+  builds static (.html/.rsc/.meta present), FAQPage JSON-LD present in output HTML, own
+  canonical + unique <title>, appears in sitemap.xml automatically (comparisonSlugs is
+  already derived from `getAllComparisonSlugs()`).
+- SITE: public/llms.txt — added a "Pages" entries for all 3 existing connector pages and all
+  3 compare pages (Supermetrics, Windsor, AgencyAnalytics) — none of the prior sessions had
+  added these despite shipping them; llms.txt is the one file explicitly meant to guide AI
+  crawlers, so it should list every indexable page.
+- VERIFY (whole session): `npm install && npm run build` — same pre-existing `(app)/*` +
+  `/onboarding` + `/welcome` + `/demo/settings/billing` prerender failures as every prior
+  session (missing NEXT_PUBLIC_CONVEX_URL in this sandbox, Vercel-only secret) — confirmed
+  not a regression, identical failing-route list before/after this session's diff. `git
+  status` shows only `src/content/comparisons.ts` and `public/llms.txt` touched.
+
+NEXT (Week 3 → Week 4, see 12-week-strategy.md):
+1. Confirm real Meta Ads launch status with the product owner (still open from 2026-07-06),
+   then either ship "Meta Ads MCP" or leave it out until `catalog.ts` says live.
+2. `/compare/whatagraph-vs-arlo` (KD 7, similar profile/positioning to AgencyAnalytics —
+   white-label dashboards, not a warehouse) — next softest comparison term.
+3. Still open (deferred 3x now): static-render the marketing pages (move
+   ConvexAuthNextjsServerProvider into an app-only route group). Test auth end-to-end after.
+   Keeps getting deprioritized in favor of new-page wins; worth doing soon since it compounds
+   (TTFB/caching benefits every page, not just one).
+4. A `/compare` index page — the breadcrumb pattern on every compare page implies one exists;
+   it doesn't yet. Low effort, fixes an internal 404-adjacent gap.
+5. Submit sitemap + new pages in GSC (needs a human with Search Console access — this routine
+   has no outbound web access).
+
 ## 2026-07-06 — Week 2 cont'd: Search Console MCP connector page
 
 SHIPPED — third page in the connector-page matrix (see keyword-research.md CLUSTER 1,

@@ -157,6 +157,72 @@ export const comparisons: Record<string, ComparisonPage> = {
       ],
     },
   },
+
+  "agencyanalytics-vs-arlo": {
+    slug: "agencyanalytics-vs-arlo",
+    title: "AgencyAnalytics vs. ARLO: Skip the white-label dashboard, ask Claude",
+    metaTitle: "AgencyAnalytics Alternative | ARLO — Ask Claude, No Dashboard (2026)",
+    metaDescription:
+      "AgencyAnalytics builds white-label client dashboards you have to configure and maintain. ARLO lets your team ask Claude for live numbers instead — no dashboard, no widget-picking, no branding upkeep.",
+    tldr:
+      "AgencyAnalytics is a white-label dashboard builder: you connect each client's platforms, pick widgets, brand the report, and share a login or PDF. It's the best tool on the market for that job. ARLO replaces the job itself — instead of a dashboard someone has to build, maintain, and re-brand per client, your team just asks Claude a question and gets a live answer, scoped to whichever client they're looking at. If what your team actually wants is the answer (not a dashboard to interpret), ARLO gets there in one prompt instead of a login-and-scroll.",
+    saasName: "AgencyAnalytics",
+    saasCategory: "White-label agency dashboards",
+    serviceSlug: "agency-owner",
+    lastUpdated: "2026-07-09",
+    sections: {
+      problem: {
+        heading: "A dashboard is a place to look. ARLO is an answer.",
+        body: "AgencyAnalytics solves a real problem well: agencies need a single, branded place to show clients performance across GA4, Search Console, Google Ads, Meta, and dozens of other platforms, without building that infrastructure themselves. The tradeoff is that a dashboard is still a destination — someone configures the widgets, applies the branding per client, and the client (or your account manager) still has to open it and interpret what they're looking at. It's also built for showing numbers, not answering the follow-up question a client actually asks in a meeting (\"why did that dip happen?\"). ARLO skips the destination. Claude reads each connected platform live through MCP, so instead of building a dashboard for a question you don't know yet, your team just asks — in the meeting, on the spot — and gets a plain-English answer scoped to that client.",
+      },
+      table: {
+        headers: ["Feature", "AgencyAnalytics", "ARLO"],
+        rows: [
+          { feature: "Entry price", values: ["Per-client/seat pricing, scales with client count", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "What you get", values: ["White-label dashboards + scheduled PDF reports", "Live answers in Claude, no dashboard to build"] },
+          { feature: "Setup per client", values: ["Connect platforms, pick widgets, apply branding", "Pick a property from a dropdown"] },
+          { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
+          { feature: "Follow-up questions", values: ["Client re-opens the dashboard, or emails you", "Ask Claude the follow-up in the same reply"] },
+          { feature: "Data freshness", values: ["Scheduled sync per platform", "Live on every query"] },
+          { feature: "Report building/maintenance", values: ["Ongoing — templates, widgets, branding upkeep", "None — questions replace reports"] },
+          { feature: "Data warehouse", values: ["Not required, but data lives in their platform", "None — pass-through, nothing stored"] },
+        ],
+      },
+      whenCustom: [
+        "Your team's real workflow is asking questions, not building dashboards",
+        "Clients ask follow-up questions dashboards can't answer without another tool",
+        "You want live data in the same place your team already works — Claude",
+        "You don't want to re-brand and maintain a dashboard template per client",
+      ],
+      whenSaas: [
+        "Clients specifically expect a branded, self-serve login they can check anytime",
+        "You need scheduled, shareable PDF reports as a deliverable, not just an answer",
+        "You want a visual dashboard for a QBR deck, not a conversational tool",
+      ],
+      faqs: [
+        {
+          question: "Is ARLO a full AgencyAnalytics replacement?",
+          answer:
+            "If your team's real workflow is answering client questions about performance, yes. If clients specifically expect a branded, self-serve dashboard login or a recurring PDF as the deliverable, AgencyAnalytics still wins that job. Some agencies keep AgencyAnalytics for the client-facing artifact and add ARLO for their own team's day-to-day questions.",
+        },
+        {
+          question: "Does ARLO do white-label client dashboards?",
+          answer:
+            "No — that's not the product. ARLO has no dashboard at all; Claude is the interface. If a branded, shareable dashboard is a hard requirement for your clients, pair ARLO with your existing dashboard tool rather than replacing it outright.",
+        },
+        {
+          question: "How is ARLO's pricing different from AgencyAnalytics?",
+          answer:
+            "AgencyAnalytics prices per client/seat and scales as your book grows. ARLO's tiers are flat per plan (e.g. Studio at $99/mo covers 10 clients with unlimited team seats) with unlimited source types included, so the bill doesn't climb every time you add a platform.",
+        },
+        {
+          question: "Does ARLO store my clients' data the way a dashboard tool does?",
+          answer:
+            "No. ARLO is pass-through — every query is fetched live from the connected platform's API and returned to Claude; nothing is warehoused or cached. OAuth tokens are encrypted at rest, but there's no persistent copy of client analytics or ads data.",
+        },
+      ],
+    },
+  },
 };
 
 export function getComparisonBySlug(slug: string): ComparisonPage | null {
