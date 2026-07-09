@@ -3,17 +3,17 @@ import localFont from "next/font/local";
 export const neueMontreal = localFont({
   src: [
     {
-      path: "../../public/fonts/ppneuemontreal-book.otf",
+      path: "../../public/fonts/PPNeueMontreal-Book.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/ppneuemontreal-medium.otf",
+      path: "../../public/fonts/PPNeueMontreal-Medium.otf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/fonts/ppneuemontreal-italic.otf",
+      path: "../../public/fonts/PPNeueMontreal-Italic.otf",
       weight: "400",
       style: "italic",
     },
