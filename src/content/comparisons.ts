@@ -52,13 +52,13 @@ export const comparisons: Record<string, ComparisonPage> = {
       table: {
         headers: ["Feature", "Windsor.ai", "ARLO"],
         rows: [
-          { feature: "Entry price", values: ["$19/mo (3 sources)", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "Entry price", values: ["$19/mo (3 sources)", "Free"] },
           { feature: "Data warehouse required", values: ["Yes (BigQuery, Snowflake, Sheets)", "None — live queries"] },
-          { feature: "Claude / AI access", values: ["Not included", "The whole point — every tier"] },
+          { feature: "Claude / AI access", values: ["Not included", "The whole point — and it's free"] },
           { feature: "Setup time", values: ["Days (schema, sync config)", "Under 5 minutes"] },
           { feature: "Data freshness", values: ["Sync cadence (hourly at best)", "Live on every query"] },
           { feature: "Per-client overhead", values: ["Configure new pipeline", "Pick a property from a dropdown"] },
-          { feature: "Team pricing", values: ["Per-seat add-ons", "Unlimited seats on Studio+"] },
+          { feature: "Team access", values: ["Per-seat add-ons", "Unlimited seats, free"] },
         ],
       },
       whenCustom: [
@@ -107,11 +107,11 @@ export const comparisons: Record<string, ComparisonPage> = {
       table: {
         headers: ["Feature", "Supermetrics", "ARLO"],
         rows: [
-          { feature: "Entry price", values: ["~$29/mo (single destination)", "$0 Free / $19 Solo / $99 Studio"] },
-          { feature: "Pricing model", values: ["Per connector + data source, scales up fast", "Per business tracked — unlimited sources"] },
+          { feature: "Entry price", values: ["~$29/mo (single destination)", "Free"] },
+          { feature: "Pricing model", values: ["Per connector + data source, scales up fast", "Free — unlimited sources per client"] },
           { feature: "What you get", values: ["Data in Sheets / Looker / BigQuery", "Live answers in Claude"] },
           { feature: "Reports / dashboards", values: ["You build & maintain them", "None — you ask questions"] },
-          { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
+          { feature: "Claude / AI access", values: ["Not the product", "The whole point — and it's free"] },
           { feature: "Data freshness", values: ["Scheduled refresh", "Live on every query"] },
           { feature: "Setup per client", values: ["Configure queries + destination", "Pick a property from a dropdown"] },
           { feature: "Data warehouse", values: ["Common (BigQuery/Snowflake)", "None — pass-through, nothing stored"] },
@@ -119,7 +119,7 @@ export const comparisons: Record<string, ComparisonPage> = {
       },
       whenCustom: [
         "Your team's real workflow is asking questions, not building reports",
-        "You want one price per client, not per-connector bills that climb",
+        "You'd rather not pay per-connector bills that climb as you add clients",
         "You already work inside Claude and want live data there",
         "You want fast per-client setup, not a query + destination per client",
       ],
@@ -131,7 +131,7 @@ export const comparisons: Record<string, ComparisonPage> = {
       tco: {
         heading: "What it actually costs at 10 clients",
         rows: [
-          { label: "Software", saas: "Supermetrics team plan + per-source add-ons", custom: "ARLO Studio, $99/mo flat for 10 clients" },
+          { label: "Software", saas: "Supermetrics team plan + per-source add-ons", custom: "Free while in early access" },
           { label: "Report building", saas: "Ongoing — someone maintains the templates", custom: "None — questions replace reports" },
           { label: "Warehouse / storage", saas: "BigQuery or Sheets overhead", custom: "$0 — nothing stored" },
         ],
@@ -145,9 +145,9 @@ export const comparisons: Record<string, ComparisonPage> = {
             "For the common case — agencies answering questions about client performance across GA4, Search Console, Google Ads, Meta, YouTube and more — yes. Where Supermetrics still wins is when you specifically need data warehoused for scheduled BI dashboards or one of its long-tail niche connectors. Some teams keep both: Supermetrics for templated reporting, ARLO for day-to-day questions.",
         },
         {
-          question: "How is ARLO's pricing different?",
+          question: "How much does ARLO cost?",
           answer:
-            "Supermetrics prices by connectors and data sources, which grows with your stack. ARLO prices per business you track and includes unlimited sources per client, so the bill is predictable as you add platforms.",
+            "ARLO is free right now while we're in early access — every feature, every client, unlimited sources, no credit card. Supermetrics, by contrast, prices by connectors and data sources, so its bill climbs as your stack grows. When we do introduce paid plans, you'll choose a plan that fits or walk away — nothing is auto-charged.",
         },
         {
           question: "Does ARLO store my clients' data?",

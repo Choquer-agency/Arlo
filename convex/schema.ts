@@ -328,4 +328,33 @@ export default defineSchema({
     usedAt: v.optional(v.string()),
     createdAt: v.string(),
   }).index("by_hash", ["codeHash"]),
+
+  // Inbound messages from every public contact form (the /contact-2 topic cards
+  // + the site-wide contact/pricing modal). One inbox the admin console reads,
+  // categorised so bug reports, feature ideas, pricing and enterprise inquiries
+  // are separable. Formspark still gets a copy for the email notification.
+  contactMessages: defineTable({
+    // "bug" | "feature" | "enterprise" | "pricing" | "general"
+    category: v.string(),
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    company: v.optional(v.string()),
+    role: v.optional(v.string()),
+    message: v.optional(v.string()),
+    // enterprise / pricing extras (free-form, joined server-side)
+    needs: v.optional(v.string()),
+    companySize: v.optional(v.string()),
+    clientCount: v.optional(v.string()),
+    referral: v.optional(v.string()),
+    selectedPackage: v.optional(v.string()),
+    // provenance
+    source: v.optional(v.string()), // e.g. "contact-2", "contact-modal"
+    pageUrl: v.optional(v.string()),
+    // triage: "new" | "read" | "archived"
+    status: v.string(),
+    createdAt: v.string(),
+  })
+    .index("by_status", ["status"])
+    .index("by_category", ["category"])
+    .index("by_created", ["createdAt"]),
 });

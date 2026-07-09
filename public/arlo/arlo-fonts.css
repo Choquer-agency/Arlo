@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ARLO type system — self-hosted, zero external calls, zero legacy/third-party fonts.
+   Sans/body:  PP Neue Montreal   (Pangram Pangram — licensed to Choquer/Arlo)
+   Serif:      Libre Caslon Text  (SIL Open Font License — free)
+   Pixel:      Geist Pixel        (declared elsewhere; OFL — free)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ---- PP Neue Montreal ---- */
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: normal; font-weight: 100; font-display: swap;
+  src: url('/fonts/ppneuemontreal-thin.otf') format('opentype');
+}
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/ppneuemontreal-book.otf') format('opentype');
+}
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/fonts/ppneuemontreal-italic.otf') format('opentype');
+}
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('/fonts/ppneuemontreal-medium.otf') format('opentype');
+}
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('/fonts/ppneuemontreal-bold.otf') format('opentype');
+}
+@font-face {
+  font-family: 'PP Neue Montreal'; font-style: italic; font-weight: 600; font-display: swap;
+  src: url('/fonts/ppneuemontreal-semibolditalic.otf') format('opentype');
+}
+
+/* ---- Pixel font (ARLO wordmark + eyebrows) — your own AlphaLyrae, self-hosted.
+   Aliased as 'Geist Pixel' so the existing font-family stacks resolve to it. ---- */
+@font-face {
+  font-family: 'Geist Pixel'; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('/fonts/PPNeueBit-Bold.otf') format('opentype');
+}
+
+/* ---- Libre Caslon Text ---- */
+@font-face {
+  font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/LibreCaslonText-Regular-v3.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Libre Caslon Text'; font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/fonts/LibreCaslonText-Italic-v3.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('/fonts/LibreCaslonText-Bold-v3.ttf') format('truetype');
+}
+
+/* ═══ ARLO font mapping ═══════════════════════════════════
+   Body/sans → PP Neue Montreal. Serif headings → Libre Caslon Text.
+   Loaded AFTER arlo-site.css so these win. */
+.arlo-body,
+.arlo-body button, .arlo-body input, .arlo-body select, .arlo-body textarea,
+.arlo-text-size-small, .arlo-text-size-medium, .arlo-text-size-regular, .arlo-text-size-regular-v2,
+.text-size-regular-v2, .arlo-stab-link_text, .arlo-stab-link_header {
+  font-family: 'PP Neue Montreal', 'Helvetica Neue', Arial, sans-serif !important;
+}
+/* Base body face — applied wherever body text lands */
+[class*="text-color"], [class*="heading-style"], .arlo-main-wrapper, .footer_component {
+  font-family: 'PP Neue Montreal', 'Helvetica Neue', Arial, sans-serif;
+}
+/* Serif display headings → Libre Caslon Text (upright — never italic) */
+.arlo-heading-style-h1, .arlo-heading-style-h2, .arlo-heading-style-h3, .arlo-heading-style-h4,
+.arlo-storyc_number, .arlo-sec-lead, .arlo-sec-lead .arlo-hl {
+  font-family: 'Libre Caslon Text', Georgia, 'Times New Roman', serif !important;
+  font-style: normal !important;
+}

@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/siteConfig";
 import { services } from "@/content/services";
-import { getAllCaseStudySlugs } from "@/content/case-studies";
 import { getAllBlogPosts } from "@/content/blog";
 import { getAllComparisonSlugs } from "@/content/comparisons";
 import { getAllConnectorSlugs } from "@/content/connectors";
@@ -14,7 +13,6 @@ const STATIC_LASTMOD = "2026-07-04";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const serviceSlugs = services.map((s) => s.slug);
-  const caseStudySlugs = getAllCaseStudySlugs();
   const blogPosts = await getAllBlogPosts();
   const comparisonSlugs = getAllComparisonSlugs();
   const connectorSlugs = getAllConnectorSlugs();
@@ -27,13 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
-  const caseStudyEntries: MetadataRoute.Sitemap = caseStudySlugs.map((slug) => ({
-    url: `${SITE_URL}/work/${slug}`,
-    lastModified: STATIC_LASTMOD,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-  }));
-
   return [
     {
       url: SITE_URL,
@@ -41,20 +32,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1.0,
     },
-    {
-      url: `${SITE_URL}/services`,
-      lastModified: STATIC_LASTMOD,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
     ...serviceEntries,
     {
-      url: `${SITE_URL}/work`,
+      url: `${SITE_URL}/pricing`,
       lastModified: STATIC_LASTMOD,
       changeFrequency: "monthly",
       priority: 0.9,
     },
-    ...caseStudyEntries,
     {
       url: `${SITE_URL}/about`,
       lastModified: STATIC_LASTMOD,

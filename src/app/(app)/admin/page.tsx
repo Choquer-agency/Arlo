@@ -8,6 +8,7 @@ import type { Id } from "../../../../convex/_generated/dataModel";
 import { getPlan } from "@/lib/billing";
 import { useActing } from "@/components/providers/ActingWorkspaceProvider";
 import { ShieldAlert, Search, UserPlus, Copy, Check, LogIn, RefreshCw } from "lucide-react";
+import { MessagesPanel } from "./MessagesPanel";
 
 type Row = {
   _id: Id<"workspaces">;
@@ -52,6 +53,11 @@ export default function AdminPage() {
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<Id<"workspaces"> | null>(null);
   const [provisioning, setProvisioning] = useState(false);
+  const [tab, setTab] = useState<"workspaces" | "messages">("workspaces");
+  const unreadMessages = useQuery(
+    api.contactMessages.list,
+    isAdmin ? {} : "skip"
+  )?.filter((m) => m.status === "new").length;
 
   const filtered = useMemo(() => {
     if (!rows) return [];
@@ -104,6 +110,34 @@ export default function AdminPage() {
         </button>
       </div>
 
+      <div className="flex items-center gap-1 border-b border-dark-faded mb-6">
+        {[
+          { key: "workspaces", label: "Workspaces" },
+          { key: "messages", label: "Messages" },
+        ].map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key as "workspaces" | "messages")}
+            className={`relative px-4 py-2.5 text-sm font-medium -mb-px border-b-2 transition-colors inline-flex items-center gap-2 ${
+              tab === t.key
+                ? "border-dark text-dark"
+                : "border-transparent text-dark/50 hover:text-dark"
+            }`}
+          >
+            {t.label}
+            {t.key === "messages" && !!unreadMessages && (
+              <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-brand text-dark text-[11px] font-semibold tabular-nums">
+                {unreadMessages}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {tab === "messages" && <MessagesPanel isAdmin={!!isAdmin} />}
+
+      {tab === "workspaces" && (
+        <>
       {totals && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
           <Kpi label="Workspaces" value={totals.workspaces} />
@@ -199,6 +233,8 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+        </>
+      )}
 
       {selected && <WorkspaceDrawer workspaceId={selected} onClose={() => setSelected(null)} />}
       {provisioning && <ProvisionModal onClose={() => setProvisioning(false)} />}

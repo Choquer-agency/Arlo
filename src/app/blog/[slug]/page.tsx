@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <span className="font-mono text-xs uppercase tracking-wider text-brand">{post.category}</span>
               <span className="font-mono text-xs text-dark opacity-30">{post.readingTime} min read</span>
             </div>
-            <h1 className="font-sans font-medium text-fluid-h2 leading-[1.1] text-dark mb-6">{post.title}</h1>
+            <h1 className="font-serif text-fluid-h2 leading-[1.1] text-dark mb-6">{post.title}</h1>
             <p className="font-sans text-fluid-large text-dark opacity-60 leading-relaxed mb-8">{post.excerpt}</p>
             <div className="flex items-center gap-4 pt-6 border-t border-dark-faded">
               <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center">
@@ -128,7 +128,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             dangerouslySetInnerHTML={{ __html: post.htmlContent }}
           />
 
-          <div className="mt-16 p-8 rounded-sm" style={{ backgroundColor: "#EBFFF6" }}>
+          <div className="mt-16 p-8 rounded-sm" style={{ backgroundColor: "#F4F3EE" }}>
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
                 <span className="font-sans font-medium text-brand">{post.author.name.charAt(0)}</span>
@@ -143,7 +143,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {relatedPosts.length > 0 && (
             <div className="mt-16">
-              <h2 className="font-sans font-medium text-fluid-h4 text-dark mb-8">More articles</h2>
+              <h2 className="font-serif text-fluid-h4 text-dark mb-8">More articles</h2>
               <div className="space-y-4">
                 {relatedPosts.map((rp) => (
                   <Link key={rp.slug} href={`/blog/${rp.slug}`} className="block group p-6 rounded-sm border border-dark-faded hover:border-brand transition-colors">

@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     outputFileTracingIncludes: {
       "/*": ["./src/content/blog/posts/**/*.md"],
+      "/arlo": ["./src/app/arlo/page.html"],
     },
   },
   async headers() {

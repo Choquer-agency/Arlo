@@ -73,7 +73,7 @@ export function BusinessCard({
   const href = `/clients/${client._id}`;
 
   return (
-    <div className="bg-white border border-dark-faded rounded-lg p-6">
+    <div className="bg-white border border-dark-faded rounded-2xl p-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="min-w-0">
           <Link href={href} className="font-sans text-fluid-h5 text-dark hover:underline underline-offset-2">
@@ -109,7 +109,7 @@ export function BusinessCard({
         </div>
         <div className="h-1.5 bg-grey border border-dark-faded rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-brand to-brand-lime transition-[width]"
+            className="h-full rounded-full bg-gradient-to-r from-brand-accent to-brand-lime transition-[width]"
             style={{ width: `${Math.max(4, (live / enabledDenom) * 100)}%` }}
           />
         </div>
@@ -126,7 +126,7 @@ export function BusinessCard({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={s.icon} alt="" className="w-4 h-4 object-contain" />
               <span className="text-dark">{s.short}</span>
-              <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-mint text-brand">
+              <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#e6f4d9] text-[#3f7a1e]">
                 Live
               </span>
             </span>
@@ -177,7 +177,7 @@ function StatusPill({ live, total, googleConnected }: { live: number; total: num
   if (live === 0) {
     return <Pill className="bg-bg-yellow/40 text-dark">Needs setup</Pill>;
   }
-  return <Pill className="bg-mint text-brand">{live} of {total} live</Pill>;
+  return <Pill className="bg-[#e6f4d9] text-[#3f7a1e]">{live} of {total} live</Pill>;
 }
 
 function Pill({ children, className }: { children: React.ReactNode; className: string }) {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
-import { neueMontreal, neueBit, ibmPlexMono } from "./fonts";
+import { neueMontreal, neueBit, ibmPlexMono, libreCaslon } from "./fonts";
 import { siteConfig } from "@/lib/siteConfig";
 import { GoogleTagManager, GoogleTagManagerNoscript, GoogleAnalytics } from "@/components/GoogleTagManager";
 
@@ -48,7 +48,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`w-mod-js lenis ${neueMontreal.variable} ${neueBit.variable} ${ibmPlexMono.variable}`}
+      className={`w-mod-js lenis ${neueMontreal.variable} ${neueBit.variable} ${ibmPlexMono.variable} ${libreCaslon.variable}`}
       data-scroll-orientation="vertical"
     >
       <head suppressHydrationWarning>

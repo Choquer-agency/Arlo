@@ -1,0 +1,238 @@
+<section id="arlo-idsync" class="arlo-xsync"><div class="hide-2 ui-embed ui-script"><script>
+document.addEventListener("DOMContentLoaded", () => {
+  const items = document.querySelectorAll(".arlo-synct_item-wrapper .arlo-synct_item");
+  const images = document.querySelectorAll(".arlo-synct_image-wrapper .arlo-synct_image");
+  const section = document.querySelector("#arlo-idsync");
+  // 👈 checking happens here
+  if (!items.length || !images.length || !section) return;
+
+  let index = 0;
+  let interval = null;
+  let isTransitioning = false;
+
+  /* --------------------------- Core helpers --------------------------- */
+
+  const activate = (i, instant = false) => {
+    if (isTransitioning && !instant) return;
+    
+    const duration = instant ? 0 : 300; // Fade duration in ms
+    
+    if (!instant) {
+      isTransitioning = true;
+      
+      // First, fade out all images
+      images.forEach(img => {
+        img.style.opacity = "0";
+      });
+      
+      // After fade out completes, switch active states and fade in
+      setTimeout(() => {
+        // Remove active state from all items and images
+        items.forEach(item => item.classList.remove("is-active"));
+        images.forEach(img => img.classList.remove("is-active"));
+
+        // Hide all dots
+        document
+          .querySelectorAll(".arlo-synct-item_dot")
+          .forEach(dot => {
+            dot.style.display = "none";
+            dot.style.opacity = "0";
+          });
+
+        // Activate the current item and image
+        items[i].classList.add("is-active");
+        if (images[i]) {
+          images[i].classList.add("is-active");
+          // Small delay before fading in
+          requestAnimationFrame(() => {
+            images[i].style.opacity = "1";
+          });
+        }
+
+        // Show dot first, then fade in opacity
+        const dot = items[i].querySelector(".arlo-synct-item_dot");
+        if (dot) {
+          dot.style.display = "block";
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              dot.style.opacity = "1";
+            });
+          });
+        }
+
+        index = i;
+        
+        // Allow new transitions after fade in completes
+        setTimeout(() => {
+          isTransitioning = false;
+        }, duration);
+      }, duration);
+    } else {
+      // Instant activation (no animation)
+      items.forEach(item => item.classList.remove("is-active"));
+      images.forEach(img => {
+        img.classList.remove("is-active");
+        img.style.opacity = "0";
+      });
+
+      document
+        .querySelectorAll(".arlo-synct-item_dot")
+        .forEach(dot => {
+          dot.style.display = "none";
+          dot.style.opacity = "0";
+        });
+
+      items[i].classList.add("is-active");
+      if (images[i]) {
+        images[i].classList.add("is-active");
+        images[i].style.opacity = "1";
+      }
+
+      const dot = items[i].querySelector(".arlo-synct-item_dot");
+      if (dot) {
+        dot.style.display = "block";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            dot.style.opacity = "1";
+          });
+        });
+      }
+
+      index = i;
+    }
+  };
+
+  const deactivateAll = () => {
+    items.forEach(item => item.classList.remove("is-active"));
+    images.forEach(img => {
+      img.classList.remove("is-active");
+      img.style.opacity = "0";
+    });
+
+    // Hide all dots
+    document
+      .querySelectorAll(".arlo-synct-item_dot")
+      .forEach(dot => {
+        dot.style.opacity = "0";
+        dot.style.display = "none";
+      });
+  };
+
+  const startLoop = () => {
+    if (interval) return;
+
+    interval = setInterval(() => {
+      activate((index + 1) % items.length);
+    }, 8000);
+  };
+
+  const stopLoop = () => {
+    clearInterval(interval);
+    interval = null;
+  };
+
+  const restartLoop = (i) => {
+    stopLoop();
+    activate(i);
+    startLoop();
+  };
+
+  /* --------------------------- Initial state --------------------------- */
+
+  // Set initial opacity on all images
+  images.forEach(img => {
+    img.style.opacity = "0";
+  });
+  
+  activate(0, true);
+
+  /* --------------------------- Click handling --------------------------- */
+
+  items.forEach((item, i) => {
+    item.addEventListener("click", () => {
+      if (!isTransitioning) {
+        restartLoop(i);
+      }
+    });
+  });
+
+  /* --------------------------- Intersection Observer
+     ANY visibility = play --------------------------- */
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startLoop();
+          activate(index, true);
+        } else {
+          stopLoop();
+          deactivateAll();
+        }
+      });
+    },
+    { root: null, threshold: 0 }
+  );
+
+  observer.observe(section);
+});
+</script>
+
+<style>
+
+.arlo-synct_item.is-active .arlo-synct_item-text {
+  margin-top: .75rem;
+  max-height: 4rem;
+}
+
+.arlo-synct_image {
+  transform: translate(0, 0rem);
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+
+.arlo-synct_image.is-active {
+  opacity: 1;
+}
+
+.arlo-synct_item.is-active .arlo-synct_progress-bar-fill {
+  width: 100%;
+  opacity: 100%;
+  transition: width 8s ease;
+}
+
+.arlo-synct_item.is-active .arlo-synct-item_icon {
+  transform: rotate3d(0, 0, 1, 0deg);
+}
+
+.arlo-synct-item_dot {
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.arlo-synct_item.is-active .arlo-synct-item_dot {
+  display: block;
+  opacity: 1;
+}
+
+@media (max-width: 991px) {
+  .arlo-synct_item.is-active .arlo-synct_image {
+    max-height: 28rem;
+    opacity: 1 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .arlo-synct_item.is-active .arlo-synct_image {
+    max-height: 25rem;
+    opacity: 1 !important;
+  }
+}
+
+</style></div><div class="arlo-padding-global"><div class="arlo-container-large"><div class="arlo-synct_content"><div class="arlo-synct_tabs"><div class="arlo-synct_image-wrapper"><img width="1840" loading="lazy" alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/insightpulse-weekly-report.svg" class="arlo-synct_image"/><img width="1377" loading="lazy" alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/slack.svg" class="arlo-synct_image"/><img width="1840" loading="lazy" alt="ARLO pulling live client metrics into Claude." src="/arlo/ui/google-sheets.svg" class="arlo-synct_image"/><img width="1500" loading="lazy" alt="Blurred green foliage and blue sky captured with motion blur effect." src="/arlo/bg/vineyard.webp" class="arlo-synct-bg"/></div><div class="arlo-synct_content"><div class="arlo-section_intro-component max-width-xsmall"><div class="arlo-section_intro-tag">{{eyebrow}}</div><h2 class="arlo-heading-style-h4 text-color-neutral-800">{{heading}}</h2></div><div class="arlo-synct_item-wrapper"><a href="#" class="arlo-synct_item ui-inline-block"><div class="arlo-synct_progress-bar"><div class="arlo-synct_progress-bar-fill"></div></div><div class="arlo-synct-item-inner"><div class="arlo-synct-item_header"><div class="arlo-synct-item_header-left"><div class="arlo-synct-item_dot"></div><div>{{dest.0.name}}</div></div><div class="arlo-synct-item_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-synct_item-text">{{dest.0.body}}</div></div><img alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/sync-anywhere.svg" loading="lazy" class="arlo-synct_image is-mobile"/></a><a href="#" class="arlo-synct_item ui-inline-block"><div class="arlo-synct_progress-bar"><div class="arlo-synct_progress-bar-fill"></div></div><div class="arlo-synct-item-inner"><div class="arlo-synct-item_header"><div class="arlo-synct-item_header-left"><div class="arlo-synct-item_dot"></div><div>{{dest.1.name}}</div></div><div class="arlo-synct-item_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-synct_item-text">{{dest.1.body}}</div></div><img alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/sync-anywhere-2.svg" loading="lazy" class="arlo-synct_image is-mobile"/></a><a href="#" class="arlo-synct_item ui-inline-block"><div class="arlo-synct_progress-bar"><div class="arlo-synct_progress-bar-fill"></div></div><div class="arlo-synct-item-inner"><div class="arlo-synct-item_header"><div class="arlo-synct-item_header-left"><div class="arlo-synct-item_dot"></div><div>{{dest.2.name}}</div></div><div class="arlo-synct-item_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-synct_item-text">{{dest.2.body}}</div></div><img alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/sync-anywhere-1.svg" loading="lazy" class="arlo-synct_image is-mobile"/></a></div></div></div></div></div></div></section>

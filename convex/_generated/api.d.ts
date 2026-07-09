@@ -11,6 +11,7 @@
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as clients from "../clients.js";
+import type * as contactMessages from "../contactMessages.js";
 import type * as customConnectors from "../customConnectors.js";
 import type * as destinationRuns from "../destinationRuns.js";
 import type * as destinationSyncs from "../destinationSyncs.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   auth: typeof auth;
   clients: typeof clients;
+  contactMessages: typeof contactMessages;
   customConnectors: typeof customConnectors;
   destinationRuns: typeof destinationRuns;
   destinationSyncs: typeof destinationSyncs;

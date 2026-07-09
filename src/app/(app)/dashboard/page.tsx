@@ -70,10 +70,10 @@ export default function DashboardPage() {
           <Plus size={13} /> Add business
         </Link>
       </div>
-      <h1 className="font-sans text-fluid-h2 text-dark mb-8">Portfolio</h1>
+      <h1 className="font-serif font-normal text-fluid-h2 text-dark mb-8">Portfolio</h1>
 
       {/* Aggregate summary strip */}
-      <div className="bg-dark text-white rounded-lg p-6 mb-8 flex items-center justify-between gap-6 flex-wrap">
+      <div className="bg-dark text-white rounded-2xl p-6 mb-8 flex items-center justify-between gap-6 flex-wrap">
         <div className="flex gap-8 flex-wrap">
           <Stat value={clients?.length ?? "—"} label="Businesses" accent />
           <Stat
@@ -139,8 +139,8 @@ function Stat({
 
 function EmptyState() {
   return (
-    <div className="bg-white border border-dark-faded rounded-lg p-16 text-center">
-      <p className="font-sans text-fluid-h4 text-dark mb-3">No businesses yet</p>
+    <div className="bg-white border border-dark-faded rounded-2xl p-16 text-center">
+      <p className="font-serif font-normal text-fluid-h4 text-dark mb-3">No businesses yet</p>
       <p className="text-dark opacity-60 mb-6 max-w-md mx-auto">
         Add your first business, then connect Google and map its GA4 / Search Console /
         Ads accounts to see live numbers here.

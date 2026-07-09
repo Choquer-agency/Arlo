@@ -14,13 +14,13 @@ const config: Config = {
         "brand-lime": "#D0FF71",
         "brand-accent": "#8F93FF",
         "brand-medium": "#004D43",
-        dark: "#193133",
-        "bg-dark": "#193133",
+        dark: "#14181c",
+        "bg-dark": "#14181c",
         mint: "#EBFFF6",
         light: "#ffffff",
-        grey: "#f8f8f8",
+        grey: "#F4F3EE",
         "grey-1": "#b7b7b7",
-        "dark-faded": "rgba(53, 50, 51, 0.1)",
+        "dark-faded": "rgba(20, 24, 28, 0.12)",
         "light-faded": "rgba(255, 255, 255, 0.1)",
         // Background accent palette
         "bg-orange": "#ffca94",
@@ -54,6 +54,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-neue-montreal)", "Arial", "sans-serif"],
         display: ["var(--font-neue-bit)", "Arial", "sans-serif"],
+        serif: ["var(--font-caslon)", "Georgia", "Times New Roman", "serif"],
         mono: ["var(--font-ibm-mono)", "monospace"],
       },
       fontSize: {

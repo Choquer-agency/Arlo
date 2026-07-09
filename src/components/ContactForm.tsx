@@ -278,13 +278,26 @@ export function ContactFormModal() {
     if (formData._gotcha || Date.now() - mountTime.current < 3000) return;
     if (!validateSlide(currentSlide)) return;
     setIsSubmitting(true);
+    // Sort into the admin inbox: enterprise inquiries, pricing-page inquiries
+    // (opened with a package attached), everything else is a general question.
+    const category =
+      mode === "enterprise" ? "enterprise" : packageInfo ? "pricing" : "general";
+    // Enterprise has no single "message" field — fold the free-text answers into one.
+    const message =
+      mode === "enterprise"
+        ? [formData.currentTools, formData.notes].filter(Boolean).join("\n\n")
+        : formData.question;
     try {
       await submitForm({
         ...formData,
+        category,
+        message,
+        needs: formData.neededFeatures.join(", "),
         neededFeatures: formData.neededFeatures.join(", "),
         mode,
         selectedPackage: packageInfo?.packageName || "",
         websiteSource: AGENCY_NAME,
+        source: "contact-modal",
         submittedAt: new Date().toISOString(),
         pageUrl: typeof window !== "undefined" ? window.location.href : "",
       });

@@ -1,28 +1,29 @@
 import type { UsageStatus } from "@/components/app/UpgradeBanner";
 import type { Persona } from "@/lib/usePersona";
 
-// Agency demo: Northpoint Digital on the Scale plan (47 of 75 clients).
+// Demo grants everyone full Studio access — unlimited everything, no plan caps.
 export const DEMO_USAGE = {
-  mcpCalls: { used: 184_270, limit: 500_000 },
-  aiInsights: { used: 1_260, limit: 10_000 },
-  clients: { used: 47, limit: 75 },
+  mcpCalls: { used: 184_270, limit: Infinity },
+  aiInsights: { used: 1_260, limit: Infinity },
+  clients: { used: 47, limit: Infinity },
   teamMembers: { used: 8, limit: Infinity },
 };
 
-// Solo demo: Tessellate Coffee on the Solo plan (1 business, 1 seat of 3 used).
+// Solo persona also gets unlimited Studio access in the demo.
 export const SOLO_USAGE = {
-  mcpCalls: { used: 1_420, limit: 2_500 },
-  aiInsights: { used: 38, limit: 50 },
-  clients: { used: 1, limit: 1 },
-  teamMembers: { used: 1, limit: 3 },
+  mcpCalls: { used: 1_420, limit: Infinity },
+  aiInsights: { used: 38, limit: Infinity },
+  clients: { used: 1, limit: Infinity },
+  teamMembers: { used: 1, limit: Infinity },
 };
 
 export function getUsageForPersona(persona: Persona) {
   return persona === "solo" ? SOLO_USAGE : DEMO_USAGE;
 }
 
-export function getCurrentPlanSlug(persona: Persona): string {
-  return persona === "solo" ? "solo" : "scale";
+export function getCurrentPlanSlug(_persona: Persona): string {
+  // Everyone is on Studio (unlimited) in the demo.
+  return "studio";
 }
 
 /**

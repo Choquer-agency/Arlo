@@ -11,8 +11,8 @@ export default function DemoDashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <StatCard label="Clients" value="47" sub="+3 this month" href="/demo/clients" />
-        <StatCard label="MCP calls this month" value="18,427" sub="of 50,000" />
-        <StatCard label="AI insights" value="126" sub="of 500" />
+        <StatCard label="MCP calls this month" value="18,427" sub="Unlimited" />
+        <StatCard label="AI insights" value="126" sub="Unlimited" />
         <StatCard label="Team members" value="8" sub="1 pending invite" />
       </div>
 

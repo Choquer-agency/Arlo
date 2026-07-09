@@ -3,22 +3,34 @@ import localFont from "next/font/local";
 export const neueMontreal = localFont({
   src: [
     {
-      path: "../../public/fonts/PPNeueMontreal-Book.otf",
+      path: "../../public/fonts/ppneuemontreal-book.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/PPNeueMontreal-Medium.otf",
+      path: "../../public/fonts/ppneuemontreal-medium.otf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/fonts/PPNeueMontreal-Italic.otf",
+      path: "../../public/fonts/ppneuemontreal-italic.otf",
       weight: "400",
       style: "italic",
     },
   ],
   variable: "--font-neue-montreal",
+  display: "swap",
+});
+
+// Libre Caslon Text — serif display face for headings (matches the ARLO reskin).
+// v3 TTFs are the provenance-verified files (correct italic flag).
+export const libreCaslon = localFont({
+  src: [
+    { path: "../../public/fonts/LibreCaslonText-Regular-v3.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/LibreCaslonText-Italic-v3.ttf", weight: "400", style: "italic" },
+    { path: "../../public/fonts/LibreCaslonText-Bold-v3.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-caslon",
   display: "swap",
 });
 

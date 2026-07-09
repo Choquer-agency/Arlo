@@ -63,7 +63,7 @@
 
   ::selection {
     background-color: #D0FF71;
-    color: #193133;
+    color: #14181c;
   }
 
   h1, h2, h3, h4, h5, h6, p, blockquote, label {
@@ -141,7 +141,7 @@
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-3 rounded-sm font-sans font-medium;
     background-color: #D0FF71;
-    color: #193133;
+    color: #14181c;
     padding: 0.75rem 1.5rem;
     transition: background-color var(--duration-half) var(--cubic-default), color var(--duration-half) var(--cubic-default);
   }
@@ -161,12 +161,51 @@
   }
 
   /* Eyebrow text — highlighter effect */
+  /* Eyebrow — matches the home/services reskin: pixel font, periwinkle, NO
+     background pill, no uppercase. (Was a green-background pill.) */
   .eyebrow {
-    @apply font-mono text-fluid-small uppercase tracking-wider inline-block;
-    background-color: hsl(82 100% 72%);
-    padding: 0.25em 0.6em;
-    border-radius: 2px;
+    font-family: var(--font-neue-bit), "Press Start 2P", monospace;
+    font-size: 1.375rem;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: #8F93FF !important;
+    display: inline-block;
+    text-transform: none;
+    background: none;
+    padding: 0;
+    border-radius: 0;
   }
+
+  /* Shimmer CTA — the exact home/services primary button, ported so every
+     marketing CTA is identical. Class names are arlo-scoped (no Tailwind clash). */
+  .arlo-shimmer {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    overflow: hidden; white-space: nowrap;
+    padding: 12px 24px; border: 0; border-radius: 100px;
+    background: transparent; text-decoration: none; cursor: pointer;
+    transition: transform .25s ease;
+  }
+  .arlo-shimmer:active { transform: translateY(1px); }
+  .arlo-shimmer::before {
+    content: ""; position: absolute; z-index: 0; inset: -65%;
+    background: conic-gradient(from 0deg, transparent 0 52%, #6fa62a 74%, #8fce3a 86%, transparent 100%);
+    animation: arlo-shimmer-spin 2.6s linear infinite;
+  }
+  .arlo-shimmer::after {
+    content: ""; position: absolute; z-index: 1; inset: 2px;
+    background: #d0ff71; border-radius: 100px;
+    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
+    transition: box-shadow .25s ease;
+  }
+  .arlo-shimmer:hover::after { box-shadow: inset 0 -6px 12px rgba(0,0,0,0.14); }
+  .arlo-shimmer-label {
+    position: relative; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #14181c; font-weight: 500; font-size: 15px; letter-spacing: -0.01em;
+  }
+  @keyframes arlo-shimmer-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .arlo-shimmer::before { animation: none; } }
 
   /* Section spacing */
   .section-space-hero {

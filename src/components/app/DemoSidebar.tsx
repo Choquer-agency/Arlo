@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { ArloMark } from "@/components/ArloMark";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Users,
   Plug,
   UserRound,
-  Settings,
   Terminal,
   Sparkles,
 } from "lucide-react";
@@ -21,7 +20,6 @@ const AGENCY_NAV = [
   { href: "/demo/custom-connectors", label: "Custom APIs", icon: Terminal },
   { href: "/demo/team", label: "Team", icon: UserRound },
   { href: "/demo/settings/mcp", label: "MCP URL", icon: Terminal },
-  { href: "/demo/settings/billing", label: "Billing", icon: Settings },
 ];
 
 const SOLO_NAV = [
@@ -31,7 +29,6 @@ const SOLO_NAV = [
   { href: "/demo/custom-connectors", label: "Custom APIs", icon: Terminal },
   { href: "/demo/team", label: "Team", icon: UserRound, tour: "team" },
   { href: "/demo/settings/mcp", label: "MCP URL", icon: Terminal, tour: "mcp-url" },
-  { href: "/demo/settings/billing", label: "Billing", icon: Settings },
 ];
 
 const SOLO_ONLY_ROUTES = ["/demo/solo-dashboard", "/demo/prompts"];
@@ -39,7 +36,6 @@ const AGENCY_ONLY_ROUTES = ["/demo/dashboard"];
 
 export function DemoSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isSolo, setIsSolo] = useState(false);
 
   useEffect(() => {
@@ -61,12 +57,6 @@ export function DemoSidebar() {
 
   const nav = isSolo ? SOLO_NAV : AGENCY_NAV;
 
-  function toggleView(toSolo: boolean) {
-    localStorage.setItem("arlo-demo-persona", toSolo ? "solo" : "agency");
-    setIsSolo(toSolo);
-    router.push(toSolo ? "/demo/solo-dashboard" : "/demo/dashboard");
-  }
-
   return (
     <aside className="w-64 shrink-0 flex flex-col">
       <div className="px-6 py-6 border-b border-dark/5">
@@ -77,31 +67,6 @@ export function DemoSidebar() {
         <p className="font-mono text-[10px] uppercase tracking-wider text-dark/40 mt-1">
           Demo mode
         </p>
-      </div>
-
-      {/* Persona toggle — switch between agency and solo layouts live */}
-      <div className="px-3 pt-4">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-dark/50 px-3 mb-2">
-          Viewing as
-        </p>
-        <div className="grid grid-cols-2 gap-1 bg-dark/5 p-1 rounded-lg">
-          <button
-            onClick={() => toggleView(false)}
-            className={`font-mono text-[11px] uppercase tracking-wider px-3 py-2 rounded-md text-center transition-colors ${
-              !isSolo ? "bg-dark text-brand-lime" : "text-dark/60 hover:text-dark"
-            }`}
-          >
-            Agency
-          </button>
-          <button
-            onClick={() => toggleView(true)}
-            className={`font-mono text-[11px] uppercase tracking-wider px-3 py-2 rounded-md text-center transition-colors ${
-              isSolo ? "bg-dark text-brand-lime" : "text-dark/60 hover:text-dark"
-            }`}
-          >
-            Solo
-          </button>
-        </div>
       </div>
 
       <nav className="flex-1 py-4 px-3 mt-2">

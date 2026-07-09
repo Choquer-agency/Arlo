@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>ARLO — Design System &amp; Style Guide</title>
+<link rel="preconnect" href="/"/>
+<link rel="stylesheet" href="/arlo/arlo-fonts.css?v=__ARLOV__"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   ARLO STYLE GUIDE — self-contained presentational CSS.
+   Every value below is copied verbatim from the live site stylesheets
+   (arlo-chat.css / arlo-fonts.css / lib/arlo-base.css). This page is the
+   single source of truth; if the site changes, update this file to match.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root{
+  --neon:#D0FF71; --neon-edge-a:#6FA62A; --neon-edge-b:#8FCE3A;
+  --purple:#8F93FF; --purple-soft:#BEBFF9;
+  --ink:#14181C; --body:#737373; --muted:#B1ADA1;
+  --cream:#F4F3EE; --line:#E7E3D7; --white:#FFFFFF;
+  --dark:#2B3038; --claude:#D97757;
+  --serif:'Libre Caslon Text',Georgia,'Times New Roman',serif;
+  --sans:'PP Neue Montreal','Helvetica Neue',Arial,sans-serif;
+  --pixel:'Geist Pixel','Press Start 2P',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+
+/* ---- Masthead ---- */
+.mast{padding:104px 0 56px;border-bottom:1px solid var(--line)}
+.mast .kicker{font-family:var(--pixel);font-size:22px;letter-spacing:.02em;color:var(--purple);line-height:1.1;margin-bottom:18px}
+.mast h1{font-family:var(--serif);font-weight:300;font-size:4rem;line-height:1.05;letter-spacing:-.04em;margin:0 0 20px}
+.mast p{font-size:1.25rem;line-height:1.5;color:var(--body);max-width:640px;margin:0}
+.mast .meta{margin-top:28px;font-family:var(--pixel);font-size:13px;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+
+/* ---- Section scaffolding ---- */
+section.block{padding:72px 0;border-bottom:1px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:40px}
+.sec-num{font-family:var(--pixel);font-size:15px;color:var(--purple);letter-spacing:.04em}
+.sec-head h2{font-family:var(--serif);font-weight:300;font-size:2.5rem;line-height:1.2;letter-spacing:-.02em;margin:0}
+.sec-sub{color:var(--body);font-size:1rem;line-height:1.5;max-width:660px;margin:-24px 0 40px}
+
+/* ---- Color swatches ---- */
+.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.sw{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--white)}
+.sw .chip{height:120px;display:block}
+.sw .info{padding:14px 16px}
+.sw .name{font-weight:500;font-size:.95rem;margin:0 0 4px}
+.sw .hex{font-family:var(--pixel);font-size:13px;letter-spacing:.03em;color:var(--body);text-transform:uppercase}
+.sw .use{font-size:.82rem;line-height:1.4;color:var(--muted);margin:8px 0 0}
+.sw.ring .chip{box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+
+/* ---- Type specimens ---- */
+.spec{border-bottom:1px dashed var(--line);padding:26px 0;display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:center}
+.spec:last-child{border-bottom:0}
+.spec .demo-serif{font-family:var(--serif);font-weight:300;color:var(--ink)}
+.spec .demo-sans{font-family:var(--sans);color:var(--ink)}
+.spec .tag{font-family:var(--pixel);font-size:12px;letter-spacing:.04em;color:var(--purple);text-transform:uppercase;margin-bottom:10px;display:block}
+.spec .rules{font-family:var(--pixel);font-size:12px;line-height:1.9;letter-spacing:.02em;color:var(--body);text-transform:uppercase}
+.spec .rules b{color:var(--ink)}
+.h1d{font-size:4rem;line-height:1.125;letter-spacing:-.04em}
+.h2d{font-size:3rem;line-height:1.16;letter-spacing:-.02em}
+.h3d{font-size:2.5rem;line-height:1.2;letter-spacing:-.02em}
+.h4d{font-size:2.25rem;line-height:1.2;letter-spacing:-.02em}
+.lead{font-size:1.25rem;line-height:1.5;color:var(--body)}
+.reg{font-size:1rem;line-height:1.5;color:var(--body)}
+.sm{font-size:.875rem;line-height:1.5;color:var(--body)}
+.eyebrow-demo{font-family:var(--pixel);font-size:22px;letter-spacing:.02em;line-height:1.1;color:var(--purple)}
+.wordmark-demo{font-family:var(--pixel);font-size:26px;color:var(--ink)}
+
+/* ---- Buttons ---- */
+.btn-row{display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:14px}
+.btn-cell{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.btn-note{font-family:var(--pixel);font-size:12px;letter-spacing:.02em;color:var(--body);text-transform:uppercase;max-width:220px;line-height:1.7}
+/* primary shimmer — copied from .arlo-shimmer */
+.g-shimmer{position:relative;z-index:3;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;padding:12px 24px;border:0;border-radius:100px;background:transparent;text-decoration:none;cursor:pointer;transition:transform .25s ease}
+.g-shimmer:active{transform:translateY(1px)}
+.g-shimmer::before{content:"";position:absolute;z-index:0;inset:-65%;background:conic-gradient(from 0deg,transparent 0 52%,var(--neon-edge-a) 74%,var(--neon-edge-b) 86%,transparent 100%);animation:g-spin 2.6s linear infinite}
+.g-shimmer::after{content:"";position:absolute;z-index:1;inset:2px;background:var(--neon);border-radius:100px;box-shadow:inset 0 -6px 12px rgba(0,0,0,.08);transition:box-shadow .25s ease}
+.g-shimmer:hover::after{box-shadow:inset 0 -6px 12px rgba(0,0,0,.14)}
+.g-shimmer span{position:relative;z-index:2;color:var(--ink);font-weight:500;font-size:15px;letter-spacing:-.01em}
+@keyframes g-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.g-shimmer::before{animation:none}}
+/* secondary arrow link — copied from .arlo-link */
+.g-link{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-size:1rem;transition:gap .2s ease,color .2s ease}
+.g-link .lbl{border-bottom:1.5px solid var(--purple);padding-bottom:2px}
+.g-link svg{color:var(--purple);flex:none;transition:transform .2s ease}
+.g-link:hover{color:var(--purple);gap:11px}
+.g-link:hover svg{transform:translateX(2px)}
+/* login ghost pill — copied from .nav_link-4.is-login */
+.g-login{display:inline-flex;align-items:center;color:var(--body);text-decoration:none;font-size:1rem;padding:.4rem 1rem;border-radius:100px;transition:all .2s}
+.g-login:hover{color:var(--ink);background:#fafafa;box-shadow:0 1px .25rem rgba(0,0,0,.05)}
+
+/* ---- Image overlay ---- */
+/* fallback gradient shows until the live WebGL chrome shader paints over it */
+.overlay-demo{position:relative;border-radius:22px;overflow:hidden;height:360px;z-index:0;background:
+  radial-gradient(120% 90% at 15% 20%, #e9d9c4 0%, transparent 55%),
+  radial-gradient(110% 120% at 85% 30%, #d8c3e0 0%, transparent 50%),
+  radial-gradient(140% 120% at 60% 90%, #f0c9a8 0%, transparent 55%),
+  linear-gradient(120deg,#e7cfa8,#cbb0d6 45%,#e9c4a0 80%)}
+/* live shader layer — same rules as .arlo-chrome on the real site */
+.overlay-demo .arlo-chrome{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.overlay-demo .arlo-chrome canvas{width:100%!important;height:100%!important;display:block}
+.overlay-cards{position:absolute;inset:0;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;padding:0}
+.overlay-cards .oc{padding:22px 20px}
+.overlay-cards .oc h4{margin:0 0 8px;font-size:1rem;font-weight:500;color:rgba(20,24,28,.62)}
+.overlay-cards .oc p{margin:0;font-size:.82rem;line-height:1.45;color:rgba(20,24,28,.42)}
+.overlay-note{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.overlay-note .n{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--white)}
+.overlay-note .n b{display:block;font-size:.9rem;margin-bottom:6px}
+.overlay-note .n span{font-size:.82rem;line-height:1.45;color:var(--body)}
+.radius-demo-row{display:flex;gap:20px;flex-wrap:wrap;margin-top:8px}
+.rd{width:130px}
+.rd .box{height:80px;background:var(--purple-soft);border:1px solid var(--purple)}
+.rd .lbl{font-family:var(--pixel);font-size:12px;color:var(--body);margin-top:8px;text-transform:uppercase;letter-spacing:.03em}
+
+/* ---- Tokens table ---- */
+.tokens{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 40px}
+.tok{display:flex;justify-content:space-between;gap:16px;border-bottom:1px dashed var(--line);padding:10px 0}
+.tok .k{font-size:.95rem}
+.tok .v{font-family:var(--pixel);font-size:13px;letter-spacing:.03em;color:var(--body);text-transform:uppercase}
+
+/* ---- Principles ---- */
+.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pr{border:1px solid var(--line);border-radius:16px;padding:24px 26px;background:var(--white)}
+.pr .num{font-family:var(--pixel);font-size:14px;color:var(--purple);letter-spacing:.04em;margin-bottom:12px}
+.pr h4{font-family:var(--serif);font-weight:300;font-size:1.5rem;margin:0 0 8px;letter-spacing:-.02em}
+.pr p{margin:0;font-size:.95rem;line-height:1.55;color:var(--body)}
+.pr .do{color:#3f7a1e}.pr .dont{color:#b23b3b}
+
+/* ---- Sticky mini-nav ---- */
+.tocbar{position:sticky;top:0;z-index:20;background:rgba(244,243,238,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.tocbar .inner{display:flex;gap:26px;padding:14px 32px;max-width:1120px;margin:0 auto;overflow-x:auto}
+.tocbar a{font-family:var(--pixel);font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--body);text-decoration:none;white-space:nowrap}
+.tocbar a:hover{color:var(--purple)}
+
+footer.foot{padding:56px 0 80px;color:var(--muted);font-family:var(--pixel);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+
+@media(max-width:820px){
+  .swatches{grid-template-columns:repeat(2,1fr)}
+  .spec{grid-template-columns:1fr;gap:14px}
+  .tokens,.principles,.overlay-note{grid-template-columns:1fr}
+  .overlay-cards{grid-template-columns:repeat(2,1fr)}
+  .mast h1{font-size:2.75rem}
+  .h1d{font-size:2.75rem}.h2d{font-size:2.25rem}.h3d{font-size:2rem}.h4d{font-size:1.75rem}
+}
+</style>
+</head>
+<body>
+
+<div class="tocbar"><div class="inner">
+  <a href="#colors">Colors</a>
+  <a href="#type">Typography</a>
+  <a href="#buttons">Buttons</a>
+  <a href="#overlay">Image Overlay</a>
+  <a href="#tokens">Radii &amp; Spacing</a>
+  <a href="#principles">Principles</a>
+</div></div>
+
+<header class="mast"><div class="wrap">
+  <div class="kicker">ARLO Design System</div>
+  <h1>The rulebook.</h1>
+  <p>The single source of truth for how ARLO looks and feels — typography, color, buttons, and the signature image treatment. Build every new page from this.</p>
+  <div class="meta">Locked · v1 · askarlo.app</div>
+</div></header>
+
+<!-- ══════════ COLORS ══════════ -->
+<section class="block" id="colors"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">01</span><h2>Color</h2></div>
+  <p class="sec-sub">Warm cream canvas, near-black ink, one electric neon for action and one soft periwinkle for accent. Neon is reserved for the primary CTA only; periwinkle carries eyebrows, links, and highlights.</p>
+  <div class="swatches">
+    <div class="sw"><span class="chip" style="background:#D0FF71"></span><div class="info"><p class="name">Neon</p><span class="hex">#D0FF71</span><p class="use">Primary action fill — "Start For Free" only.</p></div></div>
+    <div class="sw"><span class="chip" style="background:linear-gradient(120deg,#6FA62A,#8FCE3A)"></span><div class="info"><p class="name">Neon Edge</p><span class="hex">#6FA62A → #8FCE3A</span><p class="use">Spinning shimmer ring on the CTA.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#8F93FF"></span><div class="info"><p class="name">Periwinkle</p><span class="hex">#8F93FF</span><p class="use">Eyebrows, links, arrows, highlights.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#BEBFF9"></span><div class="info"><p class="name">Periwinkle Soft</p><span class="hex">#BEBFF9</span><p class="use">Tints, hovers, quiet fills.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#14181C"></span><div class="info"><p class="name">Ink</p><span class="hex">#14181C</span><p class="use">Headings &amp; button labels.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#737373"></span><div class="info"><p class="name">Body</p><span class="hex">#737373</span><p class="use">Paragraph &amp; supporting copy.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#B1ADA1"></span><div class="info"><p class="name">Muted</p><span class="hex">#B1ADA1</span><p class="use">Captions, meta, disabled.</p></div></div>
+    <div class="sw ring"><span class="chip" style="background:#F4F3EE"></span><div class="info"><p class="name">Cream</p><span class="hex">#F4F3EE</span><p class="use">Page background.</p></div></div>
+    <div class="sw ring"><span class="chip" style="background:#FFFFFF"></span><div class="info"><p class="name">White</p><span class="hex">#FFFFFF</span><p class="use">Cards &amp; raised surfaces.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#E7E3D7"></span><div class="info"><p class="name">Line</p><span class="hex">#E7E3D7</span><p class="use">Borders &amp; dividers.</p></div></div>
+    <div class="sw"><span class="chip" style="background:#2B3038"></span><div class="info"><p class="name">Dark Surface</p><span class="hex">#2B3038</span><p class="use">Dark sections (security, footer).</p></div></div>
+    <div class="sw"><span class="chip" style="background:#D97757"></span><div class="info"><p class="name">Claude</p><span class="hex">#D97757</span><p class="use">Claude logo lockups only.</p></div></div>
+  </div>
+</div></section>
+
+<!-- ══════════ TYPOGRAPHY ══════════ -->
+<section class="block" id="type"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">02</span><h2>Typography</h2></div>
+  <p class="sec-sub">Three faces, three jobs. <b>Libre Caslon Text</b> (serif, weight 300, always upright) for display headings. <b>PP Neue Montreal</b> for all body and UI. <b>Geist Pixel</b> for eyebrows and the wordmark. Headings are light-weight with tight negative tracking.</p>
+
+  <div class="spec"><div><span class="tag">H1 · Display</span><div class="demo-serif h1d">Ask Claude about any client.</div></div>
+    <div class="rules"><b>Libre Caslon Text</b><br>4rem · weight 300<br>line 1.125 · track -.04em</div></div>
+  <div class="spec"><div><span class="tag">H2 · Section</span><div class="demo-serif h2d">One connection today, every answer from here on.</div></div>
+    <div class="rules"><b>Libre Caslon Text</b><br>3rem · weight 300<br>line 1.16 · track -.02em</div></div>
+  <div class="spec"><div><span class="tag">H3</span><div class="demo-serif h3d">One connector, every Google surface</div></div>
+    <div class="rules"><b>Libre Caslon Text</b><br>2.5rem · weight 300<br>line 1.2 · track -.02em</div></div>
+  <div class="spec"><div><span class="tag">H4</span><div class="demo-serif h4d">The questions we get most</div></div>
+    <div class="rules"><b>Libre Caslon Text</b><br>2.25rem · weight 300<br>line 1.2 · track -.02em</div></div>
+  <div class="spec"><div><span class="tag">Lead / Medium</span><div class="demo-sans lead">Ask in plain language and ARLO pulls live data from every surface you already use.</div></div>
+    <div class="rules"><b>PP Neue Montreal</b><br>1.25rem · line 1.5<br>color #737373</div></div>
+  <div class="spec"><div><span class="tag">Body / Regular</span><div class="demo-sans reg">One connector plugs Claude into every client account your agency runs — live, no warehouse. Numbers in seconds, not spreadsheets.</div></div>
+    <div class="rules"><b>PP Neue Montreal</b><br>1rem · line 1.5<br>color #737373</div></div>
+  <div class="spec"><div><span class="tag">Small / Caption</span><div class="demo-sans sm">Connect Google Business Profile once — query calls, directions, and reviews across every client location.</div></div>
+    <div class="rules"><b>PP Neue Montreal</b><br>.875rem · line 1.5</div></div>
+  <div class="spec"><div><span class="tag">Eyebrow</span><div class="eyebrow-demo">The MCP layer for agencies</div></div>
+    <div class="rules"><b>Geist Pixel</b><br>22px · track .02em<br>color #8F93FF · no caps</div></div>
+  <div class="spec"><div><span class="tag">Wordmark</span><div class="wordmark-demo">ARLO</div></div>
+    <div class="rules"><b>Geist Pixel</b><br>26px · ink #14181C<br>white on dark</div></div>
+</div></section>
+
+<!-- ══════════ BUTTONS ══════════ -->
+<section class="block" id="buttons"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Buttons &amp; Links</h2></div>
+  <p class="sec-sub">One primary action per view. The neon shimmer button is the sign-up CTA and nothing else. Everything secondary is a periwinkle underline-arrow link or the ghost Login pill.</p>
+
+  <div class="btn-row">
+    <div class="btn-cell">
+      <a class="g-shimmer" href="#buttons"><span>Start For Free</span></a>
+      <span class="btn-note"><b style="color:#14181c">Primary · Shimmer</b><br>Pill 100px · pad 12/24<br>fill #D0FF71 · spinning neon edge<br>Reserved for sign-up only</span>
+    </div>
+    <div class="btn-cell">
+      <a class="g-link" href="#buttons"><span class="lbl">See how it works</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <span class="btn-note"><b style="color:#14181c">Secondary · Arrow link</b><br>Periwinkle underline<br>Arrow slides + gap widens on hover</span>
+    </div>
+    <div class="btn-cell">
+      <a class="g-login" href="#buttons">Login</a>
+      <span class="btn-note"><b style="color:#14181c">Tertiary · Ghost pill</b><br>Transparent → #fafafa on hover<br>Pill 100px · pad .4/1rem</span>
+    </div>
+  </div>
+</div></section>
+
+<!-- ══════════ IMAGE OVERLAY ══════════ -->
+<section class="block" id="overlay"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">04</span><h2>Image Overlay</h2></div>
+  <p class="sec-sub">The signature visual: a living marble "chrome" WebGL shader behind product mockups and role cards. The block below is the <b>real, animating shader</b> — same engine and parameters as the site. Corners are always rounded — <b>22px</b> — and clipped with <code>clip-path</code>, never <code>border-radius</code> alone (the canvas ignores it).</p>
+
+  <div class="overlay-demo" id="sg-overlay">
+    <div class="arlo-chrome" id="sg-chrome"></div>
+    <div class="overlay-cards">
+      <div class="oc"><h4>SEO specialists</h4><p>Rankings, indexation, and Core Web Vitals across every client in one window</p></div>
+      <div class="oc"><h4>Account managers</h4><p>Quality Scores, spend, and campaign health across every ad account</p></div>
+      <div class="oc"><h4>Agency owners</h4><p>Connect each client's properties once, then query them all from Claude</p></div>
+      <div class="oc"><h4>Business owners</h4><p>See which clients are trending up — or about to churn</p></div>
+    </div>
+  </div>
+
+  <div class="overlay-note">
+    <div class="n"><b>Radius</b><span>22px on the image band. Full corners on standalone media; bottom-only (top square) when it butts against cards above.</span></div>
+    <div class="n"><b>Clipping</b><span>Use <code>clip-path: inset(0 round …)</code> on the WebGL wrapper — <code>border-radius</code> alone won't clip the canvas.</span></div>
+    <div class="n"><b>Overlay text</b><span>Labels sit top-left over the image at reduced opacity ink (~60% title / ~42% body). Never pure black.</span></div>
+  </div>
+</div></section>
+
+<!-- ══════════ RADII & SPACING ══════════ -->
+<section class="block" id="tokens"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Radii &amp; Spacing</h2></div>
+  <div class="radius-demo-row">
+    <div class="rd"><div class="box" style="border-radius:100px"></div><div class="lbl">100px · pills</div></div>
+    <div class="rd"><div class="box" style="border-radius:22px"></div><div class="lbl">22px · image bands</div></div>
+    <div class="rd"><div class="box" style="border-radius:16px"></div><div class="lbl">16px · cards</div></div>
+    <div class="rd"><div class="box" style="border-radius:14px"></div><div class="lbl">14px · chips</div></div>
+  </div>
+  <div class="tokens" style="margin-top:36px">
+    <div class="tok"><span class="k">Pill / button radius</span><span class="v">100px</span></div>
+    <div class="tok"><span class="k">Image band radius</span><span class="v">22px</span></div>
+    <div class="tok"><span class="k">Card radius</span><span class="v">16px</span></div>
+    <div class="tok"><span class="k">Small chip radius</span><span class="v">14px</span></div>
+    <div class="tok"><span class="k">Content max-width</span><span class="v">~1120px</span></div>
+    <div class="tok"><span class="k">Section vertical rhythm</span><span class="v">72px</span></div>
+    <div class="tok"><span class="k">Body line-height</span><span class="v">1.5</span></div>
+    <div class="tok"><span class="k">Heading weight</span><span class="v">300</span></div>
+  </div>
+</div></section>
+
+<!-- ══════════ PRINCIPLES ══════════ -->
+<section class="block" id="principles"><div class="wrap">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Principles</h2></div>
+  <div class="principles">
+    <div class="pr"><div class="num">01</div><h4>One action per view</h4><p><span class="do">Do</span> give each screen a single neon CTA. <span class="dont">Don't</span> stack two shimmer buttons — the neon loses its meaning.</p></div>
+    <div class="pr"><div class="num">02</div><h4>Serif thinks, sans speaks</h4><p><span class="do">Do</span> use light Caslon for the ideas (headings). <span class="dont">Don't</span> set body or UI in the serif, and never italicize a heading.</p></div>
+    <div class="pr"><div class="num">03</div><h4>Neon is sacred</h4><p><span class="do">Do</span> keep #D0FF71 for sign-up. <span class="dont">Don't</span> use it for borders, text, or decoration — use periwinkle for accents.</p></div>
+    <div class="pr"><div class="num">04</div><h4>Warm, never stark</h4><p><span class="do">Do</span> build on cream with ink text. <span class="dont">Don't</span> use pure white pages or pure #000 text — it reads cold and off-brand.</p></div>
+    <div class="pr"><div class="num">05</div><h4>Round everything</h4><p><span class="do">Do</span> round corners (100 / 22 / 16 / 14). <span class="dont">Don't</span> ship a hard-cornered card, button, or image band.</p></div>
+    <div class="pr"><div class="num">06</div><h4>Pixel = label, not prose</h4><p><span class="do">Do</span> use Geist Pixel for eyebrows, tags, and the wordmark. <span class="dont">Don't</span> set sentences or paragraphs in it.</p></div>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">ARLO Design System · Locked v1 · Update this file when the site changes — it is the source of truth.</div></footer>
+
+<!-- Live chrome shader: same engine (arlo-water.js) + params as the production site,
+     mounted directly onto the overlay demo so the rulebook shows the REAL visual. -->
+<script src="/arlo/lib/arlo-water.js?v=__ARLOV__"></script>
+<script>
+(function () {
+  // params copied verbatim from arlo-chat.js CHROME_PARAMS + chromeParamsFor()
+  var CHROME_PARAMS = {
+    colorBack: "#909090", colorHighlight: "#ffffff",
+    highlights: 0.02, layering: 0.10, edges: 1.0, waves: 0.40,
+    caustic: 0.64, size: 0.58, speed: 0.235, scale: 1.64, fit: "cover"
+  };
+  function paramsFor(width) {
+    var size = (39.8 / Math.max(160, width) - 0.01) / 0.09;
+    size = Math.max(0.1, Math.min(2.5, size));
+    var p = {}; for (var k in CHROME_PARAMS) p[k] = CHROME_PARAMS[k];
+    p.size = size; return p;
+  }
+  function mount() {
+    var host = document.getElementById("sg-overlay");
+    var layer = document.getElementById("sg-chrome");
+    if (!host || !layer || !window.ArloChrome) return;
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var m = window.ArloChrome.mount(layer, img, paramsFor(host.offsetWidth || 640));
+        var sizeIt = function () {
+          var r = layer.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          var dpr = Math.max(1, window.devicePixelRatio);
+          m.parentWidth = r.width; m.parentHeight = r.height;
+          m.parentDevicePixelWidth = r.width * dpr; m.parentDevicePixelHeight = r.height * dpr;
+          m.devicePixelsSupported = true;
+          if (m.handleResize) m.handleResize();
+        };
+        requestAnimationFrame(sizeIt);
+        [120, 500, 1200].forEach(function (d) { setTimeout(sizeIt, d); });
+        window.addEventListener("resize", sizeIt, { passive: true });
+      } catch (e) { /* leave the gradient fallback in place */ }
+    };
+    img.src = "/arlo/bg/tuscany.webp";  // same source image the home page feeds the shader
+  }
+  if (document.readyState !== "loading") mount();
+  else document.addEventListener("DOMContentLoaded", mount);
+})();
+</script>
+
+</body>
+</html>

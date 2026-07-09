@@ -1,0 +1,210 @@
+<section id="arlo-stab-section" class="arlo-xsol"><div class="arlo-padding-global"><div class="arlo-container-large"><div class="arlo-stab_content"><div class="arlo-section_intro-component is-centered"><div class="arlo-section_intro-tag">{{eyebrow}}</div><h2 class="arlo-heading-style-h3 text-color-neutral-800 max-width-medium">{{heading}}</h2></div><div id="arlo-stab" class="arlo-stab_tabs"><div class="hide-2 ui-embed ui-script"><!-- Tabs Styles -->
+<style>
+
+.arlo-stab_link.is-active .arlo-stab-link_dot {
+  width: 0.375rem;
+  margin-right: 0.5rem;
+  opacity: 1;
+}
+
+.arlo-stab_link.is-active .arlo-stab-link_progress-bar-fill{
+  width: 100%;
+  transition: width 6s ease;
+}
+
+.arlo-stab_link.is-active .arlo-stab_pane {
+	max-height: 80rem;
+}
+
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const TOTAL_TABS = 4;
+  const INTERVAL = 6000;
+  const section = document.querySelector("#arlo-stab-section");
+
+  if (!section) return;
+
+  let current = 1;
+  let timer = null;
+
+  /* ---------------------------
+     Core helpers
+  --------------------------- */
+
+  function activateTab(index) {
+    // Remove active state from all tabs and panes
+    document
+      .querySelectorAll("[arlo-stab-link], [arlo-stab-pane]")
+      .forEach(el => el.classList.remove("is-active"));
+
+    // Activate matching tab links
+    document
+      .querySelectorAll(`[arlo-stab-link="${index}"]`)
+      .forEach(el => el.classList.add("is-active"));
+
+    // Activate matching panes
+    document
+      .querySelectorAll(`[arlo-stab-pane="${index}"]`)
+      .forEach(el => el.classList.add("is-active"));
+  }
+
+  function deactivateAll() {
+    document
+      .querySelectorAll("[arlo-stab-link], [arlo-stab-pane]")
+      .forEach(el => el.classList.remove("is-active"));
+  }
+
+  function startLoop() {
+    if (timer) return;
+
+    timer = setInterval(() => {
+      current = current < TOTAL_TABS ? current + 1 : 1;
+      activateTab(current);
+    }, INTERVAL);
+  }
+
+  function stopLoop() {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  /* ---------------------------
+     Initial state
+  --------------------------- */
+
+  deactivateAll();
+
+  /* ---------------------------
+     Click handling
+  --------------------------- */
+
+  document.querySelectorAll("[arlo-stab-link]").forEach(link => {
+    link.addEventListener("click", () => {
+      const clickedIndex = parseInt(
+        link.getAttribute("arlo-stab-link"),
+        10
+      );
+
+      if (!clickedIndex) return;
+
+      current = clickedIndex;
+      activateTab(current);
+      stopLoop();
+      startLoop();
+    });
+  });
+
+  /* ---------------------------
+     Intersection Observer
+  --------------------------- */
+
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          activateTab(current);
+          startLoop();
+        } else {
+          stopLoop();
+          deactivateAll();
+        }
+      });
+    },
+    { threshold: 0 }
+  );
+
+  observer.observe(section);
+});
+</script>
+
+
+
+<!-- Tabs Script -->
+<!--
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const TOTAL_TABS = 4;
+  const INTERVAL = 5000;
+
+  let current = 1;
+  let timer = null;
+
+  function activateTab(index) {
+    // Remove active state
+    document
+      .querySelectorAll("[arlo-stab-link], [arlo-stab-pane]")
+      .forEach(el => el.classList.remove("is-active"));
+
+    // Hide all dots
+    document
+      .querySelectorAll(".arlo-stab-link_dot")
+      .forEach(dot => {
+        dot.style.display = "none";
+        dot.style.opacity = "0";
+      });
+
+    // Activate links
+    const activeLinks = document.querySelectorAll(`[arlo-stab-link="${index}"]`);
+    activeLinks.forEach(el => el.classList.add("is-active"));
+
+    // Show dot first, then fade in
+    activeLinks.forEach(el => {
+      const dot = el.querySelector(".arlo-stab-link_dot");
+      if (dot) {
+        dot.style.display = "block";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            dot.style.opacity = "1";
+          });
+        });
+      }
+    });
+
+    // Activate panes
+    document
+      .querySelectorAll(`[arlo-stab-pane="${index}"]`)
+      .forEach(el => el.classList.add("is-active"));
+  }
+
+  function startLoop() {
+    clearInterval(timer);
+
+    timer = setInterval(() => {
+      current = current < TOTAL_TABS ? current + 1 : 1;
+      activateTab(current);
+    }, INTERVAL);
+  }
+
+  // Initial state
+  activateTab(current);
+  startLoop();
+
+  // Click handling
+  document.querySelectorAll("[arlo-stab-link]").forEach(link => {
+    link.addEventListener("click", () => {
+      const clickedIndex = parseInt(
+        link.getAttribute("arlo-stab-link"),
+        10
+      );
+
+      if (!clickedIndex) return;
+
+      current = clickedIndex;
+      activateTab(current);
+      startLoop();
+    });
+  });
+});
+</script>
+
+--></div><div id="arlo-stab-link-wrapper" class="arlo-stab_link-wrapper"><div arlo-stab-link="1" class="arlo-stab_link"><div class="arlo-stab-link_progress-bar"><div class="arlo-stab-link_progress-bar-fill"></div></div><div class="arlo-stab-link_content"><div class="arlo-stab-link_header"><div class="arlo-stab-link_header-left"><div class="arlo-stab-link_dot"></div><div class="text-color-neutral-600">{{tabs.0.label}}</div></div><div class="arlo-stab-header_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-stab-link_text">{{tabs.0.body}}</div></div><div arlo-stab="pane1" class="arlo-stab_pane show-tablet"><div class="arlo-stab_image-wrapper"><img alt="ARLO connecting a client's marketing platforms to Claude." src="/arlo/ui/conversation-2-quality-score.svg" loading="lazy" class="arlo-stab_image left-aligned"/><img sizes="100vw" srcset="/arlo/bg/venus-sunset.webp 500w, /arlo/bg/venus-sunset.webp 800w, /arlo/bg/venus-sunset.webp 1080w, /arlo/bg/venus-sunset.webp 1600w, /arlo/bg/venus-sunset.webp 2000w" alt="Illustration of lush green terraced fields on rolling hills under a blue sky with large white clouds." src="/arlo/bg/venus-sunset.webp" loading="lazy" class="arlo-stab_bg"/></div></div></div><div arlo-stab-link="2" class="arlo-stab_link"><div class="arlo-stab-link_progress-bar"><div class="arlo-stab-link_progress-bar-fill"></div></div><div class="arlo-stab-link_content"><div class="arlo-stab-link_header"><div class="arlo-stab-link_header-left"><div class="arlo-stab-link_dot"></div><div class="text-color-neutral-600">{{tabs.1.label}}</div></div><div class="arlo-stab-header_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-stab-link_text">{{tabs.1.body}}</div></div><div arlo-stab="pane2" class="arlo-stab_pane show-tablet"><div class="arlo-stab_image-wrapper"><img alt="Per-client tool permissions in ARLO." src="/arlo/ui/conversation-2-total-ad-spend.svg" loading="lazy" class="arlo-stab_image"/><img sizes="100vw" srcset="/arlo/bg/venus-sunset.webp 500w, /arlo/bg/venus-sunset.webp 800w, /arlo/bg/venus-sunset.webp 1080w, /arlo/bg/venus-sunset.webp 1600w, /arlo/bg/venus-sunset.webp 2000w" alt="nature and greenery image" src="/arlo/bg/venus-sunset.webp" loading="lazy" class="arlo-stab_bg"/></div></div></div><div arlo-stab-link="3" class="arlo-stab_link"><div class="arlo-stab-link_progress-bar"><div class="arlo-stab-link_progress-bar-fill"></div></div><div class="arlo-stab-link_content"><div class="arlo-stab-link_header"><div class="arlo-stab-link_header-left"><div class="arlo-stab-link_dot"></div><div class="text-color-neutral-600">{{tabs.2.label}}</div></div><div class="arlo-stab-header_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-stab-link_text">{{tabs.2.body}}</div></div><div arlo-stab="pane3" class="arlo-stab_pane show-tablet"><div class="arlo-stab_image-wrapper"><img alt="ARLO returning a live client metric inside Claude" src="/arlo/ui/conversation-3-core-web-vitals.svg" loading="lazy" class="arlo-stab_image"/><img sizes="100vw" srcset="/arlo/bg/venus-sunset.webp 500w, /arlo/bg/venus-sunset.webp 800w, /arlo/bg/venus-sunset.webp 1080w, /arlo/bg/venus-sunset.webp 1600w, /arlo/bg/venus-sunset.webp 2000w" alt="Illustrated panoramic view of terraced green fields on hills under a blue sky with white clouds." src="/arlo/bg/venus-sunset.webp" loading="lazy" class="arlo-stab_bg"/></div></div></div><div arlo-stab-link="4" class="arlo-stab_link is-last"><div class="arlo-stab-link_progress-bar"><div class="arlo-stab-link_progress-bar-fill"></div></div><div class="arlo-stab-link_content"><div class="arlo-stab-link_header"><div class="arlo-stab-link_header-left"><div class="arlo-stab-link_dot"></div><div class="text-color-neutral-600">{{tabs.3.label}}</div></div><div class="arlo-stab-header_icon ui-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.66406 9.99984L7.99738 4.6665L13.3307 9.99984" stroke="#737373" stroke-width="1.5" stroke-linecap="square"/>
+</svg></div></div><div class="arlo-stab-link_text">{{tabs.3.body}}</div></div><div arlo-stab="pane4" class="arlo-stab_pane show-tablet"><div class="arlo-stab_image-wrapper"><img alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/conversation-2-keyword-rankings.svg" loading="lazy" class="arlo-stab_image left-aligned"/><img sizes="100vw" srcset="/arlo/bg/venus-sunset.webp 500w, /arlo/bg/venus-sunset.webp 800w, /arlo/bg/venus-sunset.webp 1080w, /arlo/bg/venus-sunset.webp 1600w, /arlo/bg/venus-sunset.webp 2000w" alt="background image" src="/arlo/bg/venus-sunset.webp" loading="lazy" class="arlo-stab_bg"/></div></div></div></div><div id="arlo-stab-content" class="arlo-stab_content"><div arlo-stab-pane="1" class="arlo-stab_pane"><div class="arlo-stab_image-wrapper"><img width="1842" loading="lazy" alt="ARLO routing a client question to the right data source." src="/arlo/ui/conversation-3-meta-roas.svg" class="arlo-stab_image"/></div></div><div arlo-stab-pane="2" class="arlo-stab_pane"><div class="arlo-stab_image-wrapper"><img width="1842" loading="lazy" alt="ARLO returning a live client metric inside Claude" src="/arlo/ui/conversation-3-review-monitoring.svg" class="arlo-stab_image"/></div></div><div arlo-stab-pane="3" class="arlo-stab_pane"><div class="arlo-stab_image-wrapper"><img width="1842" loading="lazy" alt="ARLO returning a live client metric inside Claude" src="/arlo/ui/group-582.svg" class="arlo-stab_image"/></div></div><div arlo-stab-pane="4" class="arlo-stab_pane"><div class="arlo-stab_image-wrapper"><img width="1842" loading="lazy" alt="ARLO connecting Claude to a client's live marketing data" src="/arlo/ui/group-583.svg" class="arlo-stab_image"/></div></div><img width="1500" loading="lazy" alt="Expansive landscape of rolling green hills under a pale sky." src="/arlo/bg/tuscany.webp" class="arlo-stab-_bg-image"/></div></div></div><div class="arlo-stab_3-col-grid"><div class="arlo-stab_grid-card"><div class="arlo-stab-grid-card_header"><div class="bullet-dot"></div><div>{{trio.0.title}}</div></div><div>{{trio.0.body}}</div></div><div class="arlo-stab_grid-card"><div class="arlo-stab-grid-card_header"><div class="bullet-dot"></div><div>{{trio.1.title}}</div></div><div>{{trio.1.body}}</div></div><div class="arlo-stab_grid-card"><div class="arlo-stab-grid-card_header"><div class="bullet-dot"></div><div>{{trio.2.title}}</div></div><div>{{trio.2.body}}</div></div></div></div></div></section>

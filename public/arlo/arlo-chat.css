@@ -1,0 +1,970 @@
+/* ============================================================
+   Arlo arlo-cstudy chat — a live, looping Claude conversation.
+   White panel on a soft nature background, Arlo neon-green accents.
+   Loaded on /arlo; injected by arlo-chat.js.
+   ============================================================ */
+
+/* Temporarily removed sections (per request):
+   - arlo-xstats: "Powered by ARLO's live MCP Connector" + stats
+   - arlo-xstory: testimonials + "Trusted by 40+" */
+.arlo-xstats, .arlo-xstory { display: none !important; }
+/* decorative bracket/connector line between the step cards and the next section */
+.arlo-xconnect .arlo-lgroup_component { display: none !important; }
+
+/* "One connector for every role" — image band ~100vh → 60vh, image centered */
+.arlo-xsol .arlo-stab_tabs .arlo-stab_content,
+.arlo-xsol .arlo-stab_pane,
+.arlo-xsol .arlo-stab_image-wrapper { height: 69vh !important; }
+/* outer wrapper must grow to contain the tabs+image band (was capped → trio overlapped image) */
+.arlo-xsol .arlo-container-large > .arlo-stab_content { height: auto !important; }
+.arlo-xsol .arlo-stab_image-wrapper {
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+.arlo-xsol .arlo-stab_image {
+  max-height: 100% !important; height: auto !important; width: auto !important; max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+/* "Live data without the warehouse" — drop the bg image, plain like the others */
+.arlo-xdata { background-image: none !important; }
+/* the swapped pixel icons have no intrinsic size → constrain them */
+.arlo-datac_card-tag-icon { width: 26px !important; height: 26px !important; }
+
+/* Destinations "Sync to every destination" images — all pinned bottom-right.
+   ID selector (#arlo-idsync) to outrank the base template + the timer.html inline <style>. */
+#arlo-idsync .arlo-synct_image-wrapper img.arlo-synct_image[src*="insightpulse-weekly-report"],
+#arlo-idsync .arlo-synct_image-wrapper img.arlo-synct_image[src*="slack.svg"],
+#arlo-idsync .arlo-synct_image-wrapper img.arlo-synct_image[src*="google-sheets"] {
+  position: absolute !important;
+  inset: auto 0 0 auto !important;                 /* top/left auto, right/bottom 0 → bottom-right */
+  width: auto !important; height: auto !important; /* size by the panel HEIGHT, not width */
+  max-width: 90% !important; min-height: 0 !important;
+  object-fit: contain !important; object-position: bottom right !important;
+  transform: none !important;
+}
+#arlo-idsync .arlo-synct_image-wrapper img[src*="insightpulse-weekly-report"],
+#arlo-idsync .arlo-synct_image-wrapper img[src*="slack.svg"] { max-height: 93% !important; }   /* Looker + Slack */
+#arlo-idsync .arlo-synct_image-wrapper img[src*="google-sheets"] { max-height: 92% !important; } /* Google Sheets */
+
+/* ============================================================
+   Section 3 — Arlo "screen" overlays on the step cards
+   ============================================================ */
+.arlo-step-wrap { position: relative !important; overflow: hidden; }
+.arlo-step-overlay {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 86%; height: auto; max-height: 82%;
+  object-fit: contain;
+  z-index: 3; pointer-events: none;
+}
+/* pinned bottom-right (bleeds off the top-left) */
+.arlo-step-overlay.arlo-step-br {
+  left: auto; top: auto; right: 0; bottom: 0; transform: none;
+  width: 103%; max-height: none;
+}
+/* pinned bottom-middle (bleeds off the top) */
+.arlo-step-overlay.arlo-step-bm {
+  left: 50%; top: auto; right: auto; bottom: 0; transform: translate(-50%);
+  width: 96%; max-height: none;
+}
+
+/* ============================================================
+   Section 1 — hero tweaks
+   ============================================================ */
+/* same pixel font as the ARLO logo/wordmark */
+.arlo-eyebrow {
+  font-family: 'Geist Pixel', 'Press Start 2P', monospace;
+  font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+  color: #14181c; margin-bottom: 8px;                          /* tighter to the H1 */
+}
+.arlo-wordmark { color: #000 !important; }                     /* keep original Geist Pixel font, just force black */
+/* on dark sections: keep the purple flower (no invert) + white wordmark */
+.nav_logo.dark-state img { filter: none !important; }
+.nav_logo.dark-state .arlo-wordmark { color: #fff !important; }
+/* footer logo: green flower (not white) + white ARLO beside it + lighter footer bg */
+.arlo-footer_logo { filter: none !important; display: inline-block !important; vertical-align: middle; }
+.arlo-footer-wordmark { color: #fff !important; vertical-align: middle; }
+.footer_bottom-content-wrapper {
+  background-image: url(/arlo/bg/footer-statue.webp) !important;
+  background-position: center top !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+/* section eyebrows ("Destinations", "Featured", "Why ARLO", …) → pixel font (purple via recolor) */
+.section_intro-tag, .arlo-section_intro-tag, [class*="section_intro-tag"] {
+  font-family: 'Geist Pixel', 'Press Start 2P', monospace !important;
+}
+.arlo-xhero .max-width-360 { max-width: 720px !important; }   /* subtext 2x width → 2 lines */
+/* single hero CTA: keep the (renamed) green "Start Free — 14 Days"; hide the two outline buttons */
+.arlo-xhero a.arlo-button.outline-btn { display: none !important; }
+
+:root {
+  --arlo-neon: #D0FF71;       /* primary — askarlo.app neon green */
+  --arlo-neon-2: #B6F23E;     /* deeper green for gradient/contrast */
+  --arlo-purple: #8F93FF;     /* secondary — periwinkle purple */
+  --arlo-ink: #14181c;        /* dark text that sits on green */
+  --claude: #D97757;
+}
+
+/* ---- restore + size the arlo-cstudy band ---- */
+/* The hero is a fixed-height (min-height:880px) flex column, and the arlo-cstudy
+   is a flex item with flex:1 1 0% — so it got SQUISHED to fill leftover space
+   instead of using its content height, and the chat overflowed. Let the hero
+   grow and stop squishing the arlo-cstudy. */
+.arlo-xhero { height: auto !important; }
+.arlo-xcase.arlo-boosted {
+  position: relative;
+  flex: 0 0 auto !important;                            /* use content height, not leftover space */
+  display: block !important;
+  height: auto !important; min-height: 0 !important;
+  overflow-x: clip !important; overflow-y: visible !important;  /* clip the testimonial carousel → kill horizontal scroll */
+  margin-top: 4vw !important;                           /* gap between hero CTA and section 2 */
+  padding-top: 2vw !important; padding-bottom: 2.5vw !important; /* BG hugs the chat (~15% shorter) */
+}
+.arlo-xcase.arlo-boosted::before {
+  content:""; position:absolute; inset:0; z-index:0;
+  background: url("/bg/wildflowers.webp") center/cover no-repeat;
+  filter: saturate(1.05);
+}
+.arlo-xcase.arlo-boosted::after {
+  content:""; position:absolute; inset:0; z-index:0;
+  background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.10) 50%, rgba(255,255,255,.30));
+}
+/* the old client-switcher tabs drove the 5 videos we removed — hide them */
+.arlo-xcase.arlo-boosted .arlo-cstudy_tabs-menu-swiper,
+.arlo-xcase.arlo-boosted .logo-marquee_item.is-label,
+.arlo-xcase.arlo-boosted .choose-arlocstudy { display: none !important; }
+
+/* ---- layout: 30+ card pinned top-left, chat centered ---- */
+.arlo-cs-wrap {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; box-sizing: border-box;
+  min-height: clamp(340px, 44vh, 470px);
+  padding: 20px clamp(16px, 3vw, 48px);
+}
+.arlo-cs-card {
+  position: absolute; top: clamp(28px, 4vw, 52px); left: clamp(20px, 4vw, 60px);
+  z-index: 4; width: min(320px, 40vw); box-sizing: border-box;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 18px; padding: 26px 26px 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.16);
+}
+.arlo-cs-num { font-size: 54px; line-height: 1; font-weight: 500; color: var(--arlo-ink); letter-spacing: -0.02em; }
+.arlo-cs-label { margin-top: 9px; font-size: 14px; font-weight: 500; color: var(--arlo-ink); }
+.arlo-cs-body { margin: 15px 0 18px; font-size: 14px; line-height: 1.55; color: rgba(20,24,28,.70); }
+.arlo-cs-link { font-family: ui-monospace, monospace; font-size: 11.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--arlo-ink); text-decoration: none; border-bottom: 2px solid var(--arlo-neon); padding-bottom: 2px; }
+
+.arlo-chat-mount {
+  width: 100%; margin: 0 auto;
+  max-width: 640px;
+  height: clamp(340px, 49vh, 510px);   /* 15% shorter */
+}
+
+/* ============================================================
+   Chat panel — light theme
+   ============================================================ */
+.alh {
+  --alh-text:#14181c; --alh-soft:#2b3038; --alh-muted:#6b7280; --alh-faint:#9aa1ab;
+  position:relative; width:100%; height:100%; padding:0; box-sizing:border-box;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.alh-glow { display:none; }
+
+.alh-panel {
+  position:relative; z-index:2; height:100%;
+  display:flex; flex-direction:column; box-sizing:border-box;
+  border-radius:24px; overflow:hidden;
+  background:rgba(255,255,255,0.86);
+  border:1px solid rgba(255,255,255,0.9);
+  backdrop-filter:blur(24px) saturate(140%); -webkit-backdrop-filter:blur(24px) saturate(140%);
+  box-shadow:0 30px 80px rgba(20,30,20,.20);
+}
+.alh-panel::before {
+  content:""; position:absolute; left:0; right:0; top:0; height:1px; z-index:6;
+  background:linear-gradient(90deg, transparent 8%, rgba(255,255,255,.9) 40%, transparent 92%);
+}
+.alh-topfade {
+  position:absolute; left:0; right:0; top:0; height:118px; z-index:4;
+  /* solid white through the title/"connected to" area, then fade — so the header stays readable */
+  background:linear-gradient(to bottom, #ffffff 0%, #ffffff 60%, rgba(255,255,255,0) 100%);
+  pointer-events:none;
+}
+
+.alh-titlebadge {
+  position:absolute; top:18px; left:50%; transform:translate(-50%); z-index:5;
+  display:flex; flex-direction:column; align-items:center; gap:8px; white-space:nowrap;
+}
+.alh-claudemark { height:20px; width:auto; display:block; }
+.alh-conn { display:flex; align-items:center; gap:8px; height:18px; }
+.alh-conn-label { font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--alh-faint); }
+.alh-conn-flip { position:relative; height:18px; min-width:70px; overflow:hidden; display:flex; align-items:center; }
+.alh-conn-item { display:flex; align-items:center; gap:6px; transition:transform .32s cubic-bezier(.3,.7,.3,1), opacity .32s ease; }
+.alh-conn-item svg { display:block; width:auto; }
+.alh-conn-name { font-size:11px; font-weight:600; color:var(--alh-soft); letter-spacing:.01em; }
+
+.alh-thread {
+  position:relative; flex:1; overflow-y:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  gap:15px; padding:92px 22px 14px;
+}
+.alh-row {
+  display:flex; flex-direction:column;
+  animation:alhPop .5s cubic-bezier(.2,.9,.3,1.05) both;
+  transition:opacity .8s ease, filter .8s ease, transform .8s ease;
+  will-change:opacity, filter, transform;
+}
+@keyframes alhPop { from { opacity:0; transform:translateY(14px); } }
+.alh-row.alh-user { align-self:flex-end; align-items:flex-end; max-width:78%; transform-origin:bottom right; }
+.alh-row.alh-agent { align-self:flex-start; align-items:flex-start; max-width:90%; transform-origin:bottom left; }
+
+.alh-client { font-size:9px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--alh-faint); margin:0 6px 5px; }
+.alh-agentmeta { display:flex; align-items:center; gap:7px; margin:0 2px 7px; font-size:9px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; }
+.alh-agentmeta .alh-an { color:var(--alh-soft); }
+.alh-agentmeta .alh-sep { color:var(--alh-faint); opacity:.6; font-weight:400; }
+.alh-agentmeta .alh-as { color:var(--alh-faint); }
+
+.alh-orb { width:17px; height:17px; flex:0 0 auto; color:var(--claude); transition:filter .5s ease; }
+.alh-orb.alh-live { filter:drop-shadow(0 0 7px rgba(217,119,87,.6)); }  /* stay Claude-orange, just glow */
+.alh-orb svg { width:100%; height:100%; display:block; }
+
+/* company monogram beside the question bubble */
+.alh-userline { display:flex; align-items:flex-end; gap:8px; }
+.alh-avatar { width:26px; height:26px; border-radius:50%; flex:0 0 auto;
+  background:#2b3038; color:#fff; font-size:10px; font-weight:600; letter-spacing:.02em;
+  display:flex; align-items:center; justify-content:center; }
+
+/* light-purple user bubble (tint of the brand secondary #8F93FF) */
+.alh-user .alh-bubble {
+  background:#BEBFF9; border:1px solid #BEBFF9;
+  border-radius:17px; border-bottom-right-radius:6px; padding:10px 14px 11px;
+  font-size:13.5px; line-height:1.5; color:#1c1d3a; box-shadow:0 8px 22px rgba(120,112,210,.20);
+}
+.alh-time { font-size:9px; color:rgba(28,29,58,.5); margin-left:10px; vertical-align:-1px; }
+
+.alh-statlines { display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+.alh-statline { display:flex; align-items:center; gap:8px; font-size:11px; font-weight:500; color:var(--alh-muted); animation:alhPop .35s ease both; }
+.alh-statline.alh-done { opacity:.5; }
+.alh-logo { width:13px; height:13px; flex:0 0 auto; display:block; border-radius:3px; }
+.alh-sparkle { font-size:12px; line-height:1; color:var(--arlo-neon-2); }
+.alh-spin { width:9px; height:9px; flex:0 0 auto; border-radius:50%;
+  border:1.3px solid rgba(0,0,0,.12); border-top-color:var(--arlo-neon-2); animation:alhSpin .7s linear infinite; }
+@keyframes alhSpin { to { transform:rotate(360deg); } }
+
+.alh-answer { font-size:14px; line-height:1.6; color:var(--alh-soft); }
+.alh-caret { display:inline-block; width:6px; height:13px; margin-left:2px; vertical-align:-2px;
+  background:linear-gradient(180deg,var(--arlo-neon-2),var(--arlo-neon)); border-radius:1.5px; animation:alhBlink .8s steps(1) infinite; }
+@keyframes alhBlink { 50% { opacity:0; } }
+
+.alh-actions { display:flex; gap:13px; margin-top:9px; opacity:0; transition:opacity .6s ease; }
+.alh-actions.alh-on { opacity:.35; }
+.alh-actions svg { width:13px; height:13px; stroke:var(--alh-muted); fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+.alh-inputwrap { flex:0 0 auto; padding:0 14px 14px; }
+.alh-inputbar { display:flex; align-items:center; gap:10px;
+  background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.07); border-radius:16px; padding:11px 11px 11px 16px; }
+.alh-input { flex:1; font-size:13.5px; color:var(--alh-text); min-height:18px; white-space:nowrap; overflow:hidden; }
+.alh-input .alh-ph { color:var(--alh-faint); }
+.alh-send { width:30px; height:30px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.06); transition:background .3s ease, transform .15s ease, box-shadow .3s ease; }
+.alh-send svg { width:13px; height:13px; stroke:var(--alh-muted); transition:stroke .3s ease; }
+.alh-send.alh-armed { background:linear-gradient(120deg,var(--arlo-neon),var(--arlo-neon-2)); box-shadow:0 4px 16px rgba(182,242,62,.4); }
+.alh-send.alh-armed svg { stroke:var(--arlo-ink); }
+.alh-send.alh-fire { transform:scale(.85); }
+
+@media (prefers-reduced-motion: reduce) { .alh-caret, .alh-spin, .alh-row { animation:none; } .alh-row { transition:none; } }
+@media (max-width: 640px) { .alh-thread { padding:110px 15px 12px; } .arlo-chat-mount { height:clamp(430px, 66vh, 560px); } }
+
+/* ---- Security section: big-statement redesign (badges removed) ---- */
+.arlo-xtrust .arlo-trust_grid { display:block !important; }
+.arlo-sec-statement { max-width:960px; margin:8px auto 0; padding:0 8px; }
+.arlo-sec-lead {
+  font-family:'PP Neue Montreal','Inter',sans-serif;
+  font-size:clamp(26px, 3.4vw, 46px);
+  line-height:1.24;
+  letter-spacing:-0.01em;
+  color:#e9ece8;
+  text-align:center;
+  margin:0;
+}
+.arlo-sec-lead .arlo-hl { color:var(--arlo-neon); }
+.arlo-sec-points {
+  max-width:960px;
+  margin:56px auto 0;
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:34px;
+  border-top:1px solid rgba(255,255,255,0.12);
+  padding-top:34px;
+}
+.arlo-sec-point-title {
+  font-family:'Geist Pixel','Press Start 2P',monospace;
+  font-size:12px;
+  letter-spacing:0.02em;
+  color:var(--arlo-neon);
+  margin-bottom:12px;
+}
+.arlo-sec-point-body {
+  font-family:'PP Neue Montreal','Inter',sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  color:#b1ada1;
+}
+@media (max-width: 700px) {
+  .arlo-sec-points { grid-template-columns:1fr; gap:26px; }
+}
+
+/* ---- Customer/persona tabs: center the app screenshot on its blurred bg
+        (the base template gave it an asymmetric left/right inset) ---- */
+.arlo-xsol .arlo-stab_image {
+  left: 50% !important;
+  right: auto !important;
+  transform: translate(-50%) !important;
+}
+
+/* ---- Live-data cards: reuse the Connect/Assign/Ask media-card component
+        (scenic bg + app screenshot overlay pinned to a corner) ---- */
+.arlo-media-frame {
+  position: relative !important;
+  height: 470px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(20, 24, 28, 0.16);
+  margin-bottom: 20px;
+}
+.arlo-media-bg {
+  position: absolute !important;
+  inset: 0;
+  z-index: 1;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+/* the app image, now an overlay, sheds its old framed-look styling */
+.arlo-xdata .arlo-datac_card-image.arlo-step-overlay {
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* ---- Nav dark-state: light the whole menu over dark sections (security, footer) ---- */
+.arlo-nav_component.arlo-nav-dark .arlo-nav_menu-item,
+.arlo-nav_component.arlo-nav-dark .arlo-nav_menu-item * {
+  color: #ffffff !important;
+}
+.arlo-nav_component.arlo-nav-dark .nav_link-4.is-login {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+/* dropdown caret / small icons in the menu follow the light state */
+.arlo-nav_component.arlo-nav-dark .arlo-nav_menu-item svg,
+.arlo-nav_component.arlo-nav-dark .arlo-nav_menu-item path {
+  stroke: #ffffff !important;
+}
+
+/* ---- Login: breathing room on its left, gap before the Start-For-Free pill,
+   and a wider rectangular hover pill (was near-circular from tiny .375rem sides) ---- */
+.nav_link-4.is-login {
+  margin-left: 22px !important;
+  margin-right: 12px !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-top: .4rem !important;
+  padding-bottom: .4rem !important;
+  border-radius: 100px !important;
+}
+
+/* ---- Services nav dropdown (replaces the old mega-menu) ---- */
+.arlo-nav-dd-wrap { position: relative; display: flex; align-items: center; }
+.arlo-dd {
+  position: absolute; top: 100%; left: 50%; transform: translate(-50%) translateY(6px);
+  min-width: 240px; padding: 8px; z-index: 60;
+  background: #ffffff; border: 1px solid rgba(20,24,28,0.08);
+  border-radius: 14px; box-shadow: 0 20px 44px rgba(20,24,28,0.16);
+  display: flex; flex-direction: column; gap: 2px;
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .16s ease, transform .16s ease;
+}
+.arlo-nav-dd-wrap:hover .arlo-dd { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%) translateY(2px); }
+.arlo-dd a {
+  display: block; padding: 9px 12px; border-radius: 9px;
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 14px; color: #14181c; text-decoration: none;
+  white-space: nowrap;
+}
+.arlo-dd a:hover { background: #f3f3ee; color: #000; }
+
+/* let the Services dropdown escape the nav pill's clip — every nav ancestor that
+   could clip it (the base .nav_links-wrapper has overflow:hidden, which clips the
+   dropdown once the nav condenses into its scrolled pill state). */
+.arlo-nav_component, .arlo-nav_container, .nav_content, .nav_inner-content,
+.nav_links-wrapper, .nav_links-wrapper.is-in-nav-content,
+.arlo-nav-dd-wrap { overflow: visible !important; }
+.arlo-nav-dd-wrap { position: relative; z-index: 70; }
+.arlo-dd { z-index: 9999 !important; }
+/* hover bridge: fill the gap between the Services link and the menu so moving
+   the cursor down never drops the hover (which closed it in scrolled state). */
+.arlo-nav-dd-wrap::after {
+  content: ""; position: absolute; top: 100%; left: 0; right: 0; height: 16px;
+}
+
+/* ---- Security section: keep only the eyebrow (centered above the statement),
+        drop the H2 + right-hand subtext + decorative line graphics ---- */
+.arlo-xtrust .arlo-trust_header h2,
+.arlo-xtrust .arlo-trust_header .max-width-small-v2 { display: none !important; }
+.arlo-xtrust .arlo-trust_header,
+.arlo-xtrust .arlo-section_intro-component { text-align: center !important; align-items: center !important; }
+.arlo-xtrust .arlo-section_intro-component { width: 100% !important; margin: 0 auto !important; }
+.arlo-xtrust .arlo-trust_border { display: none !important; }
+
+/* nav: drop the leftover mega-menu hover-follow layer that doubled up into a "box" */
+.nav_light-bg .nav_bg.is-second { display: none !important; }
+
+/* ---- Shimmer CTA (nav "Start For Free") — spinning neon-green border on ink,
+        brand colors. Vanilla port of the shadcn ShimmerButton idea. ---- */
+.arlo-shimmer {
+  position: relative; z-index: 3;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden; white-space: nowrap;
+  padding: 12px 24px !important;
+  border: 0 !important;
+  border-radius: 100px !important;
+  background: transparent !important;
+  text-decoration: none; cursor: pointer;
+  transition: transform .25s ease;
+}
+.arlo-shimmer:active { transform: translateY(1px); }
+/* spinning neon conic gradient (the "shimmer") */
+.arlo-shimmer::before {
+  content: ""; position: absolute; z-index: 0; inset: -65%;
+  background: conic-gradient(from 0deg, transparent 0 52%, #6fa62a 74%, #8fce3a 86%, transparent 100%);
+  animation: arlo-shimmer-spin 2.6s linear infinite;
+}
+/* ink center that leaves only the shimmering edge visible */
+.arlo-shimmer::after {
+  content: ""; position: absolute; z-index: 1; inset: 2px;
+  background: #d0ff71; border-radius: 100px;
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
+  transition: box-shadow .25s ease;
+}
+.arlo-shimmer:hover::after { box-shadow: inset 0 -6px 12px rgba(0,0,0,0.14); }
+.arlo-shimmer-label {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #14181c; font-weight: 500; font-size: 15px; letter-spacing: -0.01em;
+}
+.arlo-shimmer-label svg { width: 15px; height: 15px; }
+@keyframes arlo-shimmer-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .arlo-shimmer::before { animation: none; } }
+}
+
+/* ---- ARLO blog teaser (own markup + own images; placeholder posts) ---- */
+.arlo-blog { padding: 96px 0 264px !important; background: #f4f3ee; }
+.arlo-blog-inner { max-width: 1312px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 64px); }
+.arlo-blog-head { margin-bottom: 60px; }
+.arlo-blog-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: 0.04em; color: #8F93FF; margin-bottom: 14px;
+}
+.arlo-blog-title {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(30px, 4vw, 52px); line-height: 1.06; letter-spacing: -0.015em;
+  color: #14181c; margin: 0; max-width: 680px;
+}
+.arlo-blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.arlo-blog-card { display: block; text-decoration: none; color: inherit; }
+.arlo-blog-media {
+  border-radius: 18px; overflow: hidden; aspect-ratio: 16 / 11; margin-bottom: 18px;
+  box-shadow: 0 10px 30px rgba(20,24,28,0.10);
+}
+.arlo-blog-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.arlo-blog-card:hover .arlo-blog-media img { transform: scale(1.04); }
+.arlo-blog-tag {
+  display: inline-block; font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 10px; letter-spacing: 0.04em; color: #8F93FF; margin-bottom: 10px;
+}
+.arlo-blog-card-title {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: 21px; line-height: 1.28; letter-spacing: -0.005em; color: #14181c; margin: 0 0 12px;
+}
+.arlo-blog-card:hover .arlo-blog-card-title { color: #000; }
+.arlo-blog-meta { font-size: 13px; color: #b1ada1; }
+@media (max-width: 800px) { .arlo-blog-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+/* security section: breathing room below the three points before the dark section ends */
+.arlo-xtrust .arlo-trust_inner-content { padding-bottom: 96px !important; }
+
+/* ---- FAQ accordion (own markup; brand fonts + colors; <details>, no JS) ---- */
+.arlo-faq { background: #f4f3ee; padding: clamp(64px, 9vw, 120px) 0; }
+.arlo-faq-inner {
+  max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px);
+  display: grid; grid-template-columns: 2fr 3fr; gap: clamp(32px, 5vw, 72px);
+}
+.arlo-faq-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: 0.04em; color: #8F93FF; margin-bottom: 14px;
+}
+.arlo-faq-title {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(30px, 3.6vw, 46px); line-height: 1.05; letter-spacing: -0.015em;
+  color: #14181c; margin: 0;
+}
+.arlo-faq-sub { font-family: 'PP Neue Montreal','Inter',sans-serif; color: #7a7367; font-size: 18px; margin-top: 16px; }
+.arlo-faq-contact { font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 15px; color: #b1ada1; margin-top: 26px; }
+.arlo-faq-contact a { color: #8F93FF; font-weight: 500; text-decoration: none; }
+.arlo-faq-contact a:hover { text-decoration: underline; }
+.arlo-faq-item { border-bottom: 1px solid rgba(20,24,28,0.10); }
+.arlo-faq-item:first-child { border-top: 1px solid rgba(20,24,28,0.10); }
+.arlo-faq-q {
+  list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 21px 0; font-family: 'PP Neue Montreal','Inter',sans-serif; font-weight: 500; font-size: 17px; color: #14181c;
+}
+.arlo-faq-q::-webkit-details-marker { display: none; }
+.arlo-faq-q:hover { color: #000; }
+.arlo-faq-chevron { flex: none; transition: transform .25s ease; color: #8F93FF; }
+.arlo-faq-item[open] .arlo-faq-chevron { transform: rotate(180deg); }
+.arlo-faq-a {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 16px; line-height: 1.6;
+  color: #665f54; padding: 0 0 22px; max-width: 62ch;
+}
+@media (max-width: 800px) { .arlo-faq-inner { grid-template-columns: 1fr; gap: 28px; } }
+
+/* Liquid-chrome layer — sits between each solution-tab bg photo and its app
+   screenshot. Fills the tab wrapper; z-index:-1 keeps it above the (hidden)
+   bg but below the app screenshot (.arlo-stab_image, z-index:0). */
+.arlo-chrome { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.arlo-chrome canvas { width: 100% !important; height: 100% !important; display: block; }
+
+/* ── Feature accordion (cohere-style): ~45vw media + ~45vw expandable text ──
+   Auto-advances like the Destinations section; .is-flipped puts image on the right. */
+.arlo-feat { padding: 5rem 0; overflow: hidden; }
+.arlo-feat-inner {
+  display: flex; align-items: center; gap: 5vw;
+  padding: 0 5vw; max-width: 1600px; margin: 0 auto;
+}
+.arlo-feat.is-flipped .arlo-feat-inner { flex-direction: row-reverse; }
+.arlo-feat-media {
+  flex: 1.08 1 0%; min-width: 0; position: relative; aspect-ratio: 16 / 14.3;
+  border-radius: 22px; overflow: hidden; background: #F4F3EE;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 30px 60px -30px rgba(20,24,28,.28);
+}
+/* Background photo (chrome effect mounts on top of it, like the other sections). */
+.arlo-feat-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* App-screenshot variant (kept for when the app overlay is added later). */
+.arlo-feat-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; padding: 2rem; opacity: 0; transition: opacity .5s ease;
+}
+.arlo-feat-img.is-active { opacity: 1; }
+.arlo-feat-text { flex: 1.1 1 0%; min-width: 0; }
+.arlo-feat-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: .04em; color: #8F93FF; margin-bottom: 14px;
+}
+.arlo-feat-heading {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 44px); line-height: 1.06; letter-spacing: -.015em;
+  color: #14181c; margin: 0 0 1.75rem; max-width: 18ch;
+}
+.arlo-feat-list { border-top: 1px solid rgba(120,110,92,.22); }
+.arlo-feat-item {
+  display: block; width: 100%; text-align: left; border: 0; background: transparent;
+  border-bottom: 1px solid rgba(120,110,92,.22); padding: 0; cursor: pointer; position: relative;
+  font-family: 'PP Neue Montreal','Inter',sans-serif;
+}
+.arlo-feat-progress { position: absolute; top: -1px; left: 0; right: 0; height: 2px; overflow: hidden; }
+.arlo-feat-progress-fill { height: 100%; width: 0; background: #8F93FF; opacity: 0; }
+.arlo-feat-item.is-active .arlo-feat-progress-fill { width: 100%; opacity: 1; transition: width 8s linear; }
+.arlo-feat-item-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; }
+.arlo-feat-item-title { font-size: 18px; font-weight: 500; color: #7a7367; transition: color .25s ease; }
+.arlo-feat-item.is-active .arlo-feat-item-title, .arlo-feat-item:hover .arlo-feat-item-title { color: #14181c; }
+.arlo-feat-chevron { flex: none; color: #8F93FF; display: inline-flex; transition: transform .3s ease; }
+.arlo-feat-item.is-active .arlo-feat-chevron { transform: rotate(180deg); }
+/* Fixed height (not max-height) so an opening body and a closing body always sum
+   to the same total → the accordion never changes height mid-transition, so the
+   section and everything below it stay perfectly still. Only the text fades/slides. */
+.arlo-feat-item-body {
+  height: 0; overflow: hidden; opacity: 0;
+  transition: height .45s ease, opacity .3s ease;
+}
+.arlo-feat-item.is-active .arlo-feat-item-body { height: 13rem; opacity: 1; }
+.arlo-feat-item-body p {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 16px; line-height: 1.6;
+  color: #524d44; margin: 0 0 14px; max-width: 53ch;
+}
+.arlo-feat-item-body ul { list-style: none; padding: 0; margin: 0; }
+.arlo-feat-item-body li {
+  position: relative; padding-left: 20px; margin-bottom: 8px;
+  font-size: 15px; line-height: 1.5; color: #7a7367;
+}
+.arlo-feat-item-body li::before {
+  content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #8F93FF;
+}
+@media (max-width: 991px) {
+  .arlo-feat-inner, .arlo-feat.is-flipped .arlo-feat-inner { flex-direction: column; gap: 2.5rem; padding: 0 6vw; }
+  .arlo-feat-media, .arlo-feat-text { flex: none; max-width: 100%; width: 100%; }
+}
+
+/* ── "Best fit" — ADA-inspired: centered heading + 4 brand-colored cards.
+   Pixel icons are recolored per card via CSS mask (background-color = icon color). */
+.arlo-fit { padding: 6rem 0 6.5rem; background: #F4F3EE; }
+.arlo-fit-inner { max-width: 1180px; margin: 0 auto; padding: 0 5vw; }
+.arlo-fit-head { text-align: center; max-width: 720px; margin: 0 auto 3.25rem; }
+.arlo-fit-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: .04em; color: #8F93FF; margin-bottom: 16px;
+}
+.arlo-fit-heading {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(30px, 3.4vw, 46px); line-height: 1.05; letter-spacing: -.015em;
+  color: #14181c; margin: 0 0 16px;
+}
+.arlo-fit-sub {
+  font-family: 'PP Neue Montreal','Inter',sans-serif;
+  font-size: 18px; line-height: 1.5; color: #7a7367; margin: 0 auto; max-width: 540px;
+}
+/* Sequence-style 5×2 grid — icon + short heading + one-line body. One bordered
+   container, cells touching with hairline dividers. Static = cream (matches page),
+   hover = white (same style as the prompt boxes/tabs). */
+.arlo-fit-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+  border: 1px solid #E7E3D7; border-radius: 20px; overflow: hidden; background: #F4F3EE;
+}
+.arlo-fit-card {
+  display: flex; flex-direction: column; gap: 16px;
+  min-height: 190px; padding: 22px; box-sizing: border-box;
+  background: transparent;
+  border-right: 1px solid #E7E3D7; border-bottom: 1px solid #E7E3D7;
+  transition: background .2s ease;
+}
+.arlo-fit-card:nth-child(5n) { border-right: 0; }       /* last column */
+.arlo-fit-card:nth-child(n+6) { border-bottom: 0; }     /* last row (cards 6–10) */
+.arlo-fit-card:hover { background: #ffffff; }
+.arlo-fit-badge {
+  width: 44px; height: 44px; border-radius: 11px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(143,147,255,.12); color: #8F93FF;
+}
+.arlo-fit-i { display: block; }
+.arlo-fit-card-text { margin-top: auto; }
+.arlo-fit-card-title {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-weight: 500;
+  font-size: 16px; line-height: 1.25; margin: 0 0 8px; color: #14181c;
+}
+.arlo-fit-card-body {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 13.5px; line-height: 1.45; margin: 0; color: #7a7367;
+}
+/* Fewer columns → re-add the borders the desktop nth-child rules removed, so the
+   grid lines stay correct at every breakpoint. */
+@media (max-width: 1100px) {
+  .arlo-fit-grid { grid-template-columns: repeat(3, 1fr); }
+  .arlo-fit-card { border-right: 1px solid #E7E3D7; border-bottom: 1px solid #E7E3D7; }
+  .arlo-fit-card:nth-child(3n) { border-right: 0; }
+  .arlo-fit-card:nth-child(n+10) { border-bottom: 0; }   /* last row starts at card 10 */
+}
+@media (max-width: 720px) {
+  .arlo-fit-grid { grid-template-columns: repeat(2, 1fr); }
+  .arlo-fit-card { border-right: 1px solid #E7E3D7; border-bottom: 1px solid #E7E3D7; }
+  .arlo-fit-card:nth-child(2n) { border-right: 0; }
+  .arlo-fit-card:nth-child(n+9) { border-bottom: 0; }
+}
+@media (max-width: 460px) {
+  .arlo-fit-grid { grid-template-columns: 1fr; }
+  .arlo-fit-card { min-height: 0; border-right: 0; }
+  .arlo-fit-card:last-child { border-bottom: 0; }
+}
+
+/* ── Warm neutral palette — cream #F4F3EE + taupe #B1ADA1 + white; no cool greys.
+   Primary colors stay green (#D0FF71) + purple (#8F93FF). ── */
+.arlo-body { background-color: #F4F3EE !important; color: #6f6a5f !important; }
+:root {
+  --arloeng-cool-gray: #B1ADA1;   /* was #9aa8b1 (cool blue-grey) */
+  --arloeng-dark-gray: #3e3a33;   /* was #3e4852 (cool) → warm ink-grey */
+}
+
+/* ── Secondary CTA link (underline + arrow). Bright shimmer button is reserved
+   for "Start For Free" sign-up only; everything else uses this. ── */
+.arlo-link {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-weight: 500; font-size: 16px;
+  color: #2b2620; transition: gap .2s ease, color .2s ease;
+}
+.arlo-link-label { border-bottom: 1.5px solid #8F93FF; padding-bottom: 2px; }
+.arlo-link-arrow { color: #8F93FF; flex: none; transition: transform .2s ease; }
+.arlo-link:hover { color: #8F93FF; gap: 11px; }
+.arlo-link:hover .arlo-link-arrow { transform: translateX(2px); }
+
+/* ── Nav: round the frosted background layers (were square over a rounded pill) ── */
+.nav_bg, .nav_light-bg, .nav_dark-bg { border-radius: 6.25rem !important; }
+
+/* ── Warm the the base template neutral text greys (keep each one's light/dark role) ── */
+.text-color-neutral-300 { color: #d6d2c7 !important; }  /* warm light (dark bgs) */
+.text-color-neutral-400 { color: #a9a396 !important; }  /* warm light-mid */
+.text-color-neutral-600 { color: #5a544a !important; }  /* warm mid-dark (light bgs) */
+.text-color-neutral-800 { color: #262019 !important; }  /* warm near-black */
+.text-color-dark-grey-8 { color: #6a6459 !important; }  /* warm, more readable */
+
+
+/* ── Solution tabs: selected = white, unselected = darker cream ── */
+.arlo-stab_link {
+  background-color: #F4F3EE !important;   /* lighter cream (unselected) — matches page */
+  border-right: 1px solid #E7E3D7 !important; transition: background-color .2s ease;
+}
+.arlo-stab_link.is-active { background-color: #ffffff !important; } /* selected = white */
+/* title: muted on unselected, full-strength on the selected one */
+.arlo-stab_link .text-color-neutral-600 { color: #8f897c !important; transition: color .2s ease; }
+.arlo-stab_link.is-active .text-color-neutral-600 { color: #262019 !important; }
+
+/* ── SEO hero: 2-col layout. The image column matches the TEXT column's height
+   (not the image's natural height), so there's no dead space below the buttons.
+   The image is absolutely positioned → it doesn't drive the row height; the row
+   height comes from the text column, and the image fills it. ── */
+.arlo-xphero .arlo-phero-cols-wrapper { align-items: stretch !important; }
+/* extra breathing room above the eyebrow — text column only, image stays put */
+.arlo-xphero .arlo-phero-left-col { padding-top: 3.5rem !important; }
+.arlo-xphero .arlo-phero-right-col {
+  position: relative; border-radius: 22px !important; overflow: hidden !important;
+  transform: translateY(-28px);   /* nudge the hero image up a bit */
+  /* clip-path reliably rounds a GPU-composited WebGL canvas that overflow:hidden
+     alone won't clip — matches the 22px on the feature panels below. */
+  clip-path: inset(0 round 22px) !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 30px 60px -30px rgba(20,24,28,.28) !important;
+}
+.arlo-xphero .arlo-phero-right-col .arlo-chrome,
+.arlo-xphero .arlo-phero-right-col .arlo-chrome canvas {
+  border-radius: 22px !important;
+}
+.arlo-xphero .arlo-form-section-image {
+  position: absolute !important; inset: 0 !important;
+  width: 100% !important; height: 100% !important; object-fit: cover !important;
+  border-radius: 22px !important;
+}
+
+/* ═══ How it works — 3 tight steps, number in the corner, chrome bg image ═══ */
+.arlo-hiw { padding: 6rem 0 2rem; }
+.arlo-hiw-inner { max-width: 1180px; margin: 0 auto; padding: 0 5vw; }
+.arlo-hiw-head { max-width: 720px; margin: 0 0 3rem; }
+.arlo-hiw-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: .04em; color: #8F93FF; margin-bottom: 16px;
+}
+.arlo-hiw-heading {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 44px); line-height: 1.06; letter-spacing: -.015em;
+  color: #14181c; margin: 0; max-width: 20ch;
+}
+.arlo-hiw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.arlo-hiw-card {
+  background: #fff; border: 1px solid rgba(143,147,255,.28); border-radius: 20px;
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.arlo-hiw-card:hover {
+  border-color: #8F93FF; transform: translateY(-4px);
+  box-shadow: 0 22px 46px -24px rgba(143,147,255,.5);
+}
+.arlo-hiw-media {
+  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+  clip-path: inset(0 round 0px);   /* keep chrome canvas inside the card's top */
+}
+.arlo-hiw-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.arlo-hiw-num {
+  position: absolute; top: 10px; left: 18px; z-index: 4;
+  font-family: 'Geist Pixel','Press Start 2P',monospace; font-size: 96px; line-height: 1;
+  color: #D0FF71; text-shadow: 0 6px 22px rgba(20,24,28,.45);
+}
+.arlo-hiw-text { padding: 22px 24px 26px; }
+.arlo-hiw-title {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-weight: 500;
+  font-size: 20px; line-height: 1.2; color: #14181c; margin: 0 0 10px;
+}
+.arlo-hiw-body {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 15px; line-height: 1.55; color: #5a544a; margin: 0;
+}
+@media (max-width: 860px) { .arlo-hiw-grid { grid-template-columns: 1fr; } }
+
+/* ═══ Example questions — sticky heading (left) + scrolling accordion (right) ═══ */
+.arlo-ask { padding: 5rem 0 6rem; }
+.arlo-ask-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 5vw;
+  display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 5vw; align-items: start;
+}
+.arlo-ask-head { position: sticky; top: 120px; align-self: start; }
+.arlo-ask-eyebrow {
+  font-family: 'Geist Pixel','Press Start 2P',monospace;
+  font-size: 12px; letter-spacing: .04em; color: #8F93FF; margin-bottom: 16px;
+}
+.arlo-ask-heading {
+  font-family: 'Libre Caslon Text', Georgia, serif; font-weight: 400;
+  font-size: clamp(30px, 3.4vw, 46px); line-height: 1.04; letter-spacing: -.015em;
+  color: #14181c; margin: 0 0 18px; max-width: 12ch;
+}
+.arlo-ask-sub {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 17px; line-height: 1.5;
+  color: #5a544a; margin: 0; max-width: 34ch;
+}
+/* prompt-library feel: each row reads like a prompt you'd hand Claude, not a FAQ */
+.arlo-ask-list { display: flex; flex-direction: column; gap: 8px; }
+/* match the solution-tab boxes: cream + 1px #E7E3D7 stroke when closed, white when open */
+.arlo-ask-item {
+  border: 1px solid #E7E3D7; border-radius: 14px; background: #F4F3EE;
+  transition: border-color .2s ease, background .2s ease;
+}
+.arlo-ask-item:hover { background: #fbfbf9; }
+.arlo-ask-item[open] { background: #ffffff; }
+.arlo-ask-q {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px;
+  padding: 17px 18px; font-family: 'PP Neue Montreal','Inter',sans-serif; font-weight: 500;
+  font-size: 16.5px; color: #14181c;
+}
+.arlo-ask-q::-webkit-details-marker { display: none; }
+.arlo-ask-glyph-wrap {
+  flex: none; width: 30px; height: 30px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(143,147,255,.12); color: #8F93FF;
+}
+.arlo-ask-qtext { flex: 1 1 auto; }               /* the prompt text */
+.arlo-ask-plus { flex: none; color: #8F93FF; transition: transform .28s ease; }
+.arlo-ask-item[open] .arlo-ask-plus { transform: rotate(45deg); }   /* + → × */
+.arlo-ask-a {
+  font-family: 'PP Neue Montreal','Inter',sans-serif; font-size: 15px; line-height: 1.6; color: #5a544a;
+  padding: 0 18px 20px 62px; max-width: 62ch;                        /* indent under the glyph */
+}
+@media (max-width: 860px) {
+  .arlo-ask-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .arlo-ask-head { position: static; }
+}
+
+/* ── Mobile hamburger menu (nav toggle) ── */
+@media (max-width: 991px) {
+  .nav_menu-button-4 { display: flex !important; cursor: pointer; }
+  .nav_content {
+    display: block !important; position: fixed; inset: 72px 0 auto 0;
+    background: #F4F3EE; padding: 20px 24px 28px; border-bottom: 1px solid #E7E3D7;
+    transform: translateY(-12px); opacity: 0; pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease; z-index: 60;
+    max-height: calc(100vh - 72px); overflow-y: auto;
+  }
+  .arlo-nav-open .nav_content { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .nav_content .nav_links-wrapper,
+  .nav_content .arlo-nav-dd-wrap { display: block !important; }
+  .nav_content a { display: block; padding: 12px 0; }
+}
+
+/* ── Typography polish: upright serif + automatic widow/orphan control ──
+   text-wrap:balance evens out heading line lengths (kills lone-word last lines);
+   text-wrap:pretty stops single-word widows in body copy. */
+.arlo-feat-heading, .arlo-hiw-heading, .arlo-fit-heading, .arlo-ask-heading,
+.arlo-faq-title, .arlo-blog-card-title, .arlo-blog-heading {
+  font-style: normal !important;
+}
+.arlo-feat-heading, .arlo-hiw-heading, .arlo-fit-heading, .arlo-ask-heading,
+.arlo-faq-title, .arlo-blog-heading, .arlo-fit-sub, .arlo-ask-sub, .arlo-hiw-eyebrow,
+.arlo-heading-style-h1, .arlo-heading-style-h2, .arlo-heading-style-h3, .arlo-heading-style-h4,
+h1, h2, h3 {
+  text-wrap: balance;
+}
+.arlo-feat-item-body p, .arlo-hiw-body, .arlo-fit-card-body, .arlo-ask-a,
+.arlo-faq-a, .arlo-blog-card-excerpt, .arlo-sec-lead, .arlo-sec-point-body,
+.arlo-text-size-regular, .arlo-text-size-regular-v2, .text-size-regular-v2,
+[class*="text-size-regular"] p, p {
+  text-wrap: pretty;
+}
+
+/* Eyebrows larger + more presence (12px → 22px) */
+.arlo-eyebrow, .arlo-hiw-eyebrow, .arlo-fit-eyebrow, .arlo-ask-eyebrow,
+.arlo-feat-eyebrow, .arlo-faq-eyebrow, .arlo-blog-eyebrow,
+.section_intro-tag, .arlo-section_intro-tag, [class*="section_intro-tag"] {
+  font-size: 22px !important;
+  text-transform: none !important;      /* was UPPERCASE on the hero → made it look bigger */
+  letter-spacing: .02em !important;
+  line-height: 1.1 !important;
+  color: #8F93FF !important;            /* all eyebrows purple */
+}
+
+/* Security point titles + blog tags — pixel labels, bump to 22px */
+.arlo-sec-point-title, .arlo-blog-tag {
+  font-size: 22px !important; line-height: 1.15 !important;
+}
+
+/* Footer copyright on one line (bottom legal links + social icons removed) */
+.footer_bottom-rights { white-space: nowrap !important; }
+/* Destinations (home): widen the image panel from the narrow strip */
+.arlo-xsync:not(.platform-page) .arlo-synct_image-wrapper {
+  width: 42vw !important; max-width: 42vw !important; height: 480px !important; aspect-ratio: auto !important;
+}
+
+/* ═══ SEO "Setup" section — clean full-width 2-col: landscape image + text ═══ */
+.arlo-xsync.platform-page .arlo-padding-global { padding-left: 5vw !important; padding-right: 5vw !important; }
+.arlo-xsync.platform-page .arlo-container-large { max-width: none !important; width: 100% !important; }
+.arlo-xsync.platform-page .arlo-synct_content {
+  display: flex !important; flex-flow: row !important; align-items: center !important; gap: 4vw !important; width: 100% !important;
+}
+.arlo-xsync.platform-page .arlo-synct_tabs.platform-page {   /* holds image + text, full width */
+  flex: 1 1 100% !important; max-width: none !important; width: 100% !important;
+  display: flex !important; flex-direction: row !important; align-items: flex-end !important; gap: 4vw !important;
+}
+.arlo-xsync.platform-page .arlo-synct_image-wrapper.platform {
+  flex: 19 1 0% !important; width: auto !important; max-width: none !important;   /* 19 : 8 image : text */
+  height: auto !important; aspect-ratio: 16 / 11 !important;  /* landscape — width drives height */
+  display: block !important; position: relative !important; overflow: hidden !important; border-radius: 22px !important;
+}
+.arlo-xsync.platform-page .arlo-synct-bg {
+  position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important;
+}
+.arlo-xsync.platform-page .enterprise-cloud-right-content-wrapper {   /* text column */
+  flex: 8 1 0% !important; min-width: 0 !important; max-width: none !important;
+}
+.arlo-xsync.platform-page .arlo-heading-style-h4,
+.arlo-xsync.platform-page .arlo-xintro,
+.arlo-xsync.platform-page .enterprise-cloud-section-content,
+.arlo-xsync.platform-page [class*="max-width"] { max-width: none !important; }
+
+/* Tighten Best-fit → Setup gap by ~30% (was 104+120=224px) */
+.arlo-fit { padding-bottom: 4.5rem !important; }              /* ~104px → ~72px */
+.arlo-xsync.platform-page { padding-top: 84px !important; }   /* 120px → 84px */
+/* FAQ: less padding above (was 120px) */
+.arlo-faq { padding-top: 72px !important; }
+
+/* ═══ Home Destinations — same treatment as SEO Setup: full-width, landscape 19:8 ═══ */
+.arlo-xsync:not(.platform-page) .arlo-padding-global { padding-left: 5vw !important; padding-right: 5vw !important; }
+.arlo-xsync:not(.platform-page) .arlo-container-large { max-width: none !important; width: 100% !important; }
+.arlo-xsync:not(.platform-page) .arlo-container-large > .arlo-synct_content {
+  width: 100% !important; max-width: none !important; display: block !important;
+}
+.arlo-xsync:not(.platform-page) .arlo-synct_tabs {
+  display: flex !important; flex-direction: row !important; align-items: center !important; gap: 4vw !important; width: 100% !important;
+}
+.arlo-xsync:not(.platform-page) .arlo-synct_image-wrapper {
+  flex: 19 1 0% !important; width: auto !important; max-width: none !important;
+  height: auto !important; aspect-ratio: 16 / 11 !important; display: block !important;
+  position: relative !important; overflow: hidden !important; border-radius: 22px !important;
+}
+.arlo-xsync:not(.platform-page) .arlo-synct-bg {
+  position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important;
+}
+.arlo-xsync:not(.platform-page) .arlo-synct_tabs > .arlo-synct_content {
+  flex: 8 1 0% !important; width: auto !important; max-width: none !important; min-width: 0 !important;
+}
+.arlo-xsync:not(.platform-page) .arlo-section_intro-component,
+.arlo-xsync:not(.platform-page) .arlo-heading-style-h4,
+.arlo-xsync:not(.platform-page) [class*="max-width"] { max-width: none !important; }
+
+/* SEO solution image band (.arlo-xhow) — 20% shorter */
+.arlo-xhow .arlo-stab_tabs .arlo-stab_content,
+.arlo-xhow .arlo-stab_pane,
+.arlo-xhow .arlo-stab_image-wrapper { height: 48vh !important; }
+
+/* Customer-tabs image band: round ONLY the bottom corners (not the top).
+   clip-path handles the WebGL chrome canvas that border-radius alone won't clip. */
+#arlo-stab-section .arlo-stab_tabs .arlo-stab_content {
+  clip-path: inset(0 round 0 0 22px 22px) !important;   /* TL TR BR BL → bottom only */
+}
+#arlo-stab-section .arlo-stab-_bg-image,
+#arlo-stab-section .arlo-stab_tabs .arlo-stab_content .arlo-chrome,
+#arlo-stab-section .arlo-stab_tabs .arlo-stab_content .arlo-chrome canvas {
+  border-radius: 0 0 22px 22px !important;
+}

@@ -17,10 +17,10 @@ export default function TermsPage() {
   return (
     <ClientLayout>
       <Nav />
-      <main className="section-space-hero" style={{ backgroundColor: "#EBFFF6" }}>
+      <main className="section-space-hero" style={{ backgroundColor: "#F4F3EE" }}>
         <div className="u-container max-w-3xl">
           <p className="eyebrow text-brand mb-4">Legal</p>
-          <h1 className="font-sans font-medium text-fluid-h2 leading-[1.1] tracking-tight text-dark mb-4">
+          <h1 className="font-serif text-fluid-h2 leading-[1.1] tracking-tight text-dark mb-4">
             Terms of Service
           </h1>
           <p className="text-dark/60 font-mono text-xs uppercase tracking-wider">

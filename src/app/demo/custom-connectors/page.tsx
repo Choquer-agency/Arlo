@@ -241,7 +241,7 @@ export default function CustomConnectorsPage() {
         <p className="font-sans text-fluid-h5 text-dark mb-2">Need help with a trickier API?</p>
         <p className="text-dark opacity-60 text-fluid-main mb-5 max-w-xl mx-auto">
           OAuth2-only platforms or paginated / chunked responses need a bit more setup. Our
-          team can help configure it for you at no charge on the Agency and Scale plans.
+          team can help configure it for you at no charge.
         </p>
         <a
           href="mailto:support@askarlo.app?subject=Custom%20connector%20help"

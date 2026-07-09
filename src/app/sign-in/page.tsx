@@ -2,7 +2,7 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArloMark } from "@/components/ArloMark";
 
@@ -93,13 +93,26 @@ function ConvexNotConfigured() {
 function SignInForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
-  const redirectTo = safeRedirectTo(useSearchParams().get("redirectTo"));
+  const params = useSearchParams();
+  const redirectTo = safeRedirectTo(params.get("redirectTo"));
 
-  const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
-  const [email, setEmail] = useState("");
+  const [mode, setMode] = useState<"signIn" | "signUp">(
+    params.get("mode") === "signup" ? "signUp" : "signIn"
+  );
+  const [email, setEmail] = useState(params.get("email") ?? "");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Handoff from the static-shell sign-in popup: ?provider=google auto-starts
+  // the Google flow so "Continue with Google" there feels inline. Runs once.
+  const googleStarted = useRef(false);
+  useEffect(() => {
+    if (params.get("provider") === "google" && !googleStarted.current) {
+      googleStarted.current = true;
+      signIn("google", { redirectTo });
+    }
+  }, [params, redirectTo, signIn]);
 
   async function submitPassword(e: React.FormEvent) {
     e.preventDefault();
