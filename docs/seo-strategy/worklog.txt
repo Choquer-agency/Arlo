@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-10 (Fri) — Weekly SEO pulse: rank tracking gap found (no SE Ranking project for askarlo.app; leads/traffic still pending GSC/GA4 wiring) — see reports/outbox/2026-07-10-weekly-pulse.json.
+
 ## 2026-07-09 (Thu) — Week 3: AgencyAnalytics comparison page
 
 NOTE ON THIS SESSION: this routine's checkout started before the 2026-07-06 Search Console
