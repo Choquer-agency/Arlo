@@ -6,6 +6,69 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-13 (Mon) — Week 4: Whatagraph comparison page
+
+SHIPPED — `/compare/whatagraph-vs-arlo`, per NEXT item 2 from the 2026-07-09 entry (next-
+softest comparison term after AgencyAnalytics).
+- PAGE: /compare/whatagraph-vs-arlo (new) / CHANGE: new comparison page in
+  `src/content/comparisons.ts`, same `/compare/[slug]` template as the existing three pages
+  (no template changes needed). Whatagraph's real profile per competitor.md §2 is "agency
+  reporting/dashboards" — same category as AgencyAnalytics — so this page is deliberately
+  differentiated on angle rather than restating it: AgencyAnalytics's page argues "no
+  dashboard to configure/brand"; this one argues "no report template + delivery schedule to
+  build and babysit," reflecting Whatagraph's actual emphasis on scheduled/automated report
+  delivery (email/Slack/PDF) on top of dashboards. FAQ is honest about the tradeoff —
+  Whatagraph still wins when a client contractually expects a recurring report in their
+  inbox on a fixed cadence; ARLO has no report builder or delivery schedule at all. Did NOT
+  fabricate Whatagraph's current pricing (no outbound web access in this sandbox to verify)
+  — table describes it qualitatively ("per-workspace/client pricing, scales with client
+  count") instead of inventing a dollar figure, same approach as the AgencyAnalytics page.
+  / TARGET: "whatagraph alternative" (KD 7, 50/mo per competitor.md §3B) / WHY: tied-softest
+  comparison term in the keyword set alongside AgencyAnalytics, explicit NEXT item / VERIFY:
+  rebuilt + directly invoked the compiled route handler for slug `whatagraph-vs-arlo` (since
+  `/compare/[slug]` is a dynamic route.ts, not statically prerendered) — HTTP 200, FAQPage
+  JSON-LD present, correct canonical (`/compare/whatagraph-vs-arlo`), correct unique
+  `<title>`; confirmed present in `sitemap.xml` output (comparisonSlugs is already derived
+  from `getAllComparisonSlugs()`, no sitemap.ts change needed).
+- SITE: public/llms.txt — added the new compare page to the "Pages" list (same pattern as
+  every prior comparison/connector page).
+- SKIPPED (deliberately, in favor of the above): NEXT items 1 (Meta Ads launch status —
+  still needs a human decision, unchanged since 2026-07-06), 3 (static-render marketing
+  pages — infra change with real regression risk to auth, better done as its own focused
+  session, deferred 4x now), 5 (GSC submission — needs human Search Console access). Did
+  NOT build the item-4 `/compare` index page this session: unlike the connector/comparison
+  templates, there's no existing index-page pattern anywhere in the app to clone from
+  (`/services` and `/connect` are also just `[slug]` + named folders, no hub page), so it
+  needs real layout/design work rather than the data-plumbing this routine is scoped for —
+  flagging for a dedicated session rather than shipping something rushed.
+- VERIFY (whole session): `npm install && npm run build` — same pre-existing `(app)/*` +
+  `/onboarding` + `/welcome` prerender failures as every prior session (missing
+  NEXT_PUBLIC_CONVEX_URL in this sandbox, Vercel-only secret) — confirmed byte-for-byte
+  identical failing-route list on a clean `main` checkout before vs. after this session's
+  diff (diffed the two build logs directly). `npm run lint` clean (only the pre-existing
+  unrelated `sitemap/page.tsx` CSS-tag warning). `git status` shows only
+  `src/content/comparisons.ts` and `public/llms.txt` touched — reverted the build-generated
+  `src/content/blog/manifest.json` diff before staging (it's rewritten by
+  `scripts/generate-blog-manifest.mjs` on every build, not a real content change).
+
+NEXT (Week 4 → Week 5, see 12-week-strategy.md):
+1. Confirm real Meta Ads launch status with the product owner (still open since 2026-07-06),
+   then either ship "Meta Ads MCP" or leave it out until `catalog.ts` says live.
+2. A `/compare` index page — needs actual layout design (no existing hub-page pattern to
+   clone), fixes the breadcrumb-implies-a-page-that-doesn't-exist gap on all 4 compare
+   pages. Worth a session of its own rather than rushing it inside a twice-weekly pass.
+3. Still open (deferred 4x now): static-render the marketing pages (move
+   ConvexAuthNextjsServerProvider into an app-only route group). Test auth end-to-end after.
+   Keeps getting deprioritized for new-page wins; worth doing soon — compounds across every
+   marketing page (TTFB/caching), not just one.
+4. Comparison-page cluster for the low-KD set is now essentially done (Windsor, Supermetrics,
+   AgencyAnalytics, Whatagraph all live) — next content push should shift to either (a) the
+   remaining connector-matrix pages once Meta Ads status is confirmed, or (b) the 12-post
+   blog plan in audits/content.md (persona + MCP education + comparison-anchor posts).
+5. Submit sitemap + new pages in GSC (needs a human with Search Console access — this
+   routine has no outbound web access). Also worth having a human wire up an SE Ranking
+   project for askarlo.app — the 2026-07-10 pulse flagged there's still no rank tracking.
+
 ## 2026-07-10 (Fri) — Weekly SEO pulse: rank tracking gap found (no SE Ranking project for askarlo.app; leads/traffic still pending GSC/GA4 wiring) — see reports/outbox/2026-07-10-weekly-pulse.json.
 
 ## 2026-07-09 (Thu) — Week 3: AgencyAnalytics comparison page

@@ -57,6 +57,7 @@ ARLO exposes an MCP (Model Context Protocol) server that Claude Desktop treats a
 - [Supermetrics vs. ARLO](https://askarlo.app/compare/supermetrics-vs-arlo)
 - [Windsor.ai vs. ARLO](https://askarlo.app/compare/windsor-ai-vs-arlo)
 - [AgencyAnalytics vs. ARLO](https://askarlo.app/compare/agencyanalytics-vs-arlo)
+- [Whatagraph vs. ARLO](https://askarlo.app/compare/whatagraph-vs-arlo)
 
 ## Contact
 

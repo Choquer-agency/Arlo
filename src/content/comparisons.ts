@@ -223,6 +223,72 @@ export const comparisons: Record<string, ComparisonPage> = {
       ],
     },
   },
+
+  "whatagraph-vs-arlo": {
+    slug: "whatagraph-vs-arlo",
+    title: "Whatagraph vs. ARLO: Skip the scheduled report, ask Claude",
+    metaTitle: "Whatagraph Alternative | ARLO — Ask Claude, No Report Builder (2026)",
+    metaDescription:
+      "Whatagraph builds white-label client dashboards and scheduled report deliveries you have to set up per client. ARLO lets your team ask Claude for live numbers instead — no template, no delivery schedule to babysit.",
+    tldr:
+      "Whatagraph is a white-label reporting platform: you connect each client's platforms, build a dashboard or report template, and schedule it to land in their inbox on a cadence. It does that job well. ARLO replaces the job itself — instead of a template someone builds and a delivery schedule someone maintains, your team just asks Claude a question and gets a live answer, scoped to whichever client they're looking at. If what your team actually wants is the answer (not a report waiting for its next scheduled send), ARLO gets there in one prompt instead of a template-and-schedule.",
+    saasName: "Whatagraph",
+    saasCategory: "White-label agency reporting",
+    serviceSlug: "agency-owner",
+    lastUpdated: "2026-07-13",
+    sections: {
+      problem: {
+        heading: "A scheduled report is still a delay. ARLO is instant.",
+        body: "Whatagraph solves a real problem well: agencies need a branded, automated way to get performance data from GA4, Google Ads, Meta, and dozens of other platforms in front of clients without manually assembling it every week. The tradeoff is that a report is still a delivery on a schedule — someone builds the template, applies the branding per client, and sets a cadence, and the client sees the numbers whenever the next send lands, not the moment they actually want to know. It's also built for delivering a fixed set of metrics, not answering the question a client asks in between sends (\"why did that dip happen?\"). ARLO skips the schedule entirely. Claude reads each connected platform live through MCP, so instead of waiting on a template built for a question you don't know yet, your team just asks — the moment it comes up — and gets a plain-English answer scoped to that client.",
+      },
+      table: {
+        headers: ["Feature", "Whatagraph", "ARLO"],
+        rows: [
+          { feature: "Entry price", values: ["Per-workspace/client pricing, scales with client count", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "What you get", values: ["White-label dashboards + scheduled report delivery (email/Slack/PDF)", "Live answers in Claude, no report to schedule"] },
+          { feature: "Setup per client", values: ["Connect platforms, build report template, set delivery cadence", "Pick a property from a dropdown"] },
+          { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
+          { feature: "Follow-up questions", values: ["Client waits for the next scheduled send, or emails you", "Ask Claude the follow-up in the same reply"] },
+          { feature: "Data freshness", values: ["Scheduled sync + delivery cadence", "Live on every query"] },
+          { feature: "Report building/maintenance", values: ["Ongoing — templates, branding, delivery schedules", "None — questions replace reports"] },
+          { feature: "Data warehouse", values: ["Not required, but data lives in their platform", "None — pass-through, nothing stored"] },
+        ],
+      },
+      whenCustom: [
+        "Your team's real workflow is asking questions, not scheduling reports",
+        "Clients ask follow-up questions a scheduled report can't answer without another tool",
+        "You want live data in the same place your team already works — Claude",
+        "You don't want to build and maintain a report template and delivery schedule per client",
+      ],
+      whenSaas: [
+        "Clients specifically expect a recurring report to land in their inbox on a set day",
+        "You need a branded, self-serve dashboard for a QBR or client portal, not a conversational tool",
+        "You already have Whatagraph templates built and just need the automation to keep running",
+      ],
+      faqs: [
+        {
+          question: "Is ARLO a full Whatagraph replacement?",
+          answer:
+            "If your team's real workflow is answering client questions about performance, yes. If clients specifically expect a recurring branded report to land in their inbox on a schedule, Whatagraph still wins that job. Some agencies keep Whatagraph for the client-facing deliverable and add ARLO for their own team's day-to-day questions.",
+        },
+        {
+          question: "Does ARLO send scheduled reports the way Whatagraph does?",
+          answer:
+            "No — that's not the product. ARLO has no report builder or delivery schedule; Claude is the interface. If a recurring scheduled report is a hard requirement for your clients, pair ARLO with your existing reporting tool rather than replacing it outright.",
+        },
+        {
+          question: "How is ARLO's pricing different from Whatagraph?",
+          answer:
+            "Whatagraph prices per workspace/client and scales as your book grows. ARLO's tiers are flat per plan (e.g. Studio at $99/mo covers 10 clients with unlimited team seats) with unlimited source types included, so the bill doesn't climb every time you add a platform.",
+        },
+        {
+          question: "Does ARLO store my clients' data the way a reporting tool does?",
+          answer:
+            "No. ARLO is pass-through — every query is fetched live from the connected platform's API and returned to Claude; nothing is warehoused or cached for scheduled delivery. OAuth tokens are encrypted at rest, but there's no persistent copy of client analytics or ads data.",
+        },
+      ],
+    },
+  },
 };
 
 export function getComparisonBySlug(slug: string): ComparisonPage | null {
