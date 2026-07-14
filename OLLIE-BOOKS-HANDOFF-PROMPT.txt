@@ -1,0 +1,128 @@
+════════════════════════════════════════════════════════════════════════════
+PASTE EVERYTHING BELOW THIS LINE INTO CLAUDE CODE IN THE NEW OLLIEBOOKS REPO
+════════════════════════════════════════════════════════════════════════════
+
+You are working in a fresh clone of the ARLO codebase that is being transformed
+into a standalone product: **Ollie Books** — an MCP connector that plugs Claude
+into QuickBooks Online so small business owners and accountants can ask
+questions about their books in plain English and get live answers.
+
+READ FIRST, IN THIS ORDER:
+1. `OLLIE-BOOKS-PLAN.txt` at the repo root — the full strategic plan. ALL copy,
+   positioning, page structure, and pricing language decisions flow from it
+   (especially sections 3 "Positioning & Messaging" and 8 "Website Copy
+   Direction"). Treat it as the source of truth for voice and messaging.
+2. `src/lib/connectors/quickbooks.ts`, `src/app/api/oauth/quickbooks/*` — the
+   QuickBooks connector and OAuth flow already work end-to-end (tested against
+   a real QBO company). Do not rewrite them; extend them.
+3. `src/app/arlo/_render.ts` + `src/app/base-template/` — the static-page
+   render system. Every marketing page is `route.ts` + `_shell.html` +
+   `_content/*.ts` with shared `<!--@nav/faq/cta/footer-->` components under
+   `src/app/arlo/_components/`. KEEP this system; new pages start from
+   base-template.
+
+THE TRANSFORMATION — work in phases, verifying `npx next build` passes after
+each phase before moving on:
+
+── PHASE 0 · INFRASTRUCTURE (pause and ask me to do the account-level steps) ──
+- This product gets its OWN: Convex project (fresh deployment + database),
+  Vercel project, domain, and ALL-NEW secrets (CONVEX_SERVICE_SECRET,
+  OAUTH_STATE_SECRET, token-encryption key, auth secrets). Never reuse ARLO's
+  values. Walk me through creating each, then wire `.env.local`.
+- Auth is EMAIL-ONLY (Convex Auth Password provider) — this product never
+  touches Google sign-in, so no Google OAuth verification is needed at all.
+  Strip the Google provider from `convex/auth.ts` and any leftover
+  `?provider=google` handling.
+- QuickBooks OAuth env: QUICKBOOKS_OAUTH_CLIENT_ID / _SECRET / _REDIRECT_URI /
+  QUICKBOOKS_ENV. I will supply Intuit production keys (app is already named
+  "Ollie" on developer.intuit.com — it finally matches!).
+
+── PHASE 1 · STRIP ARLO ──
+Remove everything that is not Ollie Books, keeping the machinery:
+- DELETE the Google data OAuth routes (`src/app/api/oauth/google/*`), the
+  Google probe (`src/lib/googleProbe.ts`), `src/lib/googleSources.ts`, and all
+  Google account-mapping UI.
+- Connector registry (`src/lib/connectors/registry.ts`): QuickBooks is the ONLY
+  active connector. Delete the other connector modules (ga4, gsc, google-ads,
+  youtube, gbp, pagespeed, meta-ads, linkedin-ads, tiktok-ads, shopify, stripe,
+  hubspot, mailerlite, mailchimp) and their registry entries. Keep the custom-
+  connector system only if it takes <30 min to keep compiling; otherwise remove.
+- REMOVE the QuickBooks allowlist gate entirely (`src/lib/featureGates.ts` and
+  its call sites) — QuickBooks is the core product now, available to everyone.
+- Delete ARLO-specific marketing surfaces: `/destinations` (+ catalog + PDFs),
+  `/services/*` role pages, `/compare/*` ARLO comparisons, `/connect/*`
+  connector pages, ARLO blog posts in `src/content/blog/posts/`, `/work`
+  remnants, demo pages that showcase multi-platform marketing data.
+- Clean `sitemap.ts`, `robots`, `api/indexnow`, nav + footer links of every
+  deleted route. Grep for dead hrefs when done.
+
+── PHASE 2 · THE ONE FLOW ──
+Design the entire product around a single path (this is the point of the fork):
+  Sign up (email) → Connect QuickBooks (one big button, the OAuth we built)
+  → Get your MCP URL (auto-provisioned, shown immediately with copy button +
+  a 3-step "paste into Claude" walkthrough) → Ask your first question.
+- Onboarding should be ONE screen per step, no branching, no workspace-type
+  question, no client/source mapping. The QBO company from the OAuth callback
+  IS the business — auto-create the client record from CompanyInfo so the user
+  never "adds a business" manually.
+- After connecting, land on the dashboard with a "try asking Claude this"
+  example-prompt card (pull prompts from the plan's Example-Prompt Bank).
+
+── PHASE 3 · SIMPLE DASHBOARD ──
+Replace the ARLO portfolio dashboard with one radically simple screen:
+- Header: company name + Connected pill + MCP URL copy button
+- A "This month" pulse strip: net income, income, expenses, open invoices,
+  overdue invoices (reuse quickbooksConnector.fetch — these queries exist)
+- An example-prompts card ("Ask Claude:") with 5 rotating prompts
+- Recent MCP activity list (the existing activity component)
+- Keep the app shell/sidebar but trim nav to: Dashboard, Connect to Claude,
+  Team, Settings. Keep the redesign palette (ink #14181c, cream #F4F3EE, neon
+  #D0FF71, periwinkle #8F93FF, serif Libre Caslon headings, Geist Pixel
+  micro-labels ≥14px).
+
+── PHASE 4 · MCP TOOLS RENAMED FOR BOOKS ──
+In `src/lib/mcp-tools.ts`: reframe the tool surface from marketing language to
+finance language — `books_query`, `books_report`, `books_discover`,
+`list_companies` — with descriptions written for questions like "how's my
+business doing?". Keep the wrap/audit/usage plumbing exactly as is. Extend
+`quickbooksConnector` discover() descriptions to match. (Roadmap after launch,
+don't build now: Balance Sheet, cash-flow, A/R aging report, expenses by
+vendor.)
+
+── PHASE 5 · FULL SITE REBRAND (use OLLIE-BOOKS-PLAN.txt sections 3 + 8) ──
+- Rewrite every marketing page's copy for Ollie Books. Page map from the plan:
+  `/` (hero: pulse-on-your-business positioning, chat-demo section with REAL
+  example Q&As from the prompt bank, 3-step how-it-works, trust band, FAQ,
+  CTA), `/pricing` (port ARLO's free-early-access language philosophy exactly:
+  free now, no card, no lock-in, choose-or-walk-away — NEVER "founding pricing
+  forever" or "locked in"), `/accountants` (ICP-2 page from the role-page
+  system), `/security` (trust page: pass-through, encryption, revoke anytime,
+  exact Intuit scopes), `/about`, `/blog` (engine stays; write NO posts yet),
+  `/contact`.
+- Wordmark: "OLLIE BOOKS" in the existing pixel wordmark style; reuse the Ollie
+  mark if assets exist, otherwise text-only lockup for now.
+- Rewrite `/privacy` for Intuit/QuickBooks data (mirror the Google-scope
+  disclosure structure that's there: what's accessed, how used, never sold,
+  never used to train AI, retention/deletion).
+- Update ALL meta: titles, descriptions, OG tags, JSON-LD schema (Organization
+  name Ollie Books, new domain), canonical URLs, sitemap.
+- Scrub every remaining "ARLO"/"askarlo" string in user-facing surfaces — grep
+  case-insensitively at the end and show me the residue list.
+
+── CONSTRAINTS ──
+- Do NOT touch: `src/lib/crypto.ts`, `src/lib/mcp-auth.ts` internals, the
+  Convex platformConnections/mcpTokens patterns — they're battle-tested.
+- Keep email-only auth. Keep the static-shell render system. Keep the design
+  system. Production build must pass at every phase boundary.
+- Nothing deploys anywhere until I say so.
+
+── DEFINITION OF DONE ──
+1. `npx next build` passes clean.
+2. Fresh-user walkthrough works locally: email signup → connect QuickBooks →
+   dashboard shows real pulse numbers → MCP URL works in Claude → `books_query`
+   returns live P&L data.
+3. Zero ARLO branding or dead links anywhere (show me the final grep proof).
+4. A DEPLOY-CHECKLIST.md listing every env var + account step needed to go
+   live on the new domain.
+
+Start with Phase 0 and give me the infrastructure checklist first.

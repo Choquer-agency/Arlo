@@ -118,5 +118,11 @@ export async function GET(req: Request) {
     availableAccounts: [{ id: realmId, name: companyName, kind: "qbo_company" }],
   });
 
-  return NextResponse.redirect(new URL(`/connections?status=ok&provider=quickbooks`, req.url));
+  // Behind a tunnel (ngrok) the reconstructed req.url can come out as
+  // https://localhost:<port>, which browsers reject. Anchor the post-connect
+  // redirect to the registered redirect URI's origin instead.
+  const appOrigin = process.env.QUICKBOOKS_OAUTH_REDIRECT_URI
+    ? new URL(process.env.QUICKBOOKS_OAUTH_REDIRECT_URI).origin
+    : url.origin;
+  return NextResponse.redirect(new URL(`/connections?status=ok&provider=quickbooks`, appOrigin));
 }

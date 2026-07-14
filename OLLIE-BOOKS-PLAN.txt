@@ -1,0 +1,275 @@
+================================================================================
+OLLIE BOOKS — STRATEGIC BUSINESS & MARKETING PLAN
+"Ask Claude about your books."
+Prepared July 2026 · Living document — revise as the market answers back
+================================================================================
+
+--------------------------------------------------------------------------------
+1. WHAT OLLIE BOOKS IS
+--------------------------------------------------------------------------------
+Ollie Books is an MCP (Model Context Protocol) connector that plugs Claude
+directly into QuickBooks Online. Connect once, then ask questions in plain
+English and get live answers from your real books:
+
+  "What was my net income last quarter, month by month?"
+  "Which customers have overdue invoices, and how much do they owe?"
+  "How do my expenses this year compare to last year — what grew the most?"
+  "Give me a Monday-morning pulse on the business."
+
+No dashboards to build. No exports. No stale reports. The data is fetched live
+from QuickBooks at the moment of the question, returned to the user's own AI
+session, and never stored. (Pass-through architecture — proven in ARLO.)
+
+ONE-LINER: Ollie Books turns QuickBooks into a conversation.
+
+THE WEDGE / CORE INSIGHT
+QuickBooks holds the single most valuable dataset a small business owns — and
+almost no owner can get answers out of it without clicking through reports they
+don't understand or paying a bookkeeper to interpret them. Meanwhile, millions
+of those same owners now use Claude/ChatGPT daily. Ollie Books is the missing
+wire between the two. The product IS the prompt.
+
+--------------------------------------------------------------------------------
+2. WHO IT'S FOR (ICPs, in priority order)
+--------------------------------------------------------------------------------
+ICP 1 — SMALL BUSINESS OWNERS (primary; the emotional core of the brand)
+  • 1–20 employees, on QuickBooks Online, does their own light bookkeeping or
+    has an outsourced bookkeeper they see once a month
+  • Pain: "I have QuickBooks but I don't actually KNOW how my business is
+    doing." Reports feel like accountant language. Decisions get made on vibes.
+  • Dream outcome: a pulse on the business, on demand, in their own words
+  • Where they live: r/smallbusiness, r/Entrepreneur, Facebook groups,
+    YouTube "QuickBooks tutorial" land, local chambers, X/LinkedIn SMB content
+
+ICP 2 — ACCOUNTANTS & BOOKKEEPERS (the multiplier; mirrors ARLO's agency model)
+  • Firms and solo ProAdvisors managing 10–200 client QBO files
+  • Pain: every client call starts with 30 minutes of report-pulling; clients
+    ask "how am I doing?" constantly and answering doesn't scale
+  • Dream outcome: answer any client question in one sentence; proactive
+    advisory ("3 of your clients have AR blowing up") instead of rear-view
+    compliance work. Advisory services are the industry's stated growth path —
+    Ollie Books is an advisory-services engine.
+  • Where they live: Intuit ProAdvisor community, r/Bookkeeping, Bookkeeping
+    Side Hustle FB group, accounting Twitter/X, Karbon/Canopy content orbit
+
+ICP 3 — MEDIUM BUSINESSES (10–100 employees; finance lead or fractional CFO)
+  • Pain: the CEO asks finance for numbers; finance builds decks; three days
+    pass. Fractional CFOs juggle several companies' books.
+  • Dream outcome: self-serve answers for the CEO; the fractional CFO walks
+    into every meeting already briefed
+  • Note: this ICP pulls the roadmap toward budgets vs. actuals, cash-flow
+    forecasting, and class/location dimensions. Serve after 1 & 2.
+
+--------------------------------------------------------------------------------
+3. POSITIONING & MESSAGING
+--------------------------------------------------------------------------------
+CATEGORY: AI answers for your books (not "reporting software," not "a copilot")
+
+POSITIONING STATEMENT
+  For small business owners and their accountants, Ollie Books is the connector
+  that lets Claude read QuickBooks live — so anyone can ask about the health of
+  the business and get a real answer in seconds. Unlike dashboards and BI tools,
+  there is nothing to build, and unlike uploading spreadsheets to a chatbot,
+  the numbers are live, complete, and never stored.
+
+MESSAGE PILLARS
+  P1 · A pulse on your business.       The hero emotion. "How are we doing?"
+                                       finally has an instant, honest answer.
+  P2 · Ask in your own words.          No accountant-speak. "Who owes me
+                                       money?" works exactly as typed.
+  P3 · Live, not last month.           Answers come from QuickBooks at the
+                                       moment you ask — not a stale export.
+  P4 · Nothing stored, ever.           Pass-through architecture. Your books
+                                       stay in QuickBooks. (Lead with this —
+                                       trust is the #1 objection on money data.)
+  P5 · Five-minute setup.              Sign up → connect QuickBooks → paste
+                                       one URL into Claude → ask.
+
+VOICE: Plain-spoken, warm, a little wry. The brand sounds like a sharp
+bookkeeper friend, not a fintech deck. Use real prompts as marketing copy
+everywhere — the product demos itself in text.
+
+EXAMPLE-PROMPT BANK (use in hero rotations, ads, social, docs)
+  Owner:      "What's my profit this month vs last?" · "Can I afford to hire?"
+              · "What did I spend on software this year?" · "Who's my biggest
+              customer, really?" · "Which invoices should I chase this week?"
+  Accountant: "Give me a one-line health check on every client before Monday."
+              · "Which clients' AR aged past 60 days this month?" · "Draft a
+              summary of Q2 for my client meeting."
+  CFO:        "Burn rate and runway, trailing 6 months." · "Expenses by
+              category vs same period last year — flag anything up >20%."
+
+--------------------------------------------------------------------------------
+4. COMPETITIVE LANDSCAPE (and the honest answer to each)
+--------------------------------------------------------------------------------
+  • Intuit Assist (built into QBO)     — Generic, shallow, locked inside
+    Intuit's UI. Ollie's answer: we live where the user already thinks (Claude),
+    with real analytical depth and cross-question follow-ups.
+  • LiveFlow / G-Accon / Sheets syncs  — Spreadsheet pipelines; you still build
+    the model. Ollie's answer: no destination, no template — just the answer.
+  • Fathom / Syft / Jirav (BI layer)   — Beautiful reports for accountants,
+    $50–$150+/mo, weeks of setup, made for presenting not asking. Ollie's
+    answer: conversation beats dashboard for 90% of daily questions.
+  • "Just upload a CSV to ChatGPT"     — Manual, stale, error-prone, and a
+    genuine data-hygiene risk. Ollie's answer: live + scoped + never stored.
+  • DIY MCP builders                   — Developers can wire this themselves.
+    Ollie's answer: OAuth, token refresh, multi-company, security, and support
+    in 5 minutes for non-developers. (Same dynamic ARLO faces; it's fine.)
+
+MOAT DIRECTION: speed to the accountant channel + multi-client management +
+trust brand. Individual features will be copied; the distribution wedge and
+"the safe one" reputation compound.
+
+--------------------------------------------------------------------------------
+5. PRICING STRATEGY
+--------------------------------------------------------------------------------
+LAUNCH (months 0–3): FREE while in early access — same play as ARLO.
+  No credit card, no limits, no lock-in language ("choose a plan or walk away
+  when pricing lands; nothing auto-charged"). Goal: installs, testimonials,
+  and a hungry feedback loop.
+
+TARGET MODEL (validate against usage data before shipping):
+  • Owner        $29/mo   — 1 company, unlimited questions
+  • Firm         $99/mo   — 10 client companies, team seats, per-client scoping
+  • Firm+        $249/mo  — 50 companies, audit log, priority support
+  Anchor: one hour of bookkeeper time costs more than a month of Ollie.
+
+CHANNEL ECONOMICS: Intuit App Store listing takes a rev share but delivers the
+highest-intent traffic that exists for this product. Treat it as CAC, not tax.
+
+--------------------------------------------------------------------------------
+6. GO-TO-MARKET CHANNELS (ranked)
+--------------------------------------------------------------------------------
+C1 · QUICKBOOKS APP STORE (apps.intuit.com)
+     The single highest-leverage move. Users there are QBO customers searching
+     for exactly this. Requirements: Intuit security review + production app
+     approval (start immediately; it gates everything and takes weeks).
+
+C2 · SEO / CONTENT ENGINE (reuse the ARLO blog machine + base-template system)
+     Keyword clusters to own (volumes directional — re-validate in SE Ranking
+     once re-authorized; the tooling and workflow already exist from ARLO):
+       Cluster A "AI x QuickBooks" (commercial, low comp, rising fast):
+         quickbooks ai · ai for quickbooks · chatgpt for quickbooks ·
+         claude quickbooks · quickbooks mcp · ai bookkeeping assistant
+       Cluster B "Job-to-be-done questions" (informational, huge long tail):
+         how to read a profit and loss statement · what is accounts receivable
+         aging · how much cash should my business keep · can I afford to hire
+       Cluster C "Comparisons" (programmatic, ARLO compare-page system):
+         ollie books vs intuit assist · vs liveflow · vs fathom · vs syft ·
+         "best ai tools for quickbooks" listicle target
+       Cluster D "Accountant advisory" (ICP 2):
+         client advisory services · how to offer advisory services ·
+         bookkeeping client reporting
+     Flagship linkable asset: "100 Questions to Ask Your QuickBooks" —
+     direct port of the proven ARLO GA4 piece, plus a gated PDF version.
+
+C3 · ACCOUNTANT / PROADVISOR CHANNEL
+     • 10 design-partner firms, free Firm tier for a year in exchange for
+       feedback + a case study each
+     • Partner webinar circuit ("adding AI advisory in 30 days"), guest spots
+       on accounting podcasts (Cloud Accounting Podcast et al.)
+     • Referral: accountants get their clients on Owner plans; firms become
+       the sales force
+
+C4 · FOUNDER-LED SOCIAL + VIDEO
+     • 60-second screen recordings: type a question, watch the real answer
+       appear. One per day. X, LinkedIn, TikTok, Shorts.
+     • YouTube: "I connected Claude to my QuickBooks — here's everything it
+       can do" (long-form demo, evergreen search traffic)
+
+C5 · LAUNCH MOMENTS
+     • Product Hunt (assets from C4), Hacker News "Show HN" (lead with the
+       MCP/architecture angle), r/smallbusiness + r/Bookkeeping value posts
+       (share the 100-questions article, not the product page)
+
+C6 · COMMUNITIES / MARKETPLACES LATER: Intuit ProConnect forums, bookkeeping
+     Slack/FB groups, fractional-CFO networks, MCP server directories.
+
+--------------------------------------------------------------------------------
+7. LAUNCH SEQUENCE
+--------------------------------------------------------------------------------
+DAYS 0–30 — FOUNDATION
+  □ Fork complete, rebrand shipped, single QuickBooks flow live
+  □ Domain + brand lockup (Ollie mark exists — extend it)
+  □ Intuit production app under Ollie Books branding; start App Store review
+  □ Security/trust page (pass-through, encryption, revoke anytime) — day one
+  □ 5 seed blog posts (flagship 100-questions + 2 how-tos + 2 comparisons)
+  □ 10 hand-recruited beta users (mix of owners + 2 accounting firms)
+
+DAYS 31–60 — PROOF
+  □ Iterate on real usage; capture every good prompt for the example bank
+  □ 3 testimonials + 1 accountant case study on the site
+  □ Product Hunt + Show HN launch window
+  □ Daily demo-clip cadence begins; 8 more blog posts
+
+DAYS 61–90 — DISTRIBUTION
+  □ QuickBooks App Store listing live (if review clears)
+  □ Design-partner firm program formalized (10 firms)
+  □ First webinar; podcast outreach
+  □ Pricing page flips from "free early access" to plans w/ founding cohort
+    grandfathering INTO A DISCOUNT WINDOW (never promise "free forever" —
+    learned this on ARLO)
+
+--------------------------------------------------------------------------------
+8. WEBSITE COPY DIRECTION (for the rebrand pass)
+--------------------------------------------------------------------------------
+PAGE MAP (reuse ARLO's proven structure 1:1)
+  /            Hero: "Your books can talk now." or "A pulse on your business,
+               on demand." Sub: Ollie Books plugs Claude into QuickBooks —
+               ask anything about your money and get a live answer in seconds.
+               Then: chat-demo section with REAL example Q&As, How-it-works
+               3 steps (Connect once · Ask in plain English · Know, don't
+               guess), trust band (nothing stored), FAQ, CTA.
+  /pricing     Free-early-access framing (port ARLO's page + language verbatim
+               philosophy: no card, no lock-in, choose-or-walk-away)
+  /accountants Dedicated ICP-2 page (the ARLO "role page" system): manage all
+               client books, per-client scoping, advisory positioning
+  /security    Trust page — architecture, encryption, revocation, Intuit scopes
+  /blog        Same engine; seed with the 5 foundation posts
+  /compare/*   Programmatic: vs Intuit Assist, LiveFlow, Fathom, Syft
+  /about       The origin story: built ARLO for agencies, discovered the books
+               use case, spun it out. Honest and short.
+
+COPY RULES
+  • Every hero and section header passes the "would a tired owner at 9pm get
+    this instantly?" test. No fintech jargon, no "leverage," no "unlock."
+  • Example prompts appear on every page — they are the product tour.
+  • Trust messaging appears above the fold on the homepage, not buried.
+  • Keep the ARLO design system exactly (serif display, pixel micro-labels,
+    neon/periwinkle accents, chrome imagery) — it's distinctive and built.
+
+--------------------------------------------------------------------------------
+9. METRICS THAT MATTER
+--------------------------------------------------------------------------------
+  North star: WEEKLY QUESTIONS ASKED (per active company)
+  Activation: signup → QBO connected → first successful answer (<10 min target)
+  Retention:  companies with ≥3 question-days per week
+  Channel:    App Store installs, organic signups per post, firm referrals
+  Trust:      % of signups viewing /security before connecting (watch it)
+
+--------------------------------------------------------------------------------
+10. RISKS & MITIGATIONS
+--------------------------------------------------------------------------------
+  • Intuit platform risk (API terms, rate limits, Assist competing):
+    → stay squeaky-clean on data handling; App Store partnership deepens the
+      relationship; multi-ledger future (Xero, FreshBooks) removes single-
+      vendor dependence — name it on the roadmap, build it later.
+  • Trust objection on financial data:
+    → pass-through architecture front and center; security page day one;
+      SOC2 conversation when revenue justifies it.
+  • Accuracy expectations ("the AI said my profit was X"):
+    → answers cite the report + date range they came from; encourage
+      verification framing in docs; never editorialize numbers.
+  • Verification/review queues (Intuit):
+    → start reviews week one; they gate the best channel.
+
+--------------------------------------------------------------------------------
+11. WHY THIS WINS
+--------------------------------------------------------------------------------
+The hard parts are already built and battle-tested in ARLO: OAuth + encrypted
+token storage, MCP server + per-user tokens, the connector pattern, the site
+design system, the pricing philosophy, even the blog engine. Ollie Books is a
+focused re-aim of proven machinery at a bigger, hungrier market — every small
+business has books, and every owner has questions. Ship the fork, get ten
+owners saying "I finally know how my business is doing," and pour fuel on that.
+================================================================================
