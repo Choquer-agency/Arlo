@@ -14,7 +14,8 @@ export type MarketingPlatform =
   | "stripe"
   | "hubspot"
   | "mailerlite"
-  | "mailchimp";
+  | "mailchimp"
+  | "quickbooks";
 
 export type OAuthProvider =
   | "google"
@@ -25,7 +26,8 @@ export type OAuthProvider =
   | "stripe"
   | "hubspot"
   | "mailerlite"
-  | "mailchimp";
+  | "mailchimp"
+  | "quickbooks";
 
 export type DateRangePreset =
   | "today"

@@ -16,6 +16,7 @@ import {
 } from "@/lib/googleSources";
 import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { googleStartHref } from "@/lib/oauth";
+import { isQuickbooksAllowed } from "@/lib/featureGates";
 
 export default function ConnectionsPage() {
   const { ws } = useActiveWorkspace();
@@ -31,6 +32,13 @@ export default function ConnectionsPage() {
   const googleConn = connections?.find((c) => c.provider === "google");
   const googleConnected = googleConn?.status === "active";
   const availableAccounts: Account[] = googleConn?.availableAccounts ?? [];
+
+  // QuickBooks — private beta, allowlisted users only.
+  const me = useQuery(api.users.me);
+  const qbAllowed = isQuickbooksAllowed(me?.email);
+  const qbConn = connections?.find((c) => c.provider === "quickbooks");
+  const qbConnected = qbConn?.status === "active";
+  const qbCompany = qbConn?.availableAccounts?.[0]?.name ?? qbConn?.accountEmail;
 
   // Single-open accordion; default to the first source.
   const [openSource, setOpenSource] = useState<string>(GOOGLE_SOURCES[0].key);
@@ -100,6 +108,62 @@ export default function ConnectionsPage() {
           </div>
         )}
       </div>
+
+      {/* QuickBooks card — private beta, allowlisted users only */}
+      {qbAllowed && (
+        <div className="bg-white border border-dark-faded rounded-lg p-6 mb-6 flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h2 className="font-sans text-fluid-h5 text-dark mb-3 flex items-center gap-2.5">
+              QuickBooks
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#6b6fc4] bg-[#ecedfb] px-2 py-0.5 rounded-full">
+                Private beta
+              </span>
+            </h2>
+            {qbConnected ? (
+              <p className="text-dark/60 text-fluid-small max-w-md">
+                Ask Claude about income, expenses, net income, and invoices —
+                live from QuickBooks Online.
+              </p>
+            ) : (
+              <p className="text-dark/60 text-fluid-small max-w-md">
+                Connect your QuickBooks Online company to ask Claude about
+                income, expenses, net income, and invoices.
+              </p>
+            )}
+          </div>
+          {qbConnected ? (
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 pl-1.5 pr-3 py-1.5 rounded-full">
+                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500">
+                  <Check size={11} strokeWidth={3} className="text-white" />
+                </span>
+                Connected · {qbCompany}
+              </span>
+              <a
+                href={`/api/oauth/quickbooks/start${ws?._id ? `?workspaceId=${ws._id}` : ""}`}
+                className="font-mono text-[11px] uppercase tracking-wider text-dark/50 hover:text-dark"
+              >
+                Reconnect
+              </a>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-red-600 bg-red-50 pl-1.5 pr-3 py-1.5 rounded-full">
+                <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500">
+                  <X size={11} strokeWidth={3} className="text-white" />
+                </span>
+                Not connected
+              </span>
+              <a
+                href={`/api/oauth/quickbooks/start${ws?._id ? `?workspaceId=${ws._id}` : ""}`}
+                className="btn-secondary px-6 py-3"
+              >
+                Connect QuickBooks
+              </a>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Source-grouped accordion */}
       <div className="flex items-center justify-between mb-3 mt-8">

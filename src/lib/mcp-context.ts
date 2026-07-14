@@ -19,7 +19,11 @@ const REFRESH_ENDPOINTS: Record<OAuthProvider, string> = {
   hubspot: "https://api.hubapi.com/oauth/v1/token",
   mailerlite: "",
   mailchimp: "https://login.mailchimp.com/oauth2/token",
+  quickbooks: "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
 };
+
+/** Providers whose token endpoint wants HTTP Basic auth instead of body params. */
+const BASIC_AUTH_PROVIDERS: ReadonlySet<OAuthProvider> = new Set<OAuthProvider>(["quickbooks"]);
 
 function clientEnv(provider: OAuthProvider): { id: string; secret: string } {
   const id = process.env[`${provider.toUpperCase()}_OAUTH_CLIENT_ID`];
@@ -39,18 +43,22 @@ async function refreshProviderToken(
   const creds = JSON.parse(decryptCredentials(connection.encryptedTokens, connection.tokensIv));
   const { id, secret } = clientEnv(provider);
 
+  const useBasic = BASIC_AUTH_PROVIDERS.has(provider);
   const body = new URLSearchParams({
-    client_id: id,
-    client_secret: secret,
     grant_type: "refresh_token",
     refresh_token: creds.refreshToken,
+    ...(useBasic ? {} : { client_id: id, client_secret: secret }),
   });
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
+  const headers: Record<string, string> = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    Accept: "application/json",
+  };
+  if (useBasic) {
+    headers.Authorization = `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`;
+  }
+
+  const res = await fetch(url, { method: "POST", headers, body });
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Refresh failed for ${provider}: ${text}`);

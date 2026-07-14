@@ -22,6 +22,7 @@ import { stripeConnector } from "./stripe";
 import { hubspotConnector } from "./hubspot";
 import { mailerliteConnector } from "./mailerlite";
 import { mailchimpConnector } from "./mailchimp";
+import { quickbooksConnector } from "./quickbooks";
 import { buildCustomConnector, type CustomConnectorConfig } from "./custom";
 
 import { fetchQuery } from "convex/nextjs";
@@ -43,6 +44,7 @@ const BUILTIN_REGISTRY: Record<MarketingPlatform, MarketingConnector> = {
   hubspot: hubspotConnector,
   mailerlite: mailerliteConnector,
   mailchimp: mailchimpConnector,
+  quickbooks: quickbooksConnector,
 };
 
 export type PlatformRef = MarketingPlatform | `custom:${string}`;
