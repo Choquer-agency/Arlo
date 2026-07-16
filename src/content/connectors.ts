@@ -111,7 +111,7 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["seo-specialist", "account-manager"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-ads-mcp", "search-console-mcp"],
+    relatedConnectorSlugs: ["google-ads-mcp", "search-console-mcp", "youtube-mcp"],
   },
 
   "google-ads-mcp": {
@@ -288,7 +288,97 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["seo-specialist"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-analytics-mcp", "google-ads-mcp"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "google-ads-mcp", "youtube-mcp"],
+  },
+
+  "youtube-mcp": {
+    slug: "youtube-mcp",
+    sourceName: "YouTube Analytics",
+    sourceShortName: "YouTube",
+    color: "#FF0000",
+    title: "YouTube MCP: Connect YouTube Analytics to Claude",
+    metaTitle: "YouTube MCP | Connect YouTube Analytics to Claude — ARLO",
+    metaDescription:
+      "Connect YouTube Analytics to Claude Desktop through ARLO's MCP server. Ask Claude about views, watch time, and subscriber growth for any client channel — no exports, no dashboards.",
+    tldr:
+      "ARLO is an MCP server that gives Claude live, read-only access to YouTube Analytics through the YouTube Analytics API. Connect once with Google OAuth, assign a channel ID to a client, and Claude can answer questions about views, watch time, subscriber growth, and engagement on demand — nothing is exported, warehoused, or scheduled.",
+    lastUpdated: "2026-07-16",
+    sections: {
+      why: {
+        heading: "Why connect YouTube Analytics to Claude instead of opening YouTube Studio",
+        body:
+          "YouTube Studio's analytics tab is built for browsing one chart at a time, not answering a specific client question fast. Most agencies managing a channel end up re-checking the same numbers every week — views and watch time for the month, which videos gained the most subscribers, how average view duration is trending — then typing them into a report by hand. An MCP connector removes that step: Claude calls the YouTube Analytics API directly, so \"how many subscribers did we gain last month and which video drove it\" becomes a sentence instead of a trip through Studio's tabs and date pickers.",
+      },
+      steps: [
+        {
+          title: "Connect Google",
+          description:
+            "Sign in to ARLO and grant Google OAuth once. The same grant also unlocks GA4, Search Console, and Google Ads — no separate YouTube-only integration to configure.",
+        },
+        {
+          title: "Assign the channel ID",
+          description:
+            "Add the YouTube channel ID for each client or business you manage. Multi-client agencies assign as many channels as they run.",
+        },
+        {
+          title: "Paste your MCP URL into Claude Desktop",
+          description:
+            "ARLO generates a personal MCP URL. Add it under Claude Desktop → Settings → Connectors and YouTube Analytics shows up as a tool Claude can call.",
+        },
+      ],
+      prompts: [
+        "How many views and watch minutes did [Client]'s channel get last month?",
+        "Which video gained the most subscribers this quarter?",
+        "How does this month's average view duration compare to last month?",
+        "Break down last week's views by traffic source for [Client].",
+        "What's the like-to-view ratio on our five most recent uploads?",
+      ],
+      metrics: [
+        { name: "Views", description: "Total video views over the date range" },
+        { name: "Estimated minutes watched", description: "Total watch time" },
+        { name: "Average view duration / percentage", description: "How much of each video gets watched" },
+        { name: "Subscribers gained / lost", description: "Net channel growth" },
+        { name: "Likes / dislikes / comments / shares", description: "Engagement signals" },
+        { name: "Annotation click-through rate", description: "On-video prompt performance" },
+      ],
+      dimensions: [
+        { name: "Day", description: "Daily breakdown for trend lines" },
+        { name: "Video", description: "Per-video performance" },
+        { name: "Country", description: "Where views came from" },
+        { name: "Device type", description: "Desktop, mobile, tablet, TV, or console" },
+        { name: "Traffic source type", description: "Search, suggested, external, playlists, and more" },
+      ],
+      faqs: [
+        {
+          question: "Is this YouTube's official MCP server?",
+          answer:
+            "No. ARLO is a third-party MCP connector built on the public YouTube Analytics API. It requires you to grant OAuth access to your own channel — it isn't an official YouTube or Google product.",
+        },
+        {
+          question: "Do I need to know the YouTube Analytics API to use this?",
+          answer:
+            "No. You ask Claude in plain English; ARLO translates the request into the correct YouTube Analytics API call and returns the numbers Claude uses to answer you.",
+        },
+        {
+          question: "Is my YouTube data stored anywhere?",
+          answer:
+            "No. ARLO is pass-through — each query fetches live data from the YouTube Analytics API and returns it to Claude for that one response. Nothing is warehoused or cached long-term.",
+        },
+        {
+          question: "Can I connect YouTube channels for more than one client?",
+          answer:
+            "Yes. One Google OAuth grant per team member covers every channel ID you assign. Add a client, enter their channel ID, and Claude can query it immediately.",
+        },
+        {
+          question: "Does this cover YouTube ad spend or only organic analytics?",
+          answer:
+            "Only organic channel analytics today — views, watch time, subscribers, and engagement. Ad spend on YouTube runs through the separate Google Ads connector.",
+        },
+      ],
+    },
+    relatedServiceSlugs: ["agency-owner", "account-manager"],
+    relatedComparisonSlugs: ["supermetrics-vs-arlo"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp"],
   },
 };
 
