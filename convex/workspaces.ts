@@ -70,8 +70,11 @@ export const create = mutation({
     workspaceType: v.optional(
       v.union(v.literal("solo"), v.literal("agency"))
     ),
+    // When true, skip auto-creating the solo business — the onboarding wizard
+    // creates it itself (with a website) so solo + agency share one add-business step.
+    skipAutoClient: v.optional(v.boolean()),
   },
-  handler: async (ctx, { name, workspaceType }) => {
+  handler: async (ctx, { name, workspaceType, skipAutoClient }) => {
     const userId = await requireUserId(ctx);
     const type = workspaceType ?? "agency";
     const base = slugify(name);
@@ -101,8 +104,9 @@ export const create = mutation({
     });
 
     // For the solo flow, auto-create the user's business as the single client
-    // so they don't land on an empty "add a client" screen.
-    if (type === "solo") {
+    // so they don't land on an empty "add a client" screen (unless the caller
+    // opts out — e.g. the onboarding wizard creates the business itself).
+    if (type === "solo" && !skipAutoClient) {
       const businessName = name.trim();
       await ctx.db.insert("clients", {
         workspaceId,

@@ -91,7 +91,7 @@ export async function probeGoogleAccounts(accessToken: string): Promise<Availabl
       };
       for (const a of body.accounts ?? []) {
         const locsRes = await fetch(
-          `https://mybusinessbusinessinformation.googleapis.com/v1/${a.name}/locations?readMask=name,title,storefrontAddress`,
+          `https://mybusinessbusinessinformation.googleapis.com/v1/${a.name}/locations?readMask=name,title,storefrontAddress&pageSize=100`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         if (locsRes.ok) {
@@ -105,8 +105,22 @@ export async function probeGoogleAccounts(accessToken: string): Promise<Availabl
               kind: "gbp_location",
             });
           }
+        } else {
+          console.error(
+            "[google probe] GBP locations failed:",
+            locsRes.status,
+            (await locsRes.text()).slice(0, 400)
+          );
         }
       }
+    } else {
+      // Common cause: the Business Profile APIs aren't enabled in the Cloud
+      // project, or their quota is 0 (must be requested from Google).
+      console.error(
+        "[google probe] GBP accounts failed:",
+        gbpAccountsRes.status,
+        (await gbpAccountsRes.text()).slice(0, 400)
+      );
     }
   } catch (e) {
     console.error("[google probe] gbp accounts/locations failed:", e);
@@ -130,8 +144,20 @@ export async function probeGoogleAccounts(accessToken: string): Promise<Availabl
           const id = rn.split("/")[1] ?? rn;
           accounts.push({ id, name: `Customer ${id}`, kind: "ads_customer" });
         }
+      } else {
+        // Common cause: the dev token is still in "test" access, so it can only
+        // see test accounts (real ones return here), or the Ads API isn't enabled.
+        console.error(
+          "[google probe] Ads listAccessibleCustomers failed:",
+          adsRes.status,
+          (await adsRes.text()).slice(0, 500)
+        );
       }
-    } catch {}
+    } catch (e) {
+      console.error("[google probe] Ads fetch threw:", e);
+    }
+  } else {
+    console.error("[google probe] GOOGLE_ADS_DEVELOPER_TOKEN not set — skipping Ads.");
   }
 
   return accounts;

@@ -60,10 +60,17 @@ export async function GET(req: Request) {
     process.env.GOOGLE_OAUTH_REDIRECT_URI ??
     `${new URL(req.url).origin}/api/oauth/google/callback`;
 
+  // Optional same-origin return path (e.g. the onboarding wizard) — validated
+  // to a relative path so it can't be used as an open redirect.
+  const rawReturn = new URL(req.url).searchParams.get("returnTo");
+  const returnTo =
+    rawReturn && rawReturn.startsWith("/") && !rawReturn.startsWith("//") ? rawReturn : undefined;
+
   const state = signState({
     workspaceId: ws._id,
     userId: "", // populated via token query in callback if needed
     provider: "google",
+    returnTo,
   });
 
   const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");

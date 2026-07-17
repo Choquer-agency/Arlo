@@ -40,7 +40,10 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 
 function Identify() {
   const me = useQuery(api.users.me);
-  const workspaces = useQuery(api.workspaces.listMine);
+  // listMine throws "Not authenticated" for signed-out visitors (marketing
+  // pages) and during the brief auth-loading window — only run it once we know
+  // there's a signed-in user.
+  const workspaces = useQuery(api.workspaces.listMine, me ? {} : "skip");
   const done = useRef<string | null>(null);
 
   useEffect(() => {

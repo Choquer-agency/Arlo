@@ -4,6 +4,8 @@ interface StatePayload {
   workspaceId: string;
   userId: string;
   provider: string;
+  /** Same-origin relative path to return to after the callback (e.g. onboarding). */
+  returnTo?: string;
   nonce: string;
   iat: number;
 }

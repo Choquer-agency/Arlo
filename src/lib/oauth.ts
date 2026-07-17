@@ -3,8 +3,10 @@
  * entered a client workspace connects Google for *that* client, not their own.
  * The start route authorizes member-or-superadmin before using it.
  */
-export function googleStartHref(workspaceId?: string): string {
-  return workspaceId
-    ? `/api/oauth/google/start?workspaceId=${workspaceId}`
-    : "/api/oauth/google/start";
+export function googleStartHref(workspaceId?: string, returnTo?: string): string {
+  const q = new URLSearchParams();
+  if (workspaceId) q.set("workspaceId", workspaceId);
+  if (returnTo) q.set("returnTo", returnTo);
+  const s = q.toString();
+  return s ? `/api/oauth/google/start?${s}` : "/api/oauth/google/start";
 }

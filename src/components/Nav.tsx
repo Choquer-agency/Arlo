@@ -10,7 +10,6 @@ import { ChevronDown } from 'lucide-react';
 import { getTier1Services } from '@/content/services';
 import { trackCtaClick } from '@/lib/analytics';
 import { ShimmerButton } from '@/components/ShimmerButton';
-import { useSignInModal } from '@/context/SignInModalContext';
 
 const tier1Services = getTier1Services();
 
@@ -26,7 +25,6 @@ const links: { label: string; href: string; hasDropdown?: boolean }[] = [
 export function Nav() {
   const [open, setOpen] = React.useState(false);
   const [servicesOpen, setServicesOpen] = React.useState(false);
-  const { open: openSignIn } = useSignInModal();
   const scrolled = useScroll(10);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
@@ -96,12 +94,12 @@ export function Nav() {
 
           {/* Right actions — Login + shimmer in one pill, matching home */}
           <div className="hidden md:flex items-center gap-1 rounded-full border border-black/[0.04] bg-white/55 p-1.5 backdrop-blur-md">
-            <button
-              onClick={() => openSignIn('signIn')}
+            <Link
+              href="/sign-in"
               className="px-4 py-1.5 text-[0.95rem] text-[#14181c]/70 hover:text-[#14181c] transition-colors"
             >
               Login
-            </button>
+            </Link>
             <ShimmerButton href="/welcome" onClick={() => trackCtaClick('nav', 'Start For Free')}>
               Start For Free
             </ShimmerButton>
@@ -137,12 +135,13 @@ export function Nav() {
                 {link.label}
               </Link>
             ))}
-            <button
-              onClick={() => { setOpen(false); openSignIn('signIn'); }}
+            <Link
+              href="/sign-in"
+              onClick={() => setOpen(false)}
               className="py-3 text-lg text-left text-[#14181c] border-b border-black/5"
             >
               Login
-            </button>
+            </Link>
           </div>
           <ShimmerButton
             href="/welcome"

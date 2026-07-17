@@ -66,7 +66,7 @@ export default function ConnectionsPage() {
             </div>
           ) : (
             <p className="text-dark/60 text-fluid-small max-w-md">
-              Unlocks GA4, Search Console, Google Ads, YouTube, and Business Profile for
+              Unlocks GA4, Search Console, Google Ads, and Business Profile for
               every business in one OAuth.
             </p>
           )}

@@ -64,7 +64,7 @@ export default function DashboardPage() {
           Your businesses
         </p>
         <Link
-          href="/clients"
+          href="/clients?add=1"
           className="font-mono text-[11px] uppercase tracking-wider text-dark/70 hover:text-dark inline-flex items-center gap-1.5"
         >
           <Plus size={13} /> Add business
@@ -145,7 +145,7 @@ function EmptyState() {
         Add your first business, then connect Google and map its GA4 / Search Console /
         Ads accounts to see live numbers here.
       </p>
-      <Link href="/clients" className="btn-secondary px-6 py-3 inline-block">
+      <Link href="/clients?add=1" className="btn-secondary px-6 py-3 inline-block">
         Add your first business
       </Link>
     </div>

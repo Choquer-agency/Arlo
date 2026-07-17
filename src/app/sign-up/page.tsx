@@ -5,16 +5,14 @@ import Link from "next/link";
 import { ArloMark } from "@/components/ArloMark";
 import { SignInCard, SignInShell } from "@/components/SignInCard";
 
-export default function SignInPage() {
-  // Convex hooks crash without a ConvexProvider (only present when
-  // NEXT_PUBLIC_CONVEX_URL is set). Keep the marketing site working uncnfigured.
+export default function SignUpPage() {
   if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
     return <ConvexNotConfigured />;
   }
   return (
     <SignInShell>
       <Suspense fallback={null}>
-        <SignInCard mode="signIn" />
+        <SignInCard mode="signUp" />
       </Suspense>
     </SignInShell>
   );
@@ -27,11 +25,9 @@ function ConvexNotConfigured() {
         <div className="flex justify-center mb-4">
           <ArloMark className="h-9 w-auto text-[#8F93FF]" />
         </div>
-        <h1 className="font-serif text-2xl text-[#14181c] mb-2">Sign-in isn&apos;t live yet</h1>
+        <h1 className="font-serif text-2xl text-[#14181c] mb-2">Sign-up isn&apos;t live yet</h1>
         <p className="text-[#14181c]/60 mb-2">
-          The auth backend isn&apos;t connected in this environment. Deploy Convex
-          (<code className="font-mono text-sm">npx convex dev</code>) and set{" "}
-          <code className="font-mono text-sm">NEXT_PUBLIC_CONVEX_URL</code> to enable sign-in.
+          The auth backend isn&apos;t connected in this environment.
         </p>
         <Link href="/" className="underline text-[#14181c] font-medium">
           Back to home

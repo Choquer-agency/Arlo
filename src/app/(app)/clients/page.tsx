@@ -4,16 +4,20 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useActiveWorkspace } from "@/components/providers/ActingWorkspaceProvider";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function ClientsPage() {
   const { ws } = useActiveWorkspace();
+  const params = useSearchParams();
   const clients = useQuery(
     api.clients.list,
     ws ? { workspaceId: ws._id } : "skip"
   );
   const createClient = useMutation(api.clients.create);
-  const [adding, setAdding] = useState(false);
+  // Deep-link: /clients?add=1 opens the add form straight away (from the
+  // dashboard's "Add your first business" CTA).
+  const [adding, setAdding] = useState(params.get("add") === "1");
   const [newName, setNewName] = useState("");
   const [newUrl, setNewUrl] = useState("");
 

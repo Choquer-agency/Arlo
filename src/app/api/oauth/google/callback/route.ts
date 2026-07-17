@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     );
   }
 
-  let state: { workspaceId: string; provider: string };
+  let state: { workspaceId: string; provider: string; returnTo?: string };
   try {
     state = verifyState(stateToken);
   } catch (e) {
@@ -120,7 +120,13 @@ export async function GET(req: Request) {
     availableAccounts: accounts,
   });
 
+  // Return to wherever the flow started (onboarding wizard) or the connections page.
+  const dest =
+    state.returnTo && state.returnTo.startsWith("/") && !state.returnTo.startsWith("//")
+      ? state.returnTo
+      : "/connections";
+  const sep = dest.includes("?") ? "&" : "?";
   return NextResponse.redirect(
-    new URL(`/connections?status=ok&accounts=${accounts.length}`, req.url)
+    new URL(`${dest}${sep}status=ok&accounts=${accounts.length}`, req.url)
   );
 }

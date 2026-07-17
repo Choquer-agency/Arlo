@@ -13,132 +13,6 @@ interface Account {
   kind: string;
 }
 
-/**
- * Searchable dropdown. A native <select> is unusable once an agency has dozens
- * of GA4 properties, so this opens a panel with a search field that filters the
- * options (by name or id) as you type.
- */
-function SearchableSelect({
-  options,
-  value,
-  onChange,
-  placeholder,
-}: {
-  options: Account[];
-  value: string;
-  onChange: (id: string) => void;
-  placeholder: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const selected = options.find((o) => o.id === value);
-
-  const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return options;
-    return options.filter(
-      (o) => o.name.toLowerCase().includes(q) || o.id.toLowerCase().includes(q)
-    );
-  }, [options, query]);
-
-  // Close on outside click.
-  useEffect(() => {
-    if (!open) return;
-    function onDown(e: MouseEvent) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
-
-  // Focus the search field whenever the panel opens.
-  useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
-
-  return (
-    <div ref={wrapRef} className="relative flex-1 min-w-[14rem]">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2 border border-dark-faded rounded bg-white font-sans text-sm text-left focus:outline-none focus:border-brand"
-      >
-        <span className={`truncate ${selected ? "text-dark" : "text-dark/40"}`}>
-          {selected
-            ? `${selected.name}${selected.id !== selected.name ? ` · ${selected.id}` : ""}`
-            : placeholder}
-        </span>
-        <ChevronDown
-          size={16}
-          className={`shrink-0 text-dark/40 transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {open && (
-        <div className="mt-1 w-full rounded-lg border border-dark-faded bg-white shadow-sm overflow-hidden">
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-dark-faded">
-            <Search size={14} className="shrink-0 text-dark/40" />
-            <input
-              ref={inputRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search…"
-              className="w-full bg-transparent font-sans text-sm focus:outline-none placeholder:text-dark/40"
-            />
-            {query && (
-              <span className="shrink-0 font-mono text-[10px] text-dark/40 tabular-nums">
-                {matches.length}
-              </span>
-            )}
-          </div>
-          <ul className="max-h-64 overflow-auto py-1">
-            {matches.length === 0 ? (
-              <li className="px-3 py-2 text-sm text-dark/50">No matches</li>
-            ) : (
-              matches.map((o) => (
-                <li key={o.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onChange(o.id);
-                      setOpen(false);
-                      setQuery("");
-                    }}
-                    className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-grey ${
-                      o.id === value ? "bg-mint" : ""
-                    }`}
-                  >
-                    <Check
-                      size={14}
-                      className={`shrink-0 ${o.id === value ? "text-brand" : "text-transparent"}`}
-                    />
-                    <span className="truncate">
-                      {o.name}
-                      {o.id !== o.name && (
-                        <span className="text-dark/40"> · {o.id}</span>
-                      )}
-                    </span>
-                  </button>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/**
- * Inline picker shown when a Google connection exists but the user hasn't yet
- * mapped one of the discovered accounts (GA4 property, GSC site, Ads customer,
- * etc) to their client. Writes to client.platformAssignments.
- */
 export function AccountPicker({
   workspaceId,
   clientId,
@@ -166,14 +40,43 @@ export function AccountPicker({
 }) {
   const updateAssignments = useMutation(api.clients.updateAssignments);
   const options = accounts.filter((a) => a.kind === accountKind);
+
   const [selected, setSelected] = useState<string>(options[0]?.id ?? "");
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const [saving, setSaving] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
 
-  // Re-probe Google for newly-created properties/sites/etc. The connection's
-  // availableAccounts is a reactive Convex query, so a successful refresh flows
-  // back into `accounts` and re-renders this list automatically.
+  const rowRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const selectedOpt = options.find((o) => o.id === selected);
+  const isSaved = savedId !== null && savedId === selected;
+
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return options;
+    return options.filter(
+      (o) => o.name.toLowerCase().includes(q) || o.id.toLowerCase().includes(q)
+    );
+  }, [options, query]);
+
+  // Close the dropdown on outside click.
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent) {
+      if (rowRef.current && !rowRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
   async function refresh() {
     setRefreshing(true);
     setRefreshMsg(null);
@@ -198,12 +101,25 @@ export function AccountPicker({
     }
   }
 
+  async function save() {
+    if (!selected) return;
+    setSaving(true);
+    try {
+      await updateAssignments({ workspaceId, clientId, [assignmentField]: selected });
+      track("source_mapped", { field: assignmentField, kind: accountKind });
+      setSavedId(selected);
+      onSaved?.();
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (options.length === 0) {
     return (
       <div className="rounded-lg bg-grey p-5 text-sm text-dark/70">
         <p>
-          Your Google account doesn&apos;t have any {label.toLowerCase()} we can read.
-          Make sure the right account has access in Google.
+          Your Google account doesn&apos;t have any {label.toLowerCase()} we can read. Make sure the
+          right account has access in Google.
         </p>
         <button
           onClick={refresh}
@@ -218,49 +134,100 @@ export function AccountPicker({
     );
   }
 
-  async function save() {
-    if (!selected) return;
-    setSaving(true);
-    try {
-      await updateAssignments({
-        workspaceId,
-        clientId,
-        [assignmentField]: selected,
-      });
-      track("source_mapped", { field: assignmentField, kind: accountKind });
-      onSaved?.();
-    } finally {
-      setSaving(false);
-    }
-  }
+  const fieldH = "h-10"; // shared height so the select + button line up exactly
 
   return (
-    <div className="rounded-lg border border-dashed border-dark/20 p-5">
-      <p className="font-mono text-xs uppercase tracking-wider text-dark/60 mb-2">
-        Pick a {label.toLowerCase()}
-      </p>
-      <p className="text-dark/70 text-sm mb-4">
-        Google connected — pick which {label.toLowerCase()} maps to your business.
-      </p>
-      <div className="flex gap-2 flex-wrap">
-        <SearchableSelect
-          options={options}
-          value={selected}
-          onChange={setSelected}
-          placeholder={`Select a ${label.toLowerCase()}…`}
-        />
+    <div>
+      {/* Select + action, one row, matching heights. */}
+      <div ref={rowRef} className="relative flex items-stretch gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={`${fieldH} flex-1 min-w-0 flex items-center justify-between gap-2 px-3 border border-dark-faded rounded-lg bg-white text-sm text-left focus:outline-none focus:border-[#8F93FF]`}
+        >
+          <span className={`truncate ${selectedOpt ? "text-dark" : "text-dark/40"}`}>
+            {selectedOpt
+              ? `${selectedOpt.name}${selectedOpt.id !== selectedOpt.name ? ` · ${selectedOpt.id}` : ""}`
+              : `Select a ${label.toLowerCase()}…`}
+          </span>
+          <ChevronDown
+            size={16}
+            className={`shrink-0 text-dark/40 transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+
         <button
           onClick={save}
           disabled={!selected || saving}
-          className="btn-secondary px-4 py-2 text-sm inline-flex items-center gap-2 disabled:opacity-50"
+          className={`${fieldH} shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 text-sm font-medium transition-all disabled:opacity-50 ${
+            isSaved
+              ? "bg-[#14181c] text-white"
+              : "bg-[#D0FF71] text-[#14181c] hover:brightness-95"
+          }`}
         >
-          {saving ? "Saving…" : (
+          {saving ? (
+            "Saving…"
+          ) : isSaved ? (
             <>
-              <Check size={14} /> Use this
+              <Check size={15} strokeWidth={2.5} /> Mapped
             </>
+          ) : (
+            "Use this"
           )}
         </button>
+
+        {/* Full-width dropdown, overlaid so it doesn't push the row taller. */}
+        {open && (
+          <div className="absolute left-0 right-0 top-full z-30 mt-1.5 rounded-xl border border-dark-faded bg-white shadow-lg overflow-hidden">
+            <div className="flex items-center gap-2 px-3 py-2.5 border-b border-dark-faded">
+              <Search size={15} className="shrink-0 text-dark/40" />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search…"
+                className="w-full bg-transparent text-sm focus:outline-none placeholder:text-dark/40"
+              />
+              {query && (
+                <span className="shrink-0 font-mono text-[10px] text-dark/40 tabular-nums">
+                  {matches.length}
+                </span>
+              )}
+            </div>
+            <ul className="max-h-64 overflow-auto py-1">
+              {matches.length === 0 ? (
+                <li className="px-3 py-2 text-sm text-dark/50">No matches</li>
+              ) : (
+                matches.map((o) => (
+                  <li key={o.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelected(o.id);
+                        setOpen(false);
+                        setQuery("");
+                      }}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-grey ${
+                        o.id === selected ? "bg-mint" : ""
+                      }`}
+                    >
+                      <Check
+                        size={14}
+                        className={`shrink-0 ${o.id === selected ? "text-[#3f7a1e]" : "text-transparent"}`}
+                      />
+                      <span className="truncate">
+                        {o.name}
+                        {o.id !== o.name && <span className="text-dark/40"> · {o.id}</span>}
+                      </span>
+                    </button>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        )}
       </div>
+
       <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
         <button
           onClick={refresh}
