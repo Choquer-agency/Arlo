@@ -220,10 +220,12 @@ function SourceGroup({
         : { state: "off", label: notLive === 1 ? "Connection issue" : `${notLive} need attention` };
 
   return (
-    <div className="bg-white border border-dark-faded rounded-lg overflow-hidden">
+    // overflow-visible while open so the account picker's search dropdown isn't
+    // clipped by the card; clipped when collapsed to keep the header rounded.
+    <div className={`bg-white border border-dark-faded rounded-lg ${open ? "overflow-visible" : "overflow-hidden"}`}>
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 px-5 py-4 hover:bg-grey/60 transition-colors"
+        className="w-full flex items-center justify-between gap-4 px-5 py-4 rounded-t-lg hover:bg-grey/60 transition-colors"
       >
         <span className="flex items-center gap-3 min-w-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}

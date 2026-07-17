@@ -41,7 +41,7 @@ export function AccountPicker({
   const updateAssignments = useMutation(api.clients.updateAssignments);
   const options = accounts.filter((a) => a.kind === accountKind);
 
-  const [selected, setSelected] = useState<string>(options[0]?.id ?? "");
+  const [selected, setSelected] = useState<string>("");
   const [savedId, setSavedId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -101,13 +101,14 @@ export function AccountPicker({
     }
   }
 
-  async function save() {
-    if (!selected) return;
+  // Selecting an option maps it immediately — no separate "confirm" click.
+  async function save(id: string) {
+    if (!id) return;
     setSaving(true);
     try {
-      await updateAssignments({ workspaceId, clientId, [assignmentField]: selected });
+      await updateAssignments({ workspaceId, clientId, [assignmentField]: id });
       track("source_mapped", { field: assignmentField, kind: accountKind });
-      setSavedId(selected);
+      setSavedId(id);
       onSaved?.();
     } finally {
       setSaving(false);
@@ -138,42 +139,33 @@ export function AccountPicker({
 
   return (
     <div>
-      {/* Select + action, one row, matching heights. */}
-      <div ref={rowRef} className="relative flex items-stretch gap-2">
+      {/* One control: pick from the dropdown and it maps instantly. */}
+      <div ref={rowRef} className="relative">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`${fieldH} flex-1 min-w-0 flex items-center justify-between gap-2 px-3 border border-dark-faded rounded-lg bg-white text-sm text-left focus:outline-none focus:border-[#8F93FF]`}
+          className={`${fieldH} w-full flex items-center justify-between gap-2 px-3 border rounded-lg bg-white text-sm text-left focus:outline-none transition-colors ${
+            isSaved ? "border-emerald-400" : "border-dark-faded focus:border-[#8F93FF]"
+          }`}
         >
           <span className={`truncate ${selectedOpt ? "text-dark" : "text-dark/40"}`}>
             {selectedOpt
               ? `${selectedOpt.name}${selectedOpt.id !== selectedOpt.name ? ` · ${selectedOpt.id}` : ""}`
               : `Select a ${label.toLowerCase()}…`}
           </span>
-          <ChevronDown
-            size={16}
-            className={`shrink-0 text-dark/40 transition-transform ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-
-        <button
-          onClick={save}
-          disabled={!selected || saving}
-          className={`${fieldH} shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 text-sm font-medium transition-all disabled:opacity-50 ${
-            isSaved
-              ? "bg-[#14181c] text-white"
-              : "bg-[#D0FF71] text-[#14181c] hover:brightness-95"
-          }`}
-        >
-          {saving ? (
-            "Saving…"
-          ) : isSaved ? (
-            <>
-              <Check size={15} strokeWidth={2.5} /> Mapped
-            </>
-          ) : (
-            "Use this"
-          )}
+          <span className="flex items-center gap-2 shrink-0">
+            {saving ? (
+              <span className="text-xs text-dark/40">Saving…</span>
+            ) : isSaved ? (
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700">
+                <Check size={14} strokeWidth={2.5} /> Mapped
+              </span>
+            ) : null}
+            <ChevronDown
+              size={16}
+              className={`text-dark/40 transition-transform ${open ? "rotate-180" : ""}`}
+            />
+          </span>
         </button>
 
         {/* Full-width dropdown, overlaid so it doesn't push the row taller. */}
@@ -206,6 +198,7 @@ export function AccountPicker({
                         setSelected(o.id);
                         setOpen(false);
                         setQuery("");
+                        save(o.id); // map instantly on select
                       }}
                       className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-grey ${
                         o.id === selected ? "bg-mint" : ""
