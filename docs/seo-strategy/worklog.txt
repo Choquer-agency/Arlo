@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-17 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap still open (2nd pulse running, no project for askarlo.app; CI/build green, GSC/GA4 still pending) — see reports/outbox/2026-07-17-weekly-pulse.json.
+
 ## 2026-07-16 (Thu) — Week 4/5: YouTube MCP connector page
 
 SHIPPED — `/connect/youtube-mcp`, per NEXT item 4 from the 2026-07-13 entry (connector-matrix
