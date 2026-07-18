@@ -22,6 +22,12 @@ import { stripeConnector } from "./stripe";
 import { hubspotConnector } from "./hubspot";
 import { mailerliteConnector } from "./mailerlite";
 import { mailchimpConnector } from "./mailchimp";
+import { metaOrganicConnector } from "./meta-organic";
+import { salesforceConnector } from "./salesforce";
+import { pipedriveConnector } from "./pipedrive";
+import { gohighlevelConnector } from "./gohighlevel";
+import { clarityConnector } from "./clarity";
+import { gtmConnector } from "./gtm";
 import { buildCustomConnector, type CustomConnectorConfig } from "./custom";
 
 import { fetchQuery } from "convex/nextjs";
@@ -43,6 +49,12 @@ const BUILTIN_REGISTRY: Record<MarketingPlatform, MarketingConnector> = {
   hubspot: hubspotConnector,
   mailerlite: mailerliteConnector,
   mailchimp: mailchimpConnector,
+  meta_organic: metaOrganicConnector,
+  salesforce: salesforceConnector,
+  pipedrive: pipedriveConnector,
+  gohighlevel: gohighlevelConnector,
+  clarity: clarityConnector,
+  gtm: gtmConnector,
 };
 
 export type PlatformRef = MarketingPlatform | `custom:${string}`;

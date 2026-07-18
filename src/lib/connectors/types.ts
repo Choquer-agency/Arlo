@@ -14,7 +14,13 @@ export type MarketingPlatform =
   | "stripe"
   | "hubspot"
   | "mailerlite"
-  | "mailchimp";
+  | "mailchimp"
+  | "meta_organic"
+  | "salesforce"
+  | "pipedrive"
+  | "gohighlevel"
+  | "clarity"
+  | "gtm";
 
 export type OAuthProvider =
   | "google"
@@ -25,7 +31,11 @@ export type OAuthProvider =
   | "stripe"
   | "hubspot"
   | "mailerlite"
-  | "mailchimp";
+  | "mailchimp"
+  | "salesforce"
+  | "pipedrive"
+  | "gohighlevel"
+  | "clarity";
 
 export type DateRangePreset =
   | "today"
