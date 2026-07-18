@@ -35,7 +35,6 @@ export const COMING_SOON_SOURCES = [
   // YouTube paused while its OAuth scopes are out of the consent screen (re-add
   // key "yt" to GOOGLE_SOURCES + the scopes in api/oauth/google/start to restore).
   { name: "YouTube", detail: "Channel & video analytics", icon: "/sources/youtube.svg" },
-  { name: "Meta", detail: "Ads + Instagram / Facebook organic", icon: "/sources/meta.svg" },
   { name: "LinkedIn", detail: "Ads + organic", icon: "/sources/linkedin.svg" },
   { name: "Shopify", detail: "Orders & storefront", icon: "/sources/shopify.svg" },
   { name: "Stripe", detail: "Revenue & subscriptions", icon: "/sources/stripe.svg" },
