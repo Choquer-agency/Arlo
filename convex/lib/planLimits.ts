@@ -6,8 +6,11 @@
  */
 
 const CLIENT_CAP: Record<string, number> = {
-  free: 1,
-  solo: 1,
+  // Early access: everything is free and unlimited. "free" is the default plan
+  // new agencies land on, so it must not cap clients. (Revisit when paid tiers
+  // launch — see src/lib/billing.ts, kept in sync.)
+  free: Infinity,
+  solo: Infinity,
   studio: 10,
   agency: 25,
   scale: 75,

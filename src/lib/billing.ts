@@ -23,9 +23,10 @@ export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
   free: {
     label: "Free",
     price: "$0",
-    clients: 1,
-    sourceTypes: 2,
-    teamMembers: 1,
+    // Early access: free = unlimited (kept in sync with convex/lib/planLimits.ts).
+    clients: Infinity,
+    sourceTypes: Infinity,
+    teamMembers: Infinity,
     mcpCallsPerMonth: 100,
     insightsPerMonth: 10,
     insightOveragePrice: null,
