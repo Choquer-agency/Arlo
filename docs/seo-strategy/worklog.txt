@@ -6,6 +6,85 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-20 (Mon) — Week 5/6: `/compare` index page + flag catalog.ts/registry drift
+
+IMPORTANT FINDING (read before picking NEXT item 1): since the last SEO session, 5 product
+commits landed (`6a4f8f4` "9 new/real connectors: Meta (ads+organic), HubSpot, Salesforce,
+Mailchimp, MailerLite, Pipedrive, GoHighLevel, Clarity, GTM", dated Jul 18) that rewrote
+`coming_soon`/`waitlist` stub connectors into real working implementations — OAuth
+start/callback routes, real API calls, and a new "More platforms" grid on
+`/connections`. All 9 are wired into `src/lib/connectors/registry.ts` (functionally live).
+**But `src/lib/connectors/catalog.ts` — the file that actually drives public status/marketing
+claims — was NOT touched by that commit.** It still says: `meta_ads: "coming_soon"` (eta "May
+2026", already past), `hubspot: "coming_soon"` (eta "July 2026" — this month), `salesforce:
+"waitlist"`, `mailchimp: "coming_soon"` (eta "August 2026"), `mailerlite: "coming_soon"`,
+`pipedrive: "waitlist"`; `gohighlevel`/`clarity`/`gtm` aren't in the catalog at all. This is
+the exact "feature-flagged vs. stale catalog entry" ambiguity flagged since 2026-07-06 for
+Meta Ads specifically — now six sessions old and now applying to 8 more connectors. Did
+**not** ship a "Meta Ads MCP" (or any of the other 8) connector page this session on the
+strength of a commit message alone — that would risk overclaiming if catalog.ts is stale on
+purpose (e.g. soft-launch/OAuth-testing before a public announcement) rather than by
+oversight. **Needs a human call**: either flip `catalog.ts` status to `"live"` for whichever
+of these 9 are actually ready for agencies to connect today, or confirm the catalog is
+intentionally lagging and say when it'll flip. Once confirmed live, these are the next
+connector-matrix pages (Meta Ads MCP alone is a named target keyword in the original audit).
+
+SHIPPED — `/compare` (new hub/index page), closing the gap flagged 3x now (2026-07-04,
+2026-07-09, 2026-07-13/16 NEXT lists): every `/compare/[slug]` page's breadcrumb JSON-LD and
+on-page breadcrumb link to `/compare`, but no page existed there (soft 404-adjacent gap).
+- PAGE: /compare (new) / CHANGE: new `src/app/compare/route.ts` + `_shell.html` +
+  `_content/compare.ts`, modeled on the existing `/destinations` hub pattern (the closest
+  existing precedent — a catalog-driven card grid — since `/connect` and `/services` have no
+  index page either). Card grid pulls all 4 comparison pages live from
+  `getAllComparisonSlugs()`/`getComparisonBySlug()` in `src/content/comparisons.ts` (no
+  hardcoded duplicate data — new comparison pages auto-appear here with zero further edits).
+  Each card shows the real `saasCategory` + the page's own `problem.heading` as the blurb (no
+  fabricated copy). Closing CTA is honest about scope: "we only publish a comparison once
+  we've researched the competitor's real feature set" + a `/contact` link to request one not
+  yet listed, rather than implying full market coverage. / TARGET: internal-linking/crawl-depth
+  fix primarily; secondarily "arlo alternatives comparison" / "arlo vs" head-of-funnel intent /
+  WHY: explicit repeat NEXT item, low effort relative to impact (fixes a real gap on 4 already-
+  indexed pages) / VERIFY: rebuilt clean; directly rendered the compiled shell against the same
+  mustache-lite `renderPage()` engine `/compare/[slug]` uses (dynamic route, not statically
+  prerendered, so no `.html` output to grep) — confirmed correct `<title>`, canonical
+  (`/compare`), H1, all 4 card hrefs (`/compare/windsor-ai-vs-arlo` etc.), CollectionPage +
+  BreadcrumbList + ItemList + FAQPage JSON-LD all present, zero unresolved `{{mustache}}`
+  tokens, nav/footer components render.
+- SITEMAP: added `/compare` to `sitemap.ts` (priority 0.9, weekly — same tier as
+  `/destinations`, the closest analog).
+- SITE: public/llms.txt — added "Compare ARLO (hub)" to the Pages list.
+- SKIPPED (deliberately): any of the 9 newly-real connectors (see finding above — blocked on
+  a human catalog.ts decision, not a content-writing task); static-render marketing pages
+  (deferred 6x now, still infra/auth-risk, still better as its own focused session); GSC
+  submission + SE Ranking rank-tracking project (both need human access, unchanged).
+- VERIFY (whole session): `npm install && npm run build` — compiled successfully; only the
+  same pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  NEXT_PUBLIC_CONVEX_URL in this sandbox, Vercel-only secret) — now also includes the new
+  `/connections` app route from the Jul 18 connector commit, same missing-env-var cause, not a
+  regression from this session's diff. `npm run lint` clean (only the pre-existing unrelated
+  `sitemap/page.tsx` CSS-tag warning). `git status` shows only `src/app/sitemap.ts` and
+  `public/llms.txt` touched plus the new `src/app/compare/{route.ts,_shell.html,_content/}`
+  files — reverted the build-generated `src/content/blog/manifest.json` diff before staging.
+
+NEXT (Week 6, see 12-week-strategy.md):
+1. **Get a human answer on catalog.ts** for the 9 connectors in the Jul 18 commit (see
+   finding above) — this now blocks more connector-matrix pages than just Meta Ads. Once
+   confirmed, ship pages for whichever are flipped to `"live"` (Meta Ads MCP is the
+   highest-value one per the original keyword audit).
+2. Still open (deferred 6x now): static-render the marketing pages (move
+   ConvexAuthNextjsServerProvider into an app-only route group). Test auth end-to-end after.
+   Compounds across every marketing page (TTFB/caching) — worth doing before the site adds
+   many more marketing pages.
+3. Blog engine (Week 6 per 12-week-strategy.md) — first 3 posts from `audits/content.md`
+   ("What is an MCP server (for marketers)", "GA4 in Claude: the 3-minute setup",
+   "Supermetrics is a pipeline, not an answer"). Nothing left unshipped in the
+   connector/comparison clusters that isn't blocked on item 1 or a human.
+4. Submit sitemap + new pages (including `/compare`) in GSC (needs a human with Search
+   Console access — this routine has no outbound web access). Also still no SE Ranking
+   rank-tracking project for askarlo.app (flagged since 2026-07-10) — worth a human wiring
+   one up so future sessions can check real ranking movement instead of keyword-difficulty
+   snapshots.
+
 ## 2026-07-17 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap still open (2nd pulse running, no project for askarlo.app; CI/build green, GSC/GA4 still pending) — see reports/outbox/2026-07-17-weekly-pulse.json.
 
 ## 2026-07-16 (Thu) — Week 4/5: YouTube MCP connector page
