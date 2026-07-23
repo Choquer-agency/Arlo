@@ -6,6 +6,79 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-23 (Thu) — Week 6/7: first foundational blog post — "What Is an MCP Connector?"
+
+SHIPPED — `src/content/blog/posts/us/what-is-an-mcp-connector.md` (new), the NEXT item 3 blog-engine
+task from 2026-07-20, but retargeted from the literal 12-week-strategy.md post list ("What is an MCP
+server (for marketers)") to the term the live keyword data actually supports for a new domain.
+- PAGE: /blog/what-is-an-mcp-connector (new) / CHANGE: new markdown post through the existing
+  `src/content/blog/index.ts` pipeline (frontmatter → `getAllBlogPosts()` → `/blog/[slug]` template,
+  `BlogPosting` JSON-LD auto-generated, no template changes). Discovered the blog engine itself was
+  already shipped by a product commit (`009111a`, Jul 9 "Redesign rollout") with 4 real posts already
+  live — `audits/content.md`'s "blog is completely empty" finding is now stale; confirmed `/blog`
+  route.ts only falls back to its hardcoded `SAMPLE` placeholder cards when `getAllBlogPosts()` returns
+  zero real posts, so no fabricated-content risk there. / TARGET: **`mcp connector`** — re-checked live
+  via `DATA_getKeywordsMetrics` (US) before writing: KD **11** (unchanged from the 07-04 audit), 210/mo,
+  competition 0.02, steady 3x growth over 12mo (70→210) — the README/12-week-strategy's own explicit
+  "own this" P1 call, and the one CLUSTER-1 term with no dedicated page yet (checked all 4 existing
+  posts — "mcp connector" appears only incidentally, no cannibalization). Secondary: `mcp for marketing`
+  (KD 9, 10/mo, exact-fit positioning term per the audit). Deliberately did **not** target the literal
+  strategy-doc title "what is mcp server" / "model context protocol" (KD 70–95, P3 "unwinnable for a
+  new domain in 3-6 months" per the audit's own framing) — same rationale the audit itself gives. /
+  WHY: highest-value NEXT item achievable this session — item 1 (catalog.ts confirmation) and item 4
+  (GSC/SE Ranking project) both explicitly need a human; item 2 (static-render marketing pages) is a
+  repeat-deferred infra/auth-risk change flagged 7x now as needing its own dedicated session, not worth
+  rushing under "never break the live site." Blog content had zero human dependency and directly serves
+  the routine's standing FOCUS instruction (low-KD MCP-integration cluster). / CONTENT: plain-English
+  definitional piece — what an MCP connector is, how it differs from a dashboard tool (Looker Studio)
+  and a pipeline/API integration (Windsor.ai, Supermetrics — Arlo's own named competitors), a security/
+  "is it safe for client data" FAQ answer (pass-through model, no data at rest), and a setup walkthrough
+  matching the real 5-step OAuth flow in `src/content/shared.ts` (`processSteps`). No invented pricing —
+  only reused the one verified public claim already live elsewhere ("free right now in early access, no
+  card required," matches `billing.ts`/07-18 free-plan commit). Internal links to all 4 live connector
+  pages (`/connect/google-analytics-mcp`, `/connect/google-ads-mcp`, `/connect/search-console-mcp`,
+  `/connect/youtube-mcp`), the `/compare` hub, and `/welcome` CTA — no orphan risk; new post also
+  auto-appears in the "More articles" block on all 4 existing posts (template pulls from
+  `getAllBlogPosts()`, no manual relatedPosts wiring needed for blog-to-blog links, unlike
+  connector-to-connector which requires manual `relatedConnectorSlugs`). ~1,750 words (in range with the
+  4 existing posts, 1,681–2,333 words each). Did **not** add to `public/llms.txt` — checked precedent:
+  llms.txt lists page *types* (Blog hub, connector pages, compare pages) not individual posts; none of
+  the 4 existing posts are listed there either, so adding this one alone would be inconsistent. / WHY
+  NOT the other 2 planned Week-6 posts ("GA4 in Claude: 3-minute setup," "Supermetrics is a pipeline
+  not an answer"): hard rule is quality over volume, 1–2 changes per session; those largely overlap
+  ground already covered by the existing `how-to-install-arlo-vs-windsor-ai.md` (pipeline-vs-live
+  framing) and the GA4 connector page's own setup steps — worth a fresh angle in a dedicated session
+  rather than rushing a redundant post here. / VERIFY: `npm install && npm run build` — compiled
+  successfully; confirmed via the regenerated `src/content/blog/manifest.json` (build artifact, not
+  staged) that the new post parses correctly and is picked up by `getAllBlogPosts()` (slug, date,
+  modifiedDate all correct); same pre-existing `(app)/*` + `/welcome` Convex-client prerender failures
+  as every prior session (missing `NEXT_PUBLIC_CONVEX_URL` in this sandbox), confirmed by comparing the
+  failing-route list to the pre-diff baseline (identical 9 routes: admin, clients, connections,
+  dashboard, settings/billing, settings/mcp, solo-dashboard, team, welcome). `npm run lint` clean (only
+  the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` shows only the new
+  markdown file — reverted the build-regenerated `manifest.json` diff before staging (same pattern as
+  every prior session; committed manifest.json is intentionally `[]`, rebuilt fresh on every deploy).
+
+NEXT (Week 7, see 12-week-strategy.md):
+1. **Get a human answer on catalog.ts** for the 9 connectors in the Jul 18 product commit (open since
+   2026-07-20, now 2 sessions old) — blocks Meta Ads MCP and 8 other potential connector-matrix pages.
+2. Two more Week-6/7 blog posts with genuinely new angles (not redundant with what's live): a
+   GA4-specific how-to ("GA4 in Claude: the 3-minute setup," concrete/screenshot-style walkthrough
+   distinct from the existing Windsor comparison and 100-questions posts) and/or a persona-anchored
+   piece from `audits/content.md`'s list (e.g. "How agency owners can spot churn risk 6 weeks before a
+   client leaves" — expands the agency-owner persona page's strongest claim into a full piece).
+3. `/compare/whatagraph-vs-arlo` — already live? Confirmed both `whatagraph-vs-arlo` and
+   `agencyanalytics-vs-arlo` slugs exist in `comparisons.ts` (shipped in an untracked prior session,
+   not previously logged) — the comparison hub is further along than the 12-week-strategy.md Week 7
+   plan assumed. Remaining comparison gap per the audit: `/compare/funnel-vs-arlo` (funnel.io, KD 17,
+   170/mo brand term) is the one named competitor still without a page.
+4. Still open (deferred 7x now): static-render the marketing pages (move
+   `ConvexAuthNextjsServerProvider` into an app-only route group). Test auth end-to-end after.
+5. Submit sitemap + all new pages in GSC (needs a human with Search Console access — unchanged). No SE
+   Ranking rank-tracking project for askarlo.app yet either (flagged since 2026-07-10) — worth a human
+   wiring one up so future sessions can check real ranking movement instead of keyword-difficulty
+   snapshots.
+
 ## 2026-07-20 (Mon) — Week 5/6: `/compare` index page + flag catalog.ts/registry drift
 
 IMPORTANT FINDING (read before picking NEXT item 1): since the last SEO session, 5 product
