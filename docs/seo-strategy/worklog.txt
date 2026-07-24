@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-24 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap now 3 pulses old (7 pages/posts shipped with zero rank visibility) + catalog.ts Meta Ads decision still open 6 sessions; CI 10/11 green, GSC/GA4 still pending — see reports/outbox/2026-07-24-weekly-pulse.json.
+
 ## 2026-07-23 (Thu) — Week 6/7: first foundational blog post — "What Is an MCP Connector?"
 
 SHIPPED — `src/content/blog/posts/us/what-is-an-mcp-connector.md` (new), the NEXT item 3 blog-engine
