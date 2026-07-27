@@ -178,7 +178,7 @@ export const comparisons: Record<string, ComparisonPage> = {
       table: {
         headers: ["Feature", "AgencyAnalytics", "ARLO"],
         rows: [
-          { feature: "Entry price", values: ["Per-client/seat pricing, scales with client count", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "Entry price", values: ["Per-client/seat pricing, scales with client count", "Free during early access — no card"] },
           { feature: "What you get", values: ["White-label dashboards + scheduled PDF reports", "Live answers in Claude, no dashboard to build"] },
           { feature: "Setup per client", values: ["Connect platforms, pick widgets, apply branding", "Pick a property from a dropdown"] },
           { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
@@ -213,7 +213,7 @@ export const comparisons: Record<string, ComparisonPage> = {
         {
           question: "How is ARLO's pricing different from AgencyAnalytics?",
           answer:
-            "AgencyAnalytics prices per client/seat and scales as your book grows. ARLO's tiers are flat per plan (e.g. Studio at $99/mo covers 10 clients with unlimited team seats) with unlimited source types included, so the bill doesn't climb every time you add a platform.",
+            "AgencyAnalytics prices per client/seat and scales as your book grows. ARLO is free during early access — unlimited clients, sources, and team seats, no card on file — so the bill doesn't climb every time you add a platform or a client.",
         },
         {
           question: "Does ARLO store my clients' data the way a dashboard tool does?",
@@ -244,7 +244,7 @@ export const comparisons: Record<string, ComparisonPage> = {
       table: {
         headers: ["Feature", "Whatagraph", "ARLO"],
         rows: [
-          { feature: "Entry price", values: ["Per-workspace/client pricing, scales with client count", "$0 Free / $19 Solo / $99 Studio"] },
+          { feature: "Entry price", values: ["Per-workspace/client pricing, scales with client count", "Free during early access — no card"] },
           { feature: "What you get", values: ["White-label dashboards + scheduled report delivery (email/Slack/PDF)", "Live answers in Claude, no report to schedule"] },
           { feature: "Setup per client", values: ["Connect platforms, build report template, set delivery cadence", "Pick a property from a dropdown"] },
           { feature: "Claude / AI access", values: ["Not the product", "The whole point — every tier"] },
@@ -279,12 +279,77 @@ export const comparisons: Record<string, ComparisonPage> = {
         {
           question: "How is ARLO's pricing different from Whatagraph?",
           answer:
-            "Whatagraph prices per workspace/client and scales as your book grows. ARLO's tiers are flat per plan (e.g. Studio at $99/mo covers 10 clients with unlimited team seats) with unlimited source types included, so the bill doesn't climb every time you add a platform.",
+            "Whatagraph prices per workspace/client and scales as your book grows. ARLO is free during early access — unlimited clients, sources, and team seats, no card on file — so the bill doesn't climb every time you add a platform or a client.",
         },
         {
           question: "Does ARLO store my clients' data the way a reporting tool does?",
           answer:
             "No. ARLO is pass-through — every query is fetched live from the connected platform's API and returned to Claude; nothing is warehoused or cached for scheduled delivery. OAuth tokens are encrypted at rest, but there's no persistent copy of client analytics or ads data.",
+        },
+      ],
+    },
+  },
+
+  "funnel-vs-arlo": {
+    slug: "funnel-vs-arlo",
+    title: "Funnel.io vs. ARLO: Skip the data hub, ask Claude",
+    metaTitle: "Funnel.io Alternative | ARLO — Ask Claude, No Data Hub (2026)",
+    metaDescription:
+      "Funnel.io consolidates ad and marketing data into a hub you pipe into a BI tool or warehouse. ARLO skips the hub — agencies ask Claude and get live numbers, free during early access.",
+    tldr:
+      "Funnel.io is a marketing data hub: it pulls spend and performance data from hundreds of ad and marketing platforms, normalizes it into a consistent data model, and pushes it into a BI tool or warehouse — Looker Studio, Tableau, Power BI, Snowflake, BigQuery — where you or an analyst still build the actual report. It's built for teams that already run a BI stack. ARLO skips the hub and the BI layer entirely: Claude queries each connected platform live through MCP and answers in plain English on the spot, with no data model to configure and no downstream tool required. Funnel.io also doesn't publish self-serve pricing — agencies typically go through a sales quote scaled to sources and data volume. ARLO is free to start during early access, no card and no sales call.",
+    saasName: "Funnel.io",
+    saasCategory: "Marketing data hub / ETL to BI & warehouse",
+    serviceSlug: "account-manager",
+    lastUpdated: "2026-07-27",
+    sections: {
+      problem: {
+        heading: "A data hub still needs a BI tool on the other end",
+        body: "Funnel.io solves a real problem well: agencies and in-house teams pull spend and performance data out of hundreds of ad and marketing platforms, normalize it into one consistent model, and pipe it into whatever BI tool or warehouse the rest of the business already relies on. That's genuinely useful when you have analysts and stakeholders across a BI stack. But Funnel's own job ends the moment the data lands — someone still has to build and maintain the actual report in Looker Studio, Tableau, or Power BI before anyone gets an answer. And unlike most of the tools in this category, Funnel.io doesn't publish self-serve pricing at all; getting a number means talking to sales first. ARLO removes both steps. Claude reads each connected platform live through MCP, so instead of normalizing data for a BI tool you still have to build in, your team just asks — \"how did this client's paid spend do last month?\" — and gets the answer directly, starting today with no quote required.",
+      },
+      table: {
+        headers: ["Feature", "Funnel.io", "ARLO"],
+        rows: [
+          { feature: "Entry price", values: ["Custom quote — no public self-serve pricing", "Free during early access — no card"] },
+          { feature: "What you get", values: ["Normalized data piped into your BI tool or warehouse", "Live answers in Claude, no BI tool required"] },
+          { feature: "Setup per client", values: ["Configure sources, data model, and a BI destination", "Pick a property from a dropdown"] },
+          { feature: "Claude / AI access", values: ["Not the product", "The whole point — and it's free"] },
+          { feature: "Who builds the report", values: ["You or an analyst, in Tableau/Looker Studio/Power BI", "Nobody — you ask the question directly"] },
+          { feature: "Data freshness", values: ["Sync cadence per source", "Live on every query"] },
+          { feature: "Data warehouse", values: ["Common destination (BigQuery/Snowflake)", "None — pass-through, nothing stored"] },
+        ],
+      },
+      whenCustom: [
+        "Your team wants the answer, not a data model to maintain in a BI tool",
+        "You don't have an analyst or a BI license just to check last month's numbers",
+        "You want to start today without a sales call or a custom quote",
+        "You already work inside Claude and want live data there",
+      ],
+      whenSaas: [
+        "You already run Tableau, Looker Studio, or Power BI with analysts building on top of it",
+        "You need one normalized data model feeding multiple BI tools and stakeholders",
+        "You rely on Funnel's long tail of ad/marketing sources ARLO doesn't cover yet",
+      ],
+      faqs: [
+        {
+          question: "Is ARLO a full Funnel.io replacement?",
+          answer:
+            "For agencies whose real workflow is answering client questions about performance, yes — ARLO replaces the hub-plus-BI-tool combo with a live Claude query. Funnel.io still wins when you already run a BI stack with analysts building on normalized data for multiple stakeholders. Some teams keep Funnel feeding a warehouse for company-wide BI and add ARLO for day-to-day client questions.",
+        },
+        {
+          question: "How much does Funnel.io cost compared to ARLO?",
+          answer:
+            "Funnel.io doesn't publish self-serve pricing — agencies go through a sales quote scaled to sources and data volume. ARLO is free during early access: every feature, every client, unlimited sources, no card and no sales call.",
+        },
+        {
+          question: "Does ARLO need a BI tool the way Funnel.io does?",
+          answer:
+            "No. Funnel.io's job ends once your data lands in Looker Studio, Tableau, Power BI, or a warehouse — you or an analyst still build the report there. ARLO has no BI layer; Claude is the interface, so there's nothing downstream to build.",
+        },
+        {
+          question: "Does ARLO store my clients' data the way a data hub does?",
+          answer:
+            "No. ARLO is pass-through — data is fetched live from each connected platform's API and returned to Claude, then discarded; nothing is normalized into a persistent model or warehoused. OAuth tokens are encrypted at rest, but there's no persistent copy of client data.",
         },
       ],
     },

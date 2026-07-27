@@ -6,6 +6,78 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-27 (Mon) — Week 7/8: `/compare/funnel-vs-arlo` (closes the comparison-hub gap) + pricing-drift fix on 2 live pages
+
+SHIPPED — `/compare/funnel-vs-arlo` (new), the NEXT item 3 named in the 2026-07-23 entry: "the
+one named competitor still without a page" per the audit's comparison-hub target list.
+- PAGE: /compare/funnel-vs-arlo (new) / CHANGE: new entry in `src/content/comparisons.ts`, same
+  `/compare/[slug]` template as the other 4 comparison pages (no template changes — confirmed via
+  `getAllComparisonSlugs()`/`getComparisonBySlug()` that it's picked up automatically, so it
+  auto-appears on `/compare`, in `sitemap.ts`, and needs no route/hub-page edits). / TARGET:
+  **`funnel.io`** — re-checked live via `DATA_getKeywordsMetrics` (US) before writing: 170/mo, KD
+  17, competition 0.59, steady volume all year — the audit's own P2 comparison-hub target and the
+  last of the 6 named direct/adjacent competitors (`competitor.md` §2) without a dedicated page.
+  Secondary: `funnel io pricing` (90/mo, KD 23 — surprisingly high-intent; Funnel.io doesn't
+  publish self-serve pricing, so people search for it directly) and `funnel.io alternative`
+  (10/mo, KD 17). / WHY: only remaining comparison-hub item with no human dependency — item 1
+  (catalog.ts) still needs a product-owner decision (checked again this session: `meta_ads` is
+  still `coming_soon` with eta "May 2026", already past — unchanged, now 4 sessions blocked); the
+  other Week-7 NEXT items (2 more blog posts, static-render infra change) were flagged as lower
+  priority or needing their own dedicated session. / CONTENT: positioned Funnel.io accurately per
+  `competitor.md`'s own profile ("marketing data hub / ETL to BI + warehouse", DA 89) —
+  differentiated from the existing Windsor.ai and Supermetrics pages (same broad ETL category) by
+  Funnel's actual distinguishing traits: normalizing data into one model for a downstream BI tool
+  (Looker Studio/Tableau/Power BI) someone still has to build a report in, and no public self-serve
+  pricing (quote-only) vs. ARLO's free-to-start-today positioning — not a redundant restate of the
+  Windsor page's "no warehouse" angle. No invented pricing numbers for Funnel.io (no outbound web
+  access to verify exact figures) — described qualitatively ("custom quote — no public self-serve
+  pricing"), same caution pattern as every prior comparison page. Table/FAQ/whenCustom/whenSaas
+  sections match the `ComparisonPage` TS interface exactly (verified via `tsx` import — see VERIFY).
+- FIX (found while reviewing comparisons.ts, unrelated to the new page but same file + same
+  accuracy category as the audit's P0 concerns): `agencyanalytics-vs-arlo` and `whatagraph-vs-arlo`
+  both still advertised ARLO's own price as "$0 Free / $19 Solo / $99 Studio" with FAQ text citing
+  a "$99/mo Studio" tier. That tier structure no longer exists — the 2026-07-18 "Early access: free
+  plan = unlimited clients/sources/team" product commit made everything free with no paid tiers,
+  and the live `/pricing` page + the `/compare` hub's own FAQ both now say "free during early
+  access, no card" with zero tier language. Two live comparison pages were advertising a paid tier
+  a prospect can't actually buy — corrected both the table row and FAQ answer on each page to match
+  the current live pricing story ("Free during early access — no card"). Confirmed no other file
+  references the stale tiers (`grep` for `$19|$99|Solo|Studio` across content/blog — clean after
+  the fix).
+- SITE: `public/llms.txt` — added "Funnel.io vs. ARLO" to the Pages list (same pattern as every
+  prior connector/comparison page).
+- VERIFY: `npm install && npm run build` — compiled successfully, all 86 static pages generated;
+  confirmed via `git stash` + rebuild on unmodified `main` that the export-phase failures on
+  `/admin`, `/clients`, `/connections`, `/dashboard`, `/settings/billing`, `/settings/mcp`,
+  `/solo-dashboard`, `/team`, `/welcome` are byte-for-byte identical to baseline (missing
+  `NEXT_PUBLIC_CONVEX_URL` in this sandbox, Vercel-only secret — not a regression). `npm run lint`
+  clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). Since
+  `/compare/[slug]` is a dynamic route (not statically prerendered — no `.html` to grep), verified
+  the new content directly: `npx tsx` import of `comparisons.ts` confirms `funnel-vs-arlo` is in
+  `getAllComparisonSlugs()`, all required `ComparisonPage` fields are present (4 FAQs, 7 table
+  rows, valid `serviceSlug: "account-manager"`), and the shared `/compare/[slug]/route.ts` renderer
+  is 100% generic (same function already renders the other 4 live comparison pages) — no
+  page-specific rendering risk. `git status` shows only `src/content/comparisons.ts` and
+  `public/llms.txt` touched — reverted the build-regenerated `src/content/blog/manifest.json` diff
+  before staging (same pattern as every prior session).
+
+NEXT (Week 8, see 12-week-strategy.md):
+1. **Get a human answer on catalog.ts** for the 9 connectors in the Jul 18 product commit — now
+   open 4 sessions (since 2026-07-20). `meta_ads` eta "May 2026" is now 2+ months past due in the
+   catalog copy itself. Blocks Meta Ads MCP and 8 other potential connector-matrix pages.
+2. Two more blog posts with genuinely new angles (not redundant with the 5 live posts): a
+   GA4-specific how-to ("GA4 in Claude: the 3-minute setup") and/or a persona-anchored piece from
+   `audits/content.md`'s list (e.g. agency-owner churn-risk piece).
+3. Comparison hub is now fully caught up to the audit's named-competitor list (Windsor.ai,
+   Supermetrics, AgencyAnalytics, Whatagraph, Funnel.io all live) — no further comparison pages
+   queued until a new named competitor surfaces in a future audit refresh.
+4. Still open (deferred 8x now): static-render the marketing pages (move
+   `ConvexAuthNextjsServerProvider` into an app-only route group). Test auth end-to-end after.
+5. Submit sitemap + all new pages in GSC (needs a human with Search Console access — unchanged). No
+   SE Ranking rank-tracking project for askarlo.app yet either (flagged since 2026-07-10) — worth a
+   human wiring one up so future sessions can check real ranking movement instead of keyword-
+   difficulty snapshots.
+
 ## 2026-07-24 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap now 3 pulses old (7 pages/posts shipped with zero rank visibility) + catalog.ts Meta Ads decision still open 6 sessions; CI 10/11 green, GSC/GA4 still pending — see reports/outbox/2026-07-24-weekly-pulse.json.
 
 ## 2026-07-23 (Thu) — Week 6/7: first foundational blog post — "What Is an MCP Connector?"
