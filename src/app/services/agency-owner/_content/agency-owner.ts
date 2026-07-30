@@ -31,7 +31,7 @@ const agencyOwner: Record<string, any> = {
       },
       {
         q: "How does pricing work as the team grows?",
-        a: "ARLO is priced per seat with agency plans for 10+ users. No per-client fees, no per-query fees, and no surprise bills when usage spikes during QBR season.",
+        a: "ARLO is free during early access — unlimited clients, sources, and team seats, no card on file. No per-client fees, no per-query fees, and no surprise bills. When we introduce pricing down the road, we'll be upfront about it well before anything changes.",
       },
       {
         q: "Can my whole team use it?",

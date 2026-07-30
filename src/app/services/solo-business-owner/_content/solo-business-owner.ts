@@ -23,11 +23,11 @@ const solo: Record<string, any> = {
       },
       {
         q: "What if I start managing other brands?",
-        a: "Upgrade to Studio ($99/mo) when you add a 2nd client — we'll prompt you automatically, and your connections and data carry over. If you already run a portfolio, see ARLO for agency owners.",
+        a: "Add a 2nd client any time — we'll prompt you to confirm, and your connections and data carry over. ARLO is free during early access with no client limit, so there's nothing to upgrade yet. If you already run a portfolio, see ARLO for agency owners.",
       },
       {
         q: "Which platforms can I connect on Solo?",
-        a: "Activate 7 source types — most owners need GA4, Search Console, Google Ads, Meta, Shopify, Stripe, and one email tool, which is exactly 7. Need more? Studio and Agency unlock higher source limits.",
+        a: "GA4, Search Console, Google Ads, Meta, Shopify, Stripe, and email tools cover what most single-business owners need — and every source type is unlocked free during early access, no plan-based limits.",
       },
       {
         q: "Can I use ARLO without Claude Desktop?",
@@ -35,7 +35,7 @@ const solo: Record<string, any> = {
       },
       {
         q: "How much does it cost?",
-        a: "$19/mo for the Solo plan: 7 source types and 2,500 queries — enough for a busy e-commerce or service business without agency-tier pricing. 14-day trial, no card.",
+        a: "Nothing right now. ARLO is free during early access — no card, no hidden limits, no per-seat tax. We'll introduce pricing down the road and be upfront about it before anything changes.",
       },
     ],
   },

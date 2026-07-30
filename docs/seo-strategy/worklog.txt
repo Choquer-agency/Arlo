@@ -6,6 +6,91 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-30 (Thu) — Week 8: pricing-drift fix on 2 more live pages (persona pages this time) + a routing finding
+
+CONTEXT: session started with a stale local `main` ref (this container's `main` was 2 commits behind
+`origin/main` — a plain `git checkout main` would have silently rolled back the 07-27 Funnel.io +
+pricing-fix commits). Caught it via `git fetch origin main` + `git merge --ff-only` before doing any
+work — flagging in case this recurs; future sessions should fetch before trusting a local branch ref.
+
+SHIPPED — fixed the same class of stale-pricing bug the 2026-07-27 session fixed on 2 comparison
+pages, found this session on 2 **persona** pages instead: `/services/solo-business-owner` and
+`/services/agency-owner`.
+- PAGE: /services/solo-business-owner / CHANGE: `src/content/services.ts` (the actual live source —
+  see routing finding below) still advertised the retired tier structure: meta description/og/twitter
+  said "$19/mo", the hero subhead said "just a $19/mo AI layer", a benefits card said "$19/mo, 7 source
+  types, 2,500 queries", the signup step said "14-day trial, no card", and two FAQs said "Upgrade to
+  Studio ($99/mo) when you add a 2nd client" and "Studio or Agency unlock higher source limits." All of
+  this predates the 2026-07-18 "early access: free = unlimited clients/sources/team" product commit and
+  contradicts the live `/pricing` page and `billing.ts` (`free: { clients: Infinity, sourceTypes:
+  Infinity, teamMembers: Infinity }`). Rewrote every instance to the same "free during early access, no
+  card" framing already established on `/pricing` and the 2 comparison pages fixed last session — no
+  invented numbers, no new claims, just removed the false ones. / TARGET: accuracy/trust on an
+  already-indexed, high-intent persona page (a prospect landing here from "AI business analytics"
+  searches and then checking `/pricing` would have seen two different pricing stories) / WHY: same
+  category of live-site trust issue the audit's own content.md flagged in §7 ("pricing model
+  inconsistency") — this is the persona-page half of that finding that never got fixed; the 07-27
+  session only caught the comparison-page half.
+- PAGE: /services/agency-owner / CHANGE: `src/content/services.ts` FAQ "How does pricing work as the
+  team grows?" said "ARLO is priced per seat with agency plans for 10+ users" — this is the *exact*
+  contradiction the original 2026-07-04 audit (content.md §7) flagged between the agency-owner page's
+  per-seat claim and the "priced per business tracked" model stated everywhere else, still unfixed 4
+  weeks later. Replaced with the free-during-early-access framing. / TARGET: same accuracy/trust
+  rationale as above, plus this one closes a specific audit finding that's been open since kickoff.
+- ROUTING FINDING (worth a human look): each of the 6 persona slugs also has a parallel, unused
+  `src/app/services/{slug}/route.ts` + `_content/{slug}.ts` + `_shell.html` scaffold (same
+  route.ts+_shell.html+_content pattern as `/compare` and the homepage). I initially edited the
+  solo-business-owner and agency-owner versions of *that* scaffold first, assuming (per the "Redesign
+  rollout" commit `009111a` pattern used elsewhere) it was the live template — it is not. Confirmed via
+  a clean `rm -rf .next && npm run build` + grepping the static output: `/services/solo-business-owner`
+  and `/services/agency-owner` render from `src/app/services/[slug]/page.tsx` +
+  `src/content/services.ts` (old dashboard-era template), not the route.ts scaffold. The 6 scaffold
+  folders look like an abandoned or in-progress migration — accurate-but-inert content sitting next to
+  the real, live, still-inaccurate template. Fixed the pricing in *both* places (the live
+  `services.ts` and the dormant scaffold) so whichever one is real going forward is already correct,
+  but flagging this for a human: either finish promoting the 6 persona pages to the route.ts pattern
+  (matching how `/about`, `/pricing`, `/blog`, `/contact`, `/compare` were already promoted per
+  `src/app/sitemap/page.tsx`'s own tracker) or delete the dead scaffold — right now it's a
+  maintenance trap where a future session could "fix" content that never renders (as I almost did).
+- NOT touched: `src/content/shared.ts` also has the same stale $19/$99/$249/$499 tier data (a
+  `pricingTiers` array + several FAQ entries) — confirmed this file is dead code too (not imported by
+  the live homepage, `src/app/route.ts` → `arlo/_content/home.ts`, which has zero pricing-tier
+  mentions at all). No live-page impact, so left as-is rather than editing unused code; noting here in
+  case a future session wires it back up and needs to know it's stale first.
+- VERIFY: `npm install && npm run build` (full clean rebuild, `rm -rf .next` first to rule out cache)
+  — compiled successfully; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior
+  session (missing `NEXT_PUBLIC_CONVEX_URL` in this sandbox, Vercel-only secret) — not a regression.
+  `npm run lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning).
+  Grepped the built static HTML directly (`.next/server/app/services/{solo-business-owner,
+  agency-owner}.html`) for `$19|$99|per seat|14-day trial` — zero matches after the fix, vs. several
+  before; confirmed the new "free during early access" copy renders in its place. `git status` shows
+  only the 5 intended source files touched — reverted the build-regenerated
+  `src/content/blog/manifest.json` diff before staging (same pattern as every prior session).
+
+NEXT (Week 8, see 12-week-strategy.md):
+1. **Get a human answer on catalog.ts** for the 9 connectors in the Jul 18 product commit — now open
+   5 sessions (since 2026-07-20). `meta_ads` eta "May 2026" and `hubspot` eta "July 2026" are now both
+   past due in the catalog copy itself (checked again this session, still unchanged: `meta_ads`/
+   `hubspot`/`mailchimp`/`mailerlite` still `coming_soon`, `salesforce`/`pipedrive` still `waitlist`,
+   `gohighlevel`/`clarity`/`gtm` still absent from the catalog entirely). Blocks Meta Ads MCP and 8
+   other potential connector-matrix pages.
+2. **Resolve the routing finding above** — either finish wiring the 6 `route.ts`/`_content`/
+   `_shell.html` persona scaffolds into real routes (needs a product/eng decision on why they exist
+   and whether the migration was intentionally paused) or delete them. Needs a human call, not a
+   content-writing session.
+3. Two more blog posts with genuinely new angles (not redundant with the 5 live posts): a
+   GA4-specific how-to ("GA4 in Claude: the 3-minute setup") and/or a persona-anchored piece from
+   `audits/content.md`'s list (e.g. agency-owner churn-risk piece).
+4. Comparison hub is fully caught up to the audit's named-competitor list (Windsor.ai, Supermetrics,
+   AgencyAnalytics, Whatagraph, Funnel.io all live) — no further comparison pages queued until a new
+   named competitor surfaces in a future audit refresh.
+5. Still open (deferred 9x now): static-render the marketing pages (move
+   `ConvexAuthNextjsServerProvider` into an app-only route group). Test auth end-to-end after.
+6. Submit sitemap + all new pages in GSC (needs a human with Search Console access — unchanged). No
+   SE Ranking rank-tracking project for askarlo.app yet either (flagged since 2026-07-10) — worth a
+   human wiring one up so future sessions can check real ranking movement instead of keyword-
+   difficulty snapshots.
+
 ## 2026-07-27 (Mon) — Week 7/8: `/compare/funnel-vs-arlo` (closes the comparison-hub gap) + pricing-drift fix on 2 live pages
 
 SHIPPED — `/compare/funnel-vs-arlo` (new), the NEXT item 3 named in the 2026-07-23 entry: "the

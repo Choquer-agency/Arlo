@@ -669,7 +669,7 @@ export const serviceMap: Record<string, ServicePillar> = {
       {
         question: "How does pricing work as the team grows?",
         answer:
-          "ARLO is priced per seat with agency plans for 10+ users. We keep pricing simple on purpose: no per-client fees, no per-query fees, no surprise bills when usage spikes during QBR season.",
+          "ARLO is free during early access — unlimited clients, sources, and team seats, no card on file. No per-client fees, no per-query fees, no surprise bills. When we introduce pricing down the road, we'll be upfront about it well before anything changes.",
         category: "pricing",
       },
     ],
@@ -702,7 +702,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     ],
     heroH1: "Your whole business, answerable in one conversation.",
     heroSubhead:
-      "ARLO's Solo plan plugs Claude into GA4, Search Console, Google Ads, Meta, Shopify, Stripe and more — for one business, yours. No agency overhead, no per-seat tax. Just a $19/mo AI layer on top of what you already run.",
+      "ARLO's Solo plan plugs Claude into GA4, Search Console, Google Ads, Meta, Shopify, Stripe and more — for one business, yours. No agency overhead, no per-seat tax. Just ask Claude — free during early access.",
     problemHeading: "Running your own business means you are the analyst.",
     problemSubhead:
       "You don't have an agency answering questions at 4pm. You open seven tabs and try to hold it all in your head. That's not a strategy — it's a bottleneck.",
@@ -732,7 +732,7 @@ export const serviceMap: Record<string, ServicePillar> = {
       {
         title: "One plan, one price, one business",
         description:
-          "$19/mo, 7 source types, 2,500 queries. Enough for even a busy e-commerce or service business without agency-tier pricing.",
+          "Free during early access — 7 source types, no card, no agency-tier pricing to worry about.",
       },
       {
         title: "Natural-language over every platform",
@@ -751,7 +751,7 @@ export const serviceMap: Record<string, ServicePillar> = {
       },
     ],
     processSteps: [
-      { step: 1, title: "Sign up as Solo", description: "Choose \"I run one business\" at signup. 14-day trial, no card." },
+      { step: 1, title: "Sign up as Solo", description: "Choose \"I run one business\" at signup. Free during early access, no card." },
       { step: 2, title: "Connect Google", description: "One OAuth grant covers GA4, Search Console, Google Ads, YouTube, and Business Profile for your business." },
       { step: 3, title: "Connect your other platforms", description: "Meta, Shopify, Stripe, your email tool — pick from our 107-platform catalog." },
       { step: 4, title: "Copy your MCP URL", description: "Paste it into Claude Desktop → Settings → Connectors. That's the install." },
@@ -768,13 +768,13 @@ export const serviceMap: Record<string, ServicePillar> = {
         category: "pricing",
         question: "What if my business grows and I start managing other brands?",
         answer:
-          "Upgrade to Studio ($99/mo) when you add a 2nd client — we'll prompt you automatically. Your existing connections and data carry over. If you're running a portfolio of personal brands, Studio is probably the right tier from day one.",
+          "Add a 2nd client any time — we'll prompt you to confirm, and your connections and data carry over. ARLO is free during early access with no client limit, so there's nothing to upgrade yet. If you're already running a portfolio of personal brands, see ARLO for agency owners.",
       },
       {
         category: "technical",
         question: "Do I still get all 14 launch connectors on Solo?",
         answer:
-          "You get to activate 7 source types out of the 14+ at launch. Most business owners never need more than that (GA4, GSC, Ads, Meta, Shopify, Stripe, one email tool = 7 exactly). If you need more, Studio or Agency unlock higher source limits.",
+          "GA4, GSC, Ads, Meta, Shopify, Stripe, and one email tool — 7 source types covers what most business owners need, and every source type is unlocked free during early access, no plan-based limits.",
       },
       {
         category: "general",
@@ -792,7 +792,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     ],
     metaTitle: "ARLO for Business Owners | Claude on Your Own Analytics",
     metaDescription:
-      "Solo plan for single-business owners. Connect your own GA4, Ads, Meta, Shopify, Stripe, email. Ask Claude about your business in plain English — $19/mo.",
+      "Solo plan for single-business owners. Connect your own GA4, Ads, Meta, Shopify, Stripe, email. Ask Claude about your business in plain English — free during early access.",
     tier: 1,
   },
 };
