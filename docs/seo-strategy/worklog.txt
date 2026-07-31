@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-07-31 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap now 4th pulse running (9 pages/posts shipped, zero rank visibility) + catalog.ts past its own eta dates on meta_ads/tiktok_ads/hubspot/mailerlite; CI 13/14 green, GSC/GA4 still pending — see reports/outbox/2026-07-31-weekly-pulse.json.
+
 ## 2026-07-30 (Thu) — Week 8: pricing-drift fix on 2 more live pages (persona pages this time) + a routing finding
 
 CONTEXT: session started with a stale local `main` ref (this container's `main` was 2 commits behind
