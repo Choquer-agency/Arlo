@@ -6,6 +6,61 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-01 (Sat) — Monthly deep-dive: Month 1 review (July 2026) — SCORED + rank tracking finally wired up
+
+SCORE — Month 1 goal: **Partial** (2 of 4 Month-1 KPIs from 12-week-strategy.md clean, 1 fixed on
+the literal last day of the month, 1 still blocked on a human). Content production and technical-debt
+remediation were genuinely strong: 10 net-new indexable pages/posts shipped across 8 build-gated
+sessions (4 connector pages, 5 comparison pages closing the audit's full named-competitor list, a
+`/compare` hub, 1 blog post), zero regressions, plus two rounds of real stale-pricing trust-bug fixes
+on already-live pages — all ahead of the ~2-pages/week quality bar. But the plan's own measurement
+infrastructure (SE Ranking rank tracking) sat unbuilt for the entire month despite being flagged in
+4 consecutive weekly pulses (since 2026-07-10) as "needs a human to wire up" — it did not, in fact,
+need a human. See below.
+
+ACTION TAKEN THIS SESSION (not just reporting — fixed the standing blocker): checked whether the SE
+Ranking MCP connector's write tools could create a rank-tracking project directly, since every prior
+pulse assumed this needed a human with SE Ranking dashboard access. It didn't — `PROJECT_createProject`
++ `PROJECT_addSearchEngine` + `PROJECT_addKeywords` are all available in this sandbox. Created project
+`askarlo.app` (site_id 12704162), Google US daily checks, and added the 22 keywords that map to all
+10 pages shipped this month (each with its real live URL as `target_url` — every connector page, every
+comparison page, the blog post, and the 3 persona pages carrying Cluster-3 terms), then queued the
+first position check immediately (`PROJECT_runPositionCheck`) rather than waiting on the daily
+schedule. Results were not back by the time this report was written (SE Ranking checks run
+asynchronously) — no position numbers fabricated; first real data expected before the next weekly
+pulse. **Lesson for future sessions: before flagging something "needs a human," check whether the
+connector's own write/PROJECT_* tools can do it — this specific gap survived 4 pulses on a false
+assumption.**
+
+ALSO PULLED LIVE THIS SESSION: `DATA_getBacklinksSummary` (askarlo.app, domain mode) — 2 backlinks /
+1 referring domain, both from `futurlabs.dev` (the sister portfolio site linking to Arlo as a
+project — a normal existing cross-link, not off-page link-building). Off-page Phase 1 (Smithery.ai,
+Glama.ai, mcp.so, awesome-mcp-servers, AlternativeTo, SaaSHub — scheduled Week 4 in
+12-week-strategy.md) is still at 0 of 6, now the most overdue content-adjacent item on the list.
+`DATA_getAiSearchOverview` (US) — still null brand_presence, 0 link_presence, 0 ai_opportunity_traffic,
+unchanged from every prior pulse. SE Ranking's own `domain_trust` for the new project: 4 (new-domain
+baseline, consistent with the audit's DA-0 framing).
+
+Full monthly report (leads/CPL proxy, what's working/not, numbers-vs-targets table, Month 2 goal) —
+see `reports/outbox/2026-08-01-monthly.json`. GA4 (`G-CP22NBPLFP`) still firing since 07-04 but
+conversions remain unqueryable from this sandbox (no outbound GA4 API access) — leads/CPL stays
+"pending" per the strategy doc's own honest frame (new domain, month-1/2 goals are leading indicators,
+not leads).
+
+GOAL — Month 2 (August 2026), set this session:
+1. First measured SERP position for ≥15 of the 22 newly-tracked keywords (baseline — any position,
+   top-50 is not assumed for a brand-new domain in week 1 of tracking).
+2. At least 3 of the lowest-KD tracked terms (`mcp connector` KD 11, `client reporting` KD 6,
+   `agencyanalytics alternative`/`whatagraph alternative` KD 7) entering the top-50.
+3. Off-page Phase 1 shipped — referring domains from 1 to 6+ via directory/registry listings
+   (Smithery.ai, Glama.ai, mcp.so, awesome-mcp-servers GitHub PR, AlternativeTo, SaaSHub).
+4. Human decisions closed: catalog.ts/Meta Ads + 8-connector status (open 5 sessions now, since
+   2026-07-20), the dormant 6-persona `route.ts` scaffold (open since 2026-07-30), and GSC submission
+   requested (open since kickoff, 2026-07-04 — still needs human Search Console access, this sandbox
+   has no outbound HTTP to self-serve it).
+5. Leads/CPL proxy (GA4) stays "pending" through Month 2 by design — becomes the goal metric once
+   pages are actually ranking, not before.
+
 ## 2026-07-31 (Fri) — Weekly SEO pulse: SE Ranking rank-tracking gap now 4th pulse running (9 pages/posts shipped, zero rank visibility) + catalog.ts past its own eta dates on meta_ads/tiktok_ads/hubspot/mailerlite; CI 13/14 green, GSC/GA4 still pending — see reports/outbox/2026-07-31-weekly-pulse.json.
 
 ## 2026-07-30 (Thu) — Week 8: pricing-drift fix on 2 more live pages (persona pages this time) + a routing finding
