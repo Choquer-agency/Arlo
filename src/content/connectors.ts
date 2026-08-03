@@ -111,7 +111,7 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["seo-specialist", "account-manager"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-ads-mcp", "search-console-mcp", "youtube-mcp"],
+    relatedConnectorSlugs: ["google-ads-mcp", "search-console-mcp", "youtube-mcp", "google-business-profile-mcp"],
   },
 
   "google-ads-mcp": {
@@ -199,7 +199,7 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["google-ads-specialist"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp", "google-business-profile-mcp"],
   },
 
   "search-console-mcp": {
@@ -288,7 +288,7 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["seo-specialist"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-analytics-mcp", "google-ads-mcp", "youtube-mcp"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "google-ads-mcp", "youtube-mcp", "google-business-profile-mcp"],
   },
 
   "youtube-mcp": {
@@ -378,7 +378,95 @@ export const connectors: Record<string, ConnectorPage> = {
     },
     relatedServiceSlugs: ["agency-owner", "account-manager"],
     relatedComparisonSlugs: ["supermetrics-vs-arlo"],
-    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp", "google-business-profile-mcp"],
+  },
+
+  "google-business-profile-mcp": {
+    slug: "google-business-profile-mcp",
+    sourceName: "Google Business Profile (GBP)",
+    sourceShortName: "Business Profile",
+    color: "#4285F4",
+    title: "Google Business Profile MCP: Connect GBP to Claude",
+    metaTitle: "Google Business Profile MCP | Connect GBP to Claude — ARLO",
+    metaDescription:
+      "Connect Google Business Profile to Claude Desktop through ARLO's MCP server. Ask Claude about listing views, calls, direction requests, and reviews across every client location — no exports, no dashboards.",
+    tldr:
+      "ARLO is an MCP server that gives Claude live, read-only access to Google Business Profile through the Business Profile Performance API. Connect once with Google OAuth, assign a location to a client, and Claude can answer questions about search/maps impressions, calls, direction requests, website clicks, and review volume on demand — nothing is exported, warehoused, or scheduled.",
+    lastUpdated: "2026-08-03",
+    sections: {
+      why: {
+        heading: "Why connect Business Profile to Claude instead of digging through Google's own dashboard",
+        body:
+          "Google Business Profile's built-in insights are thin and get thinner the more locations an agency manages — checking calls, direction requests, and review counts for a dozen client locations means clicking into each profile one at a time. Most agencies end up recording the same numbers into a report every month by hand. An MCP connector skips that entirely: Claude calls the Business Profile Performance API directly, so \"how many calls and direction requests did [Client]'s three locations get last month\" becomes a sentence instead of a location-by-location tour of Google's dashboard.",
+      },
+      steps: [
+        {
+          title: "Connect Google",
+          description:
+            "Sign in to ARLO and grant Google OAuth once. The same grant also unlocks GA4, Search Console, Google Ads, and YouTube — no separate Business Profile-only integration to configure.",
+        },
+        {
+          title: "Assign the location",
+          description:
+            "Pick each client's verified Business Profile location from a searchable dropdown. Multi-location clients and multi-client agencies assign as many locations as they manage.",
+        },
+        {
+          title: "Paste your MCP URL into Claude Desktop",
+          description:
+            "ARLO generates a personal MCP URL. Add it under Claude Desktop → Settings → Connectors and Business Profile shows up as a tool Claude can call for any assigned location.",
+        },
+      ],
+      prompts: [
+        "How many search and maps impressions did [Client]'s listing get last month?",
+        "Break down calls versus direction requests for [Client]'s location this quarter.",
+        "How does this month's review count and average rating compare to last month?",
+        "Which of [Client]'s locations gets the most website clicks from their profile?",
+        "Compare direction requests across all of [Client]'s locations this week.",
+      ],
+      metrics: [
+        { name: "Search / maps impressions", description: "Desktop and mobile visibility, split by search and maps surfaces" },
+        { name: "Call clicks", description: "Times a user tapped the phone number on the listing" },
+        { name: "Direction requests", description: "Times a user asked for directions to the location" },
+        { name: "Website clicks", description: "Times a user clicked through to the client's website" },
+        { name: "Review count / average rating", description: "Volume and sentiment of new and total reviews" },
+      ],
+      dimensions: [
+        { name: "Location", description: "Per-location breakdown for multi-location clients" },
+        { name: "Search surface", description: "Google Search vs. Google Maps" },
+        { name: "Device type", description: "Desktop vs. mobile" },
+        { name: "Date", description: "Trend and period comparisons" },
+      ],
+      faqs: [
+        {
+          question: "Is this Google's official Business Profile MCP server?",
+          answer:
+            "No. ARLO is a third-party MCP connector built on the public Business Profile Performance API. It requires you to grant OAuth access to your own verified locations — it isn't an official Google product.",
+        },
+        {
+          question: "Do I need to know the Business Profile API to use this?",
+          answer:
+            "No. You ask Claude in plain English; ARLO translates the request into the correct Business Profile Performance API call and returns the numbers Claude uses to answer you.",
+        },
+        {
+          question: "Is my Business Profile data stored anywhere?",
+          answer:
+            "No. ARLO is pass-through — each query fetches live data from Google Business Profile and returns it to Claude for that one response. Nothing is warehoused or cached long-term.",
+        },
+        {
+          question: "Can I connect multiple locations, including across different clients?",
+          answer:
+            "Yes. One Google OAuth grant per team member covers every verified location you assign. Add a client, pick their location from the dropdown, and Claude can query it immediately — including agencies managing many locations for a single multi-location client.",
+        },
+        {
+          question: "Can Claude reply to reviews or edit my listing through this connector?",
+          answer:
+            "Not yet. Today's connector is read-only reporting — impressions, calls, direction requests, website clicks, and review counts. Replying to reviews and editing listing information aren't supported.",
+        },
+      ],
+    },
+    relatedServiceSlugs: ["account-manager", "agency-owner"],
+    relatedComparisonSlugs: ["agencyanalytics-vs-arlo"],
+    relatedConnectorSlugs: ["google-analytics-mcp", "search-console-mcp", "youtube-mcp"],
   },
 };
 

@@ -6,6 +6,70 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-03 (Mon) — Connector matrix: shipped the 5th (final Google) connector page — Google Business Profile MCP
+
+SHIPPED — closed a gap that's been sitting open since Week 4 of the 12-week-strategy.md plan
+("YouTube MCP + Business Profile MCP — completes the 6 Google sources"): YouTube shipped
+2026-07-16, Business Profile never did. Checked `src/lib/connectors/catalog.ts` first — `gbp`
+(Google Business Profile) is `status: "live"` in the product today (not blocked on a human
+decision like Meta Ads/HubSpot/Salesforce), so this was buildable now, no catalog dependency.
+- PAGE: `/connect/google-business-profile-mcp` (new) / CHANGE: added a 5th entry to
+  `src/content/connectors.ts` following the exact template of the 4 existing connector pages —
+  TL;DR, 3-step Google OAuth connect flow, 5 example prompts, real metrics/dimensions
+  (search/maps impressions, call clicks, direction requests, website clicks, review count —
+  scoped to what the Business Profile Performance API actually returns), 5 FAQs including an
+  honest "not yet supported" one (no review replies / listing edits, read-only reporting only,
+  matching the honesty pattern of the Google Ads/Search Console pages' own "not yet supported"
+  FAQs). Full `WebPage` + `HowTo` + `FAQPage` JSON-LD via the shared `/connect/[slug]/page.tsx`
+  template (verified rendered in the built HTML, not just written). / TARGET: primary
+  "Google Business Profile MCP" (rides the same emerging, fragmented, zero-competition MCP
+  cluster as the other 4 connector pages — checked SE Ranking: like "search console mcp" (30/mo)
+  and unlike "google ads mcp" (590/mo), this exact phrase has genuinely zero recorded search
+  volume yet, `is_data_found: false` — too new, not a research gap; the real current demand it
+  captures in-copy is "google business profile api" at 390/mo, KD 14, US) / WHY: this is the
+  literal last of the 6 Google-source connector pages the strategy's Week 2-4 playbook called
+  for, was flagged as still-missing in this session's own read of `12-week-strategy.md`, and
+  every one of the other 4 live connector pages' own copy already promises "the same grant also
+  unlocks ... Business Profile" — those were pointing at a page that didn't exist until now.
+- ALSO: added `google-business-profile-mcp` to `relatedConnectorSlugs` on all 4 existing
+  connector pages (GA4, Google Ads, Search Console, YouTube) so the internal-link matrix is
+  bidirectional, not just the new page linking out. relatedServiceSlugs: `account-manager` +
+  `agency-owner` (multi-location/local-listing reporting fits those personas, matching the
+  precedent set by youtube-mcp). relatedComparisonSlugs: `agencyanalytics-vs-arlo` (AgencyAnalytics
+  markets GBP/local reporting as a feature — more topically relevant than Supermetrics here).
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully, exit 0; same
+  9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — not a regression. Confirmed in the built output:
+  `.next/server/app/connect/google-business-profile-mcp.html` exists, contains
+  `"@type":"FAQPage"` and canonical `https://askarlo.app/connect/google-business-profile-mcp`
+  (not the homepage — canonical bug stayed fixed). `sitemap.xml` picked up the new URL
+  automatically (data-driven from `getAllConnectorSlugs()`, no sitemap.ts edit needed).
+  `npm run lint` clean (same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning as every
+  prior session). `git status` showed only `src/content/connectors.ts` touched after reverting
+  the build-regenerated `blog/manifest.json` diff (same pattern as every prior session) — staged
+  only the one intended file.
+
+NEXT:
+1. **Connector matrix is now fully caught up to the 6-Google-source plan** (GA4, Google Ads,
+   Search Console, YouTube, Business Profile all live) — no further connector pages queued until
+   a currently-`coming_soon`/`waitlist` platform in `src/lib/connectors/catalog.ts` flips to
+   `live` (Meta Ads, HubSpot, Shopify, Stripe are the closest ETAs). Per the strategy's own Week 9
+   note, the next connector-matrix move is the long-tail variant angle instead: a `claude mcp
+   server` pillar page, or a "ChatGPT" assistant-column variant of the existing 5 pages — worth
+   scoping next session.
+2. Off-page Phase 1 (Smithery.ai, Glama.ai, mcp.so, awesome-mcp-servers, AlternativeTo, SaaSHub)
+   is still 0 of 6, now the single most overdue item across the whole plan (flagged since Week 4,
+   still blocked — this sandbox has no outbound HTTP and this session's GitHub MCP scope is
+   choquer-agency/arlo only, so directory signups genuinely need a human with a browser).
+3. Human decisions still open (unchanged from 2026-08-01): catalog.ts ETAs for meta_ads/hubspot
+   now past due in their own copy; the dormant 6-persona `route.ts` scaffold (open since
+   2026-07-30); GSC submission (open since kickoff, 2026-07-04).
+4. Check SE Ranking position-check results for the 22 tracked keywords (project `askarlo.app`,
+   site_id 12704162, wired up 2026-08-01) — first real data should be in by now; report it in the
+   next weekly pulse instead of this session (this session was scoped to shipping the page, not a
+   full pulse).
+5. Two more blog posts with genuinely new angles queued in `audits/content.md` — still open.
+
 ## 2026-08-01 (Sat) — Monthly deep-dive: Month 1 review (July 2026) — SCORED + rank tracking finally wired up
 
 SCORE — Month 1 goal: **Partial** (2 of 4 Month-1 KPIs from 12-week-strategy.md clean, 1 fixed on
