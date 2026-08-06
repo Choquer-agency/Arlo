@@ -6,6 +6,73 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-06 (Thu) — Week 9 long-tail: "How to Set Up a Claude MCP Server" blog post + llms.txt gap fix
+
+SHIPPED — the NEXT item 1 from 2026-08-03 ("worth scoping next session": a `claude mcp server` pillar
+page, since the connector matrix is fully caught up and off-page/human items remain blocked). Chose
+the blog-post route over a new page type: `claude mcp server` is CLUSTER-1's own top P1 term
+(keyword-research.md: 810/mo, KD 21, "core product/how-to page") and content.md §8 independently lists
+"How to set up an MCP server for Claude Desktop" as an open content gap — one post closes both, using
+existing, already-schema'd blog infra rather than building new page-type risk.
+- PAGE: /blog/how-to-set-up-a-claude-mcp-server (new) / CHANGE: new markdown post via the existing
+  `src/content/blog/posts/us/*.md` → `getAllBlogPosts()` → `/blog/[slug]` pipeline (BlogPosting JSON-LD
+  auto-generated, no template changes). ~1,600 words (in range with the 5 existing posts, 1,435–2,333
+  words). / TARGET: primary **`claude mcp server`** (810/mo, KD 21, P1 per keyword-research.md — highest
+  single search volume of any term this routine has targeted so far) + secondary `mcp server for claude`
+  (90/mo, KD 28), `claude code mcp server setup` (50/mo, KD 24), `how to install mcp` (30/mo, KD 26),
+  all P1/P2 CLUSTER-1 terms. / WHY: distinct angle from the existing `what-is-an-mcp-connector.md` post
+  (checked first to avoid redundancy) — that post is conceptual ("what is MCP, how is it different from
+  an API/dashboard tool"); this one is the practical how-to content.md's own gap analysis called for:
+  remote-vs-local MCP server setup mechanics, the actual Claude Desktop Settings → Connectors steps,
+  Claude Code/other-client portability, a troubleshooting section (disconnected connector, stale
+  conversation not picking up a new tool, local server PATH issues, expired OAuth tokens), and a
+  "what to check before connecting a marketing MCP server to client data" section that leads into ARLO's
+  5 live Google connectors. No fabricated CLI syntax for Claude Code (checked — didn't invent flags I
+  wasn't certain of; told the reader to check the client's own current docs instead, since MCP client
+  config surfaces change between versions) and no invented product claims — every ARLO-specific claim
+  (one OAuth grant, 5 connectors, read-only/pass-through, 5-step flow) matches what's already live on the
+  connector pages and `processSteps` in `shared.ts`. Internal links to `what-is-an-mcp-connector`, all 5
+  live `/connect/*` pages, and `/compare`.
+- FIX (found while cross-checking the new post's ARLO connector links against `public/llms.txt`,
+  unrelated to the post itself): `llms.txt`'s Pages list was missing the Google Business Profile MCP
+  connector page shipped 2026-08-03 — that session's own worklog entry didn't mention an llms.txt update,
+  and it wasn't one; the other 4 live connector pages were all listed, GBP wasn't. One-line addition,
+  same pattern as every prior connector-page session ("added the new connector page to the Pages list").
+  Did NOT add the new blog post itself to llms.txt — confirmed precedent from the 2026-07-23 entry still
+  holds: llms.txt lists page *types* (Blog hub, connector pages, compare pages), not individual posts;
+  none of the 6 (now 6) posts are listed there individually, so adding this one alone would be
+  inconsistent.
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret) — confirmed identical route list, not a regression. `/blog/[slug]` has no
+  `generateStaticParams` (dynamic route, same as `/compare/[slug]` in prior sessions — no static `.html`
+  to grep), so verified directly via `npx tsx`: `getAllBlogSlugs()` includes the new slug, sorts first
+  (newest date), `getBlogPostBySlug()` resolves title/tags/wordCount correctly. `npm run lint` clean
+  (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only
+  `public/llms.txt` + the new post touched after reverting the build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior session) — staged only the 2
+  intended changes.
+
+NEXT:
+1. Week 9's other long-tail item — a "ChatGPT" assistant-column variant of the 5 existing connector
+   pages — still open. Checked this session: nothing in the codebase (`src/lib/connectors/`,
+   `src/content/connectors.ts`) indicates ARLO's MCP server is validated against ChatGPT's connector/
+   plugin surface specifically (vs. "any MCP-compatible client" in the existing FAQ copy) — before
+   building ChatGPT-specific landing pages, worth a human confirmation that ChatGPT connector support is
+   actually tested/live, not just theoretically MCP-compatible, to avoid overclaiming the way the
+   Meta Ads catalog.ts gap almost did. Flagging as a human-check item, not shipping blind.
+2. Off-page Phase 1 (Smithery.ai, Glama.ai, mcp.so, awesome-mcp-servers, AlternativeTo, SaaSHub) still
+   0 of 6 — most overdue item on the whole plan (flagged since Week 4), still needs a human with a
+   browser (this sandbox has no outbound HTTP).
+3. Human decisions still open (unchanged): catalog.ts ETAs for meta_ads/hubspot now well past due; the
+   dormant 6-persona `route.ts` scaffold (open since 2026-07-30); GSC submission (open since kickoff,
+   2026-07-04).
+4. Check SE Ranking position-check results for the 22 tracked keywords (project `askarlo.app`, wired up
+   2026-08-01) — should have real data by now; report it in the next weekly-pulse-style session rather
+   than this one (this session was scoped to shipping content, not a full pulse).
+5. One more blog post with a genuinely new angle queued in `audits/content.md`'s 12-post plan (e.g. the
+   agency-owner churn-risk piece, or the GA4-specific 3-minute-setup piece) — still open.
+
 ## 2026-08-03 (Mon) — Connector matrix: shipped the 5th (final Google) connector page — Google Business Profile MCP
 
 SHIPPED — closed a gap that's been sitting open since Week 4 of the 12-week-strategy.md plan
