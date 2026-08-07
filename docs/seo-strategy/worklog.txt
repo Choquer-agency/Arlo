@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-07 (Fri) — Weekly SEO pulse: first real rank-check data in — 0 of 22 tracked keywords ranked in top 100 after a full week of daily checks (expected for a DA-4, 5-week-old domain with 1 referring domain, but Month 2 KPI #1 not on track at week 1); catalog.ts hubspot/mailerlite ETAs now also past due (meta_ads still 3mo overdue); CI 17/18 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-07-weekly-pulse.json.
+
 ## 2026-08-06 (Thu) — Week 9 long-tail: "How to Set Up a Claude MCP Server" blog post + llms.txt gap fix
 
 SHIPPED — the NEXT item 1 from 2026-08-03 ("worth scoping next session": a `claude mcp server` pillar
