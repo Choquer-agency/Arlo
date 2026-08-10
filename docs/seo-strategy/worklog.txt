@@ -6,6 +6,76 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-10 (Mon) — Week 10: "Client Reporting for Agencies" blog post — closes the single lowest-KD unaddressed keyword in the whole audit
+
+SHIPPED — `src/content/blog/posts/us/client-reporting-for-agencies.md` (new), NEXT item 5 from
+2026-08-06 ("one more blog post... e.g. the agency-owner churn-risk piece, or the GA4-specific
+3-minute-setup piece"), but retargeted after re-checking `keyword-research.md` this session: `client
+reporting` is **KD 6** — the single lowest-difficulty keyword anywhere in the audit (lower than `mcp
+connector` KD 11) — explicitly called out since kickoff as needing a "Persona pillar page"
+(keyword-research.md line 85, repeated in the Month-2 goal list at 2026-08-01) and never shipped in
+any of the 11 prior content/page sessions. Checked the worklog (`grep -n "client reporting"`) to
+confirm: it only ever appeared once, as a KPI term to watch for ranking movement, never as a page to
+build.
+- PAGE: /blog/client-reporting-for-agencies (new) / CHANGE: new markdown post through the existing
+  blog pipeline (frontmatter → `getAllBlogPosts()` → `/blog/[slug]`, BlogPosting JSON-LD
+  auto-generated, no template changes). 1,397 words (in range with the 6 existing posts, 1,149–2,264
+  words after this session's expansion pass). / TARGET: primary **`client reporting`** (260/mo, KD 6,
+  P1 per the 2026-07-04 keyword-research.md audit — not re-pulled live via SE Ranking this session,
+  a content-only session with no page-status ambiguity to check) + secondary `client reporting tool`
+  (140/mo, KD 18, P1), `marketing agency reporting`
+  (170/mo, KD 14, P1), `seo agency reporting software` (260/mo, KD 16, P1) — four P1 "buyer's own
+  vocabulary" terms from keyword-research.md §"Agency-reporting persona terms" in one post, none of
+  which had a dedicated page. / WHY: the connector matrix (5/5 live Google sources) and comparison hub
+  (5/5 named competitors) are both fully caught up with no further items until a human unblocks
+  catalog.ts — confirmed catalog.ts unchanged again this session (meta_ads still coming_soon, eta "May
+  2026", now 3+ months overdue; hubspot/mailerlite both past their July eta). Content was the only
+  human-independent lever left, and this closes the most overdue specific gap on the whole keyword
+  list rather than a generic "one more post." / CONTENT: honest three-way breakdown of how agencies
+  actually handle client reporting today (manual spreadsheets, dashboard tools like Looker
+  Studio/AgencyAnalytics/Whatagraph, live conversational reporting) — did not claim dashboards are
+  obsolete; explicitly says a dashboard is still the better call when a client contractually expects a
+  branded portal. A "what a client reporting tool needs to actually do" checklist and a concrete
+  time-cost section (est. 20 min/client/week × 15 clients = ~5 hrs/week, explicitly labeled as
+  illustrative math, not a product claim) ground the piece instead of just restating ARLO's feature
+  list. SEO-specific section links to the existing `search-console-mcp` connector page and
+  `seo-specialist` service page rather than duplicating their content. No fabricated competitor
+  pricing (same caution as every prior comparison/content page — no outbound web access to verify).
+  Only reused already-live, verified claims for ARLO itself (free during early access, unlimited
+  clients/sources/team, no card — matches `services.ts` line 672 and the 2026-07-18 product commit).
+  Internal links: `/connect/google-analytics-mcp`, `/connect/google-ads-mcp`,
+  `/connect/search-console-mcp`, `/services/seo-specialist`, `/compare`. No manual relatedPosts
+  wiring needed (blog-to-blog links are automatic via `getAllBlogPosts()`, same as every prior post).
+  Did not add to `public/llms.txt` — same precedent as every prior post (llms.txt lists page types,
+  not individual posts; none of the 6 existing posts are listed there either).
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret) — confirmed identical route list, not a regression. `/blog/[slug]` has no
+  `generateStaticParams` (dynamic route, no static `.html` to grep), so verified directly via `npx
+  tsx`: `getAllBlogSlugs()` includes the new slug and sorts first (newest date, 2026-08-10),
+  `getBlogPostBySlug()` resolves title/tags/wordCount (1,397) correctly. `npm run lint` clean (only
+  the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only
+  `src/content/blog/manifest.json` (build-regenerated, reverted) + the new post — staged only the one
+  intended file.
+
+NEXT:
+1. Human decisions still open (unchanged, now 8+ sessions): catalog.ts ETAs for meta_ads (3+ months
+   overdue)/hubspot/mailerlite; the dormant 6-persona `route.ts` scaffold (open since 2026-07-30); GSC
+   submission (open since kickoff, 2026-07-04). Off-page Phase 1 still 0 of 6, most overdue item on
+   the whole plan (flagged since Week 4) — needs a human with a browser, this sandbox has no outbound
+   HTTP.
+2. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it) — not
+   shipping blind.
+3. Next weekly pulse should re-check the SE Ranking position data for the 22 tracked keywords (last
+   checked 2026-08-07: 0/22 ranked, expected at the one-week mark) for the first real week-over-week
+   comparison.
+4. More blog posts remain open in `audits/content.md`'s 12-post skeleton with genuinely new angles not
+   yet covered: the agency-owner churn-risk piece (item 6 in the skeleton, flagged repeatedly since
+   2026-07-16, still not shipped), the GA4-specific 3-minute-setup piece, and "what actually happens to
+   your clients' data when you connect an MCP tool" (item 12 — a dedicated trust/security piece, distinct
+   from the passing security-FAQ mentions already live).
+
 ## 2026-08-07 (Fri) — Weekly SEO pulse: first real rank-check data in — 0 of 22 tracked keywords ranked in top 100 after a full week of daily checks (expected for a DA-4, 5-week-old domain with 1 referring domain, but Month 2 KPI #1 not on track at week 1); catalog.ts hubspot/mailerlite ETAs now also past due (meta_ads still 3mo overdue); CI 17/18 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-07-weekly-pulse.json.
 
 ## 2026-08-06 (Thu) — Week 9 long-tail: "How to Set Up a Claude MCP Server" blog post + llms.txt gap fix
