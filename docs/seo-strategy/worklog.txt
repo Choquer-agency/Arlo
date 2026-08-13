@@ -6,6 +6,76 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-13 (Thu) — Week 10/11: "Agency Client Churn Warning Signs" blog post — closes the most-overdue open content gap (flagged since 2026-07-16)
+
+SHIPPED — `src/content/blog/posts/us/agency-client-churn-warning-signs.md` (new). Checked NEXT lists
+across the last 5 sessions first: "How agency owners can spot churn risk 6 weeks before a client leaves"
+(content.md §9 item 6) has been named as open in every worklog NEXT list since 2026-07-16 and was
+re-flagged again 2026-08-10 alongside two other candidate posts (GA4 3-minute-setup, data-handling trust
+piece) — picked this one because it's the single item repeated the most times without shipping, and
+because it expands a real, already-live product claim rather than starting from nothing.
+- PAGE: /blog/agency-client-churn-warning-signs (new) / CHANGE: new markdown post via the existing
+  `src/content/blog/posts/us/*.md` → `getAllBlogPosts()` → `/blog/[slug]` pipeline (BlogPosting JSON-LD
+  auto-generated, no template changes). 1,456 words (in range with the 7 existing posts). / TARGET:
+  persona-anchored, not primarily keyword-volume driven — checked live via `DATA_getKeywordsMetrics` (US)
+  first: `agency client churn`, `reduce client churn agency`, `client churn rate marketing agency`, `why
+  do agency clients leave`, `spot client churn early` all `is_data_found: false`; only `agency churn rate`
+  returned data (0/mo, KD 28) — same "no measurable volume yet, seed ahead of demand" situation the
+  connector-matrix pages shipped into repeatedly, and consistent with content.md's own framing of this as
+  a persona-page expansion, not a keyword-gap play. / WHY: closes the most-repeated open NEXT item on the
+  whole worklog (7 sessions old) — connector matrix and comparison hub are both still fully caught up with
+  no further items until a human unblocks catalog.ts (checked again this session: `meta_ads` still
+  `coming_soon` eta "May 2026" now 3+ months overdue, `hubspot` eta "July 2026" now also past — both
+  unchanged), so content remained the only human-independent lever. / CONTENT: built the piece around the
+  real, already-live claim on `/services/agency-owner` (`src/content/services.ts`: `problemHeading: "Most
+  churn is visible six weeks before it happens."`, plus the "Churn signals, surfaced early" benefit and
+  "Churn that surprises you" pain point) — not inventing a new product claim, expanding an existing one
+  into a full framework. Five concrete leading-indicator categories (performance trend, engagement
+  drop-off, value-questioning language, internal-champion turnover, data/access requests), explicitly
+  caveated as a rule of thumb, not a guarantee ("six weeks isn't a magic number" — FAQ #1) — same honesty
+  pattern as every prior post's pricing/feature claims. No invented external statistics or cited "research"
+  (no outbound web access to verify any churn-rate study, so didn't fabricate one — the framework is
+  qualitative/operational, not stats-backed). ARLO's own role is scoped honestly: it answers the one
+  systematizable signal (performance-trend across a whole client book) and is explicit in the FAQ that it
+  doesn't predict or score churn — the other four signals are still a human account owner's judgment call.
+  Internal links: `/services/agency-owner`, `/connect/google-analytics-mcp`, `/connect/google-ads-mcp`,
+  `/connect/search-console-mcp`. No manual relatedPosts wiring needed (blog-to-blog links are automatic via
+  `getAllBlogPosts()`). Did not add to `public/llms.txt` — same precedent as every prior post (llms.txt
+  lists page types, not individual posts).
+- ALSO CHECKED (informational, no action taken): SE Ranking position data for the 22 tracked keywords
+  (project `askarlo.app`, site_id 12704162) — `avg_pos` still 100 (unranked) across all of 2026-08-01
+  through today, unchanged from the 2026-08-07 pulse's 0/22 finding. Not surprising for a 6-week-old DA-0
+  domain and not a new finding worth its own pulse entry — flagging the raw check here since it informed
+  this session's targeting decision (no point re-optimizing already-shipped pages for rank movement that
+  hasn't started yet); a dedicated weekly-pulse-style session should still do the fuller check (backlinks,
+  CI, catalog.ts) rather than this narrow position-only pull.
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret) — confirmed identical route list, not a regression. `/blog/[slug]` has no
+  `generateStaticParams` (dynamic route, no static `.html` to grep), so verified directly via `npx tsx`:
+  `getAllBlogSlugs()` includes the new slug and sorts first (newest date, 2026-08-13),
+  `getBlogPostBySlug()` resolves title/tags/wordCount (1,456) correctly. `npm run lint` clean (only the
+  same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only
+  `src/content/blog/manifest.json` (build-regenerated, reverted) + the new post — staged only the one
+  intended file.
+
+NEXT:
+1. Human decisions still open (unchanged, now 9+ sessions): catalog.ts ETAs for meta_ads (3+ months
+   overdue)/hubspot (past due)/mailerlite; the dormant 6-persona `route.ts` scaffold (open since
+   2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still 0 of 6, most
+   overdue item on the whole plan (flagged since Week 4) — needs a human with a browser, this sandbox has
+   no outbound HTTP.
+2. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it) — not
+   shipping blind.
+3. A proper weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position
+   report) is overdue — this session only did a narrow position-only check to inform targeting, not the
+   fuller pulse format prior Friday sessions used.
+4. Remaining open blog angles from `audits/content.md`'s 12-post skeleton: the GA4-specific 3-minute-setup
+   piece, and "what actually happens to your clients' data when you connect an MCP tool" (item 12 — a
+   dedicated trust/security piece, distinct from the passing security-FAQ mentions already live). The
+   most-overdue item (churn-risk) is now closed as of this session.
+
 ## 2026-08-10 (Mon) — Week 10: "Client Reporting for Agencies" blog post — closes the single lowest-KD unaddressed keyword in the whole audit
 
 SHIPPED — `src/content/blog/posts/us/client-reporting-for-agencies.md` (new), NEXT item 5 from
