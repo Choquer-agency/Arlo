@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-14 (Fri) — Weekly SEO pulse: rank positions still flat at 0 of 22 keywords after a second full week of daily checks (Month 2 KPIs 1+2 both off track); backlinks/AI-search-overview unchanged 6 weeks running; catalog.ts meta_ads/hubspot/mailerlite now further past their own ETAs; CI 20/21 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-14-weekly-pulse.json.
+
 ## 2026-08-13 (Thu) — Week 10/11: "Agency Client Churn Warning Signs" blog post — closes the most-overdue open content gap (flagged since 2026-07-16)
 
 SHIPPED — `src/content/blog/posts/us/agency-client-churn-warning-signs.md` (new). Checked NEXT lists
