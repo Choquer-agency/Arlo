@@ -6,7 +6,81 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
-## 2026-08-14 (Fri) — Weekly SEO pulse: rank positions still flat at 0 of 22 keywords after a second full week of daily checks (Month 2 KPIs 1+2 both off track); backlinks/AI-search-overview unchanged 6 weeks running; catalog.ts meta_ads/hubspot/mailerlite now further past their own ETAs; CI 20/21 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-14-weekly-pulse.json.
+## 2026-08-17 (Mon) — "MCP Server Security" blog post — closes the standing content.md trust/security gap (item 12, flagged since kickoff)
+
+SHIPPED — `src/content/blog/posts/us/mcp-server-security.md` (new). Re-read NEXT lists back to
+2026-08-13 first: item 4 named two remaining open blog angles — a GA4-specific 3-minute-setup piece,
+and "what actually happens to your clients' data when you connect an MCP tool" (content.md item 12,
+a dedicated trust/security piece distinct from the passing security-FAQ mentions already live).
+Picked the security piece over the GA4 setup piece: the GA4 angle would heavily duplicate the already-
+live `/connect/google-analytics-mcp` page and the `how-to-set-up-a-claude-mcp-server` post, while the
+security piece fills a genuine, still-open gap — checked `audits/content.md` §1.4/§21 confirms this is
+the highest-weighted, still-unaddressed E-E-A-T factor (Trustworthiness, 30% weight) with no dedicated
+page anywhere on the site. Also confirmed connector matrix (5/5 live) and comparison hub (5/5 named
+competitors) are both still fully caught up, and `catalog.ts` still unchanged (meta_ads/hubspot/
+mailerlite all past their own ETAs) — content remained the only human-independent lever.
+- PAGE: /blog/mcp-server-security (new) / CHANGE: new markdown post via the existing
+  `src/content/blog/posts/us/*.md` → `getAllBlogPosts()` → `/blog/[slug]` pipeline (BlogPosting
+  JSON-LD auto-generated, no template changes). 1,727 words (in range with the 8 existing posts). /
+  TARGET: primary **`mcp server security`** — checked live via `DATA_getKeywordsMetrics` (US) first:
+  170/mo, KD 34, rising fast (40→170 over the last 12 months, steady climb every month) — real,
+  growing demand, P2 tier per keyword-research.md's own priority key (KD 26–45). Secondary `mcp
+  security risks` (50/mo, KD 38). Checked several more specific phrasings first (`is mcp safe`, `is
+  claude mcp safe`, `mcp data security`, `client data security marketing agency`) — all
+  `is_data_found: false`, so didn't force a page onto invented volume; led with the term that actually
+  has measurable, rising demand instead. / WHY: closes the most-repeated remaining open content item
+  (named in every NEXT list since content.md's original 2026-07-04 audit) and directly answers the
+  question a compliance-conscious agency buyer would ask before granting OAuth access to client
+  accounts — exactly the trust gap the audit flagged as highest-stakes for a brand-new domain with no
+  other authority signals. / CONTENT: vendor-neutral framing throughout — leads with "MCP the protocol
+  vs. the specific server you connect" (same distinction as asking "is HTTP secure?"), covers five real
+  risk categories (data retention, OAuth scope breadth, local-vs-hosted servers, third-party/community
+  package provenance, prompt injection as an active, non-ARLO-specific research area) and a 6-question
+  vendor-vetting checklist before getting to ARLO's own answers. Every ARLO-specific claim reused only
+  what's already corroborated on multiple *live* pages (checked via grep across `connectors.ts`,
+  `comparisons.ts`, `services.ts` first): pass-through/no warehouse (5 live comparison pages), OAuth
+  tokens encrypted at rest (5 live comparison pages — deliberately did NOT cite the specific
+  "AES-256-GCM" cipher detail, since that only appears in `shared.ts`, confirmed dead/unwired code per
+  the 2026-07-30 worklog entry, and isn't corroborated on any live page), per-user MCP tokens + audit
+  log by user/client/timestamp (live `services.ts` agency-owner FAQ), one-click revoke leaving client
+  platform data untouched (live FAQ pattern across connector pages). Explicitly disclosed one real
+  limitation instead of glossing over it: ARLO doesn't publish a SOC 2 report or third-party security
+  audit today — same "no invented certifications" caution as every prior comparison/content page (audit
+  flagged the missing security page but never claimed ARLO had achieved specific certifications, so
+  didn't invent one here either). Internal links: `/connect/google-analytics-mcp`,
+  `/connect/search-console-mcp`, `/connect/google-ads-mcp`, `/blog/what-is-an-mcp-connector`, `/compare`.
+  No manual relatedPosts wiring needed (automatic via `getAllBlogPosts()`). Did not add to
+  `public/llms.txt` — same precedent as every prior post.
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret) — confirmed identical route list, not a regression. `/blog/[slug]` has no
+  `generateStaticParams` (dynamic route, no static `.html` to grep), so verified directly via `npx
+  tsx`: `getAllBlogSlugs()` includes the new slug, `getAllBlogPosts()` sorts it first (newest date,
+  2026-08-17), `getBlogPostBySlug()` resolves title/tags/wordCount (1,727) correctly. `npm run lint`
+  clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed
+  only `src/content/blog/manifest.json` (build-regenerated, reverted) + the new post — staged only the
+  one intended file.
+
+NEXT:
+1. Human decisions still open (unchanged, now 10+ sessions): catalog.ts ETAs for meta_ads (3+ months
+   overdue)/hubspot/mailerlite (both past due); the dormant 6-persona `route.ts` scaffold (open since
+   2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still 0 of 6, most
+   overdue item on the whole plan (flagged since Week 4) — needs a human with a browser, this sandbox
+   has no outbound HTTP.
+2. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it) — not
+   shipping blind.
+3. Content.md's original 12-post skeleton is now effectively exhausted of clear, non-redundant angles
+   — 9 posts shipped total (100-questions, choquer-agency case study, windsor-ai install guide,
+   what-is-an-mcp-connector, how-to-use-ai-for-seo, claude-mcp-server setup, client-reporting,
+   agency-churn, mcp-server-security). The one item never separately shipped as its own post
+   ("GA4-specific 3-minute setup") was judged redundant with `/connect/google-analytics-mcp` +
+   `how-to-set-up-a-claude-mcp-server` rather than skipped by oversight — a future session should
+   re-scope from a fresh keyword pull (SE Ranking `getRelatedKeywords`/`getLongTailKeywords` off
+   Cluster 1/3 terms) rather than the original static skeleton before shipping post #10.
+4. A weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position report)
+   is due again — last full pulse was 2026-08-14, next one should land around 2026-08-21 per the
+   established Friday cadence.
 
 ## 2026-08-13 (Thu) — Week 10/11: "Agency Client Churn Warning Signs" blog post — closes the most-overdue open content gap (flagged since 2026-07-16)
 
