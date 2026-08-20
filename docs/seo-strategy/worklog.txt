@@ -6,6 +6,82 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-20 (Thu) — "Google Ads Reporting for Agencies" blog post — closes the highest-volume unaddressed P1 keyword left in keyword-research.md's Cluster 3
+
+SHIPPED — `src/content/blog/posts/us/google-ads-reporting-for-agencies.md` (new). Acted on the
+2026-08-17 NEXT item 3, which explicitly said the original content.md 12-post skeleton is exhausted of
+non-redundant angles and that a future session should **re-scope from a fresh keyword pull rather than
+the static skeleton before shipping post #10**. Did exactly that: pulled live SE Ranking metrics (US)
+for the still-unshipped P1 terms in `keyword-research.md`'s Cluster 3/4, then ran
+`DATA_getRelatedKeywords` off the winner to check the surrounding cluster before committing.
+- PAGE: /blog/google-ads-reporting-for-agencies (new) / CHANGE: new markdown post via the existing
+  `src/content/blog/posts/us/*.md` → `getAllBlogPosts()` → `/blog/[slug]` pipeline (BlogPosting JSON-LD
+  auto-generated, no template changes). 1,332 words (in range with the 9 existing posts, 1,112–2,301). /
+  TARGET: primary **`google ads reporting`** — pulled live this session: 390/mo, KD 30, CPC $12.66,
+  competition 0.21. This is the **highest-volume P1 term in the whole audit that has never had a page**
+  (keyword-research.md Cluster 3 lists it at 480/mo, KD 25, P1; the live re-pull shows 390/mo, KD 30 —
+  reported the current live figure, did not reuse the stale audit number). Secondaries, all confirmed
+  live and all lower-KD than the primary: `google ads reporting tool` (140/mo, KD 20),
+  `google ads report template` (110/mo, KD 14), `advertising reporting` (170/mo, KD 14 — surfaced by
+  `getRelatedKeywords`, not in the original audit). Also checked and rejected this session:
+  `automated reporting tools` (210/mo KD 24) and `automated marketing reports` (50/mo KD 24) — both on
+  a clear 12-month *decline* (390→170 and 90→50 respectively), so not worth a page ahead of a rising
+  term; `conversational analytics` (320/mo, KD 38) — P2 tier and also declining since Feb;
+  `meta ads reporting` (110/mo, KD 18) — real demand, but Meta Ads is still `coming_soon` in
+  `catalog.ts`, so a post targeting it would advertise a connector that doesn't exist (same
+  overclaiming trap the worklog has flagged since 2026-07-20). Google Ads is `status: "live"`, so this
+  post only describes shipped capability. / WHY: the connector matrix (5/5 live Google sources) and
+  comparison hub (5/5 named competitors) are both still fully caught up — re-checked `catalog.ts` again
+  this session, unchanged: `meta_ads` eta "May 2026" (3+ months overdue), `hubspot` eta "July 2026" and
+  `mailerlite` eta "July 2026" both past due, `mailchimp` eta "August 2026" now current-month and worth
+  a human check next session. Content remains the only human-independent lever, and this closes a real
+  volume gap rather than adding a 10th post for its own sake. / CONTENT: structured around the actual
+  reporting job (5 metrics that belong in a client-facing Google Ads report, why MCC account-switching
+  is the real time sink, a cadence section separating weekly-internal / monthly-client / quarterly-QBR,
+  and a plain report-template structure) before getting to ARLO — the same "useful even if you never
+  buy" pattern as the client-reporting and churn posts. Every ARLO claim reused only what's already
+  live on `/connect/google-ads-mcp` (verified by reading `src/content/connectors.ts` first): MCC
+  sub-account assignment, no GAQL required, pass-through/nothing warehoused, and the metric/dimension
+  list (impressions, clicks, CTR, avg CPC, cost, conversions, conversion value at campaign + ad-group
+  level). Carried over that page's own honest "not yet supported" FAQ verbatim in substance — Quality
+  Score and search-term reports are explicitly called out as roadmap, not silently omitted. The
+  ~2.5 hrs/week time-cost figure is labeled as illustrative math (15 clients × 10 min), same caution as
+  the client-reporting post; no invented competitor pricing or external statistics (no outbound web
+  access to verify any). Internal links: `/connect/google-ads-mcp`, `/connect/google-analytics-mcp`,
+  `/connect/search-console-mcp`. No manual relatedPosts wiring needed (automatic via
+  `getAllBlogPosts()`). Did not add to `public/llms.txt` — same precedent as all 9 prior posts.
+- VERIFY: `rm -rf .next && npm install && npm run build` — compiled successfully; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret) — confirmed identical route list, not a regression. `/blog/[slug]` has no
+  `generateStaticParams` (dynamic route, no static `.html` to grep), so verified two ways: via `npx
+  tsx` (`getAllBlogSlugs()` includes the new slug, `getAllBlogPosts()` sorts it first at date
+  2026-08-20, `getBlogPostBySlug()` resolves title/tags/wordCount 1,332), and by grepping the built
+  `.next/server/app/blog.body` — both the new slug and its rendered title appear in the live blog-hub
+  output, confirming it's actually linked, not just parseable. `npm run lint` clean (only the same
+  pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only
+  `src/content/blog/manifest.json` (build-regenerated, reverted) + the new post — staged only the one
+  intended file.
+
+NEXT:
+1. **`mailchimp` eta "August 2026" is current-month** — first `catalog.ts` ETA that isn't already
+   overdue. Worth a human confirming whether it ships this month; if it flips to `live`, that's the
+   first new connector-matrix page available in 4+ months (`/connect/mailchimp-mcp`). Everything else
+   in catalog.ts unchanged and overdue: `meta_ads` (3+ months), `hubspot`/`mailerlite` (past due).
+2. Human decisions still open (unchanged, now 11+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still
+   0 of 6, most overdue item on the whole plan (flagged since Week 4) — needs a human with a browser,
+   this sandbox has no outbound HTTP.
+3. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it).
+4. The fresh-keyword-pull approach used this session found one more viable, still-unshipped angle worth
+   a future post: `meta ads reporting` (110/mo, KD 18, stable) — but it is **gated on `meta_ads`
+   flipping to `live` in catalog.ts**, so do not ship it before item 1 above resolves. Beyond that, the
+   remaining P1 Cluster-3 terms are now all either covered by a live page or on a measurable decline;
+   a future content session should re-pull rather than assume this list is still current.
+5. A weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position report)
+   is overdue — last full pulse was 2026-08-14; the established Friday cadence puts the next one at
+   2026-08-21.
+
 ## 2026-08-17 (Mon) — "MCP Server Security" blog post — closes the standing content.md trust/security gap (item 12, flagged since kickoff)
 
 SHIPPED — `src/content/blog/posts/us/mcp-server-security.md` (new). Re-read NEXT lists back to
