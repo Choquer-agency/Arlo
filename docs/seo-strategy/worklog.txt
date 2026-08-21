@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-21 (Fri) — Weekly SEO pulse: rank positions still flat 0/22 after a 3rd full week (Month 2 KPIs now off track as August closes); catalog.ts drift — every coming_soon entry now past its own ETA, mailchimp's Aug 2026 date is due and still unshipped, shopify (Apr 2026) is now the most-overdue entry in the catalog; CI 23/24 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-21-weekly-pulse.json.
+
 ## 2026-08-20 (Thu) — "Google Ads Reporting for Agencies" blog post — closes the highest-volume unaddressed P1 keyword left in keyword-research.md's Cluster 3
 
 SHIPPED — `src/content/blog/posts/us/google-ads-reporting-for-agencies.md` (new). Acted on the
