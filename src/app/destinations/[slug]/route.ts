@@ -75,6 +75,21 @@ const FAQ = {
   ],
 };
 
+// FAQPage JSON-LD built from the same FAQ.items rendered on the page, so the
+// two can never drift out of sync (unlike the hub page's hand-maintained pair).
+function faqSchemaHtml(items: { q: string; a: string }[]): string {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+  return `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script>`;
+}
+
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   const entry = DESTINATION_CATALOG.find((d) => d.id === slug);
@@ -104,6 +119,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }
     prompts: PROMPTS,
     others,
     faq: FAQ,
+    faqSchemaHtml: faqSchemaHtml(FAQ.items),
     cta: { eyebrow: "Get started", heading: "Connect once. Send your data anywhere.", buttonText: "Start For Free", buttonHref: "/welcome" },
     // per-destination branded PDF (public/arlo/downloads/<id>-50-prompts.pdf)
     pdfFile: `${entry.id}-50-prompts.pdf`,

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>{{title}}</title><meta content="{{metaDescription}}" name="description"/><meta content="ARLO for SEO Specialists — Ask Claude About Any Client" property="og:title"/><meta content="ARLO connects Claude to your clients' Google marketing data — Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client, live, without opening another tab." property="og:description"/><meta content="https://askarlo.app/arlo/og-image.png" property="og:image"/><meta content="ARLO for SEO Specialists — Ask Claude About Any Client" name="twitter:title"/><meta content="ARLO connects Claude to your clients' Google marketing data — Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client, live, without opening another tab." name="twitter:description"/><meta content="https://askarlo.app/arlo/og-image.png" name="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="/arlo/lib/arlo-base.css" rel="stylesheet" type="text/css"/><link rel="stylesheet" href="/arlo/arlo-fonts.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-chat.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-nav.css?v=__ARLOV__"/><link href="/arlo/favicon-256.png" rel="shortcut icon" type="image/x-icon"/><link href="/arlo/favicon-256.png" rel="apple-touch-icon"/><link href="{{canonicalUrl}}" rel="canonical"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>{{title}}</title><meta content="{{metaDescription}}" name="description"/><meta content="{{title}}" property="og:title"/><meta content="{{metaDescription}}" property="og:description"/><meta content="https://askarlo.app/arlo/og-image.png" property="og:image"/><meta content="{{title}}" name="twitter:title"/><meta content="{{metaDescription}}" name="twitter:description"/><meta content="https://askarlo.app/arlo/og-image.png" name="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="/arlo/lib/arlo-base.css" rel="stylesheet" type="text/css"/><link rel="stylesheet" href="/arlo/arlo-fonts.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-chat.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-nav.css?v=__ARLOV__"/><link href="/arlo/favicon-256.png" rel="shortcut icon" type="image/x-icon"/><link href="/arlo/favicon-256.png" rel="apple-touch-icon"/><link href="{{canonicalUrl}}" rel="canonical"/>
 <link rel="preconnect" href="https://askarlo.app" crossorigin>
 
 
@@ -132,9 +132,9 @@
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "ARLO for SEO Specialists — Ask Claude About Any Client",
-  "url": "https://askarlo.app",
-  "description": "ARLO plugs Claude Desktop into Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client without opening another tab.",
+  "name": "{{title}}",
+  "url": "{{canonicalUrl}}",
+  "description": "{{metaDescription}}",
   "isPartOf": {
     "@type": "WebSite",
     "name": "ARLO",
@@ -152,13 +152,20 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "ARLO",
-        "item": "https://askarlo.app"
+        "name": "Destinations",
+        "item": "https://askarlo.app/destinations"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{name}}",
+        "item": "{{canonicalUrl}}"
       }
     ]
   }
 }
 </script>
+{{faqSchemaHtml}}
 <style id="arlo-reskin">
 .arlo-wordmark{font-family:'Geist Pixel','Press Start 2P',monospace;font-size:20px;letter-spacing:.5px;line-height:1;color:#1a1a1a;position:relative;top:1px;}
 [nav-dark-state] .arlo-wordmark{color:inherit;}

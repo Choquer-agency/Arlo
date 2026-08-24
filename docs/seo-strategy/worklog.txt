@@ -6,6 +6,105 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-24 (Mon) — Fixed broken OG/Twitter meta + wrong-page WebPage schema + missing FAQPage schema across all 15 `/destinations/[slug]` pages
+
+CONTEXT: catalog.ts unchanged again this session (mailchimp still `coming_soon` eta "August 2026" —
+now current-month and unshipped with a week left; meta_ads/hubspot/mailerlite/shopify/stripe all still
+past their own ETAs) — no new connector to build. Connector matrix (5/5 live) and comparison hub (5/5
+named competitors) both remain fully caught up. Rather than ship an 11th blog post in a row (last 5
+sessions were all content), re-read `audits/sxo.md` (2026-07-04) for still-open, human-independent P1
+items: quick-win #6 flags `/destinations/[slug]` as the second-weakest persona page type (31/100,
+"Integration Evaluator") and recommends reframing 2–3 pages with comparison depth. While scoping that,
+found something more clearly broken and higher-leverage first: the shared detail-page shell
+(`src/app/destinations/_template/_shell.html`, used by all 15 `/destinations/[slug]` routes) hardcoded
+`og:title`/`og:description`/`twitter:title`/`twitter:description` to a generic, wrong-page string
+("ARLO for SEO Specialists — Ask Claude About Any Client" + Search-Console/GA4/PageSpeed/GBP copy) on
+*every* destination page — so sharing `/destinations/looker_studio` or `/destinations/power_bi` on
+Slack/social/any OG-scraper showed the SEO-specialist persona page's title, not the destination's own.
+Same root-cause bug in the page's `WebPage` JSON-LD: `name`/`url`/`description` were all hardcoded to
+the homepage (`url: "https://askarlo.app"` on all 15 pages — the exact class of bug P0 #3's site-wide
+canonical fix addressed elsewhere, missed here because this page type renders through a separate
+hand-rolled HTML shell, not the shared Next.js metadata system). The breadcrumb JSON-LD was also
+2-level ("Home / ARLO", both pointing at the homepage) instead of reflecting the real
+Destinations-hub → page hierarchy. Separately: despite every one of the 15 pages rendering a live FAQ
+block (5 shared Q&As), none had `FAQPage` schema — confirmed via grep, only 2 `ld+json` blocks exist in
+the whole shell (Organization/WebSite/SoftwareApplication, and WebPage/BreadcrumbList), no FAQPage. The
+sibling hub page `/destinations` does have hand-maintained FAQPage schema (per its own file comment,
+"FAQ items MUST match the FAQPage JSON-LD in _shell.html") — the 15 detail pages never got the same
+treatment. Fixed all of it in one pass rather than shipping the comparison-table content expansion
+first, since a wrong/missing schema and mismatched social previews on 15 already-indexed pages is a
+correctness bug, not a depth gap — higher priority per the P0-style precedent already set on this site.
+- PAGE: all 15 `/destinations/[slug]` pages (looker_studio, power_bi, tableau, google_sheets, excel,
+  bigquery, snowflake, redshift, databricks, slack_digest, notion_destination, airtable_destination,
+  shareable_dashboard, email_digest, pdf_report) / CHANGE: two files.
+  (1) `src/app/destinations/_template/_shell.html` — `og:title`/`twitter:title` → `{{title}}`,
+  `og:description`/`twitter:description` → `{{metaDescription}}` (both already-available, already-used
+  content vars — same value already correctly powering `<title>` and the meta-description tag, just
+  never wired to the social tags). `WebPage` JSON-LD `name`/`url`/`description` → `{{title}}` /
+  `{{canonicalUrl}}` / `{{metaDescription}}`. Breadcrumb JSON-LD expanded to 3 levels: Home →
+  Destinations (`https://askarlo.app/destinations`) → the page's own name/canonical URL. Added a
+  `{{faqSchemaHtml}}` placeholder immediately after the existing schema scripts.
+  (2) `src/app/destinations/[slug]/route.ts` — added a `faqSchemaHtml()` helper that builds `FAQPage`
+  JSON-LD directly from the same `FAQ.items` array already used to render the visible FAQ block (not a
+  hand-duplicated copy — the two can't drift the way the hub page's manual pair could), passed into
+  `content.faqSchemaHtml`. JSON is `JSON.stringify`'d (safe escaping) with `<` replaced by `<` as a
+  defensive guard against premature `</script>` termination. / TARGET: no new keyword — this is a
+  correctness/schema-parity fix on already-indexed pages targeting the existing `/destinations/*`
+  organic + AI-citation surface (each page's own tool-specific terms, e.g. "looker studio", "power bi",
+  "bigquery" + "arlo"/"claude" context) and, more directly, GEO/AI-crawler accuracy (`llms.txt`,
+  AI-Overview citation, and any LLM parsing OG/JSON-LD to describe what a specific destination page is
+  about) and human link-preview accuracy when these pages are shared. / WHY: `audits/sxo.md` (quick-win
+  #6, Section 8 item 6) flagged `/destinations/[slug]` as thin/mismatched-intent; while reading the
+  template to plan a comparison-table content expansion, found the more urgent, purely-mechanical bug
+  above — wrong metadata shipping on 15 live pages is a higher-confidence, lower-risk, more immediately
+  correctable issue than a content redesign, and matches the audit's own repeated finding pattern (P0 #3
+  canonical bug, P1 #8 FAQPage-on-FAQ-component) of "the data model is fine, the wiring to this
+  particular page type was missed." The comparison-table/feature-depth reframe recommended by
+  `sxo.md` quick-win #6 remains open for a future session — flagged in NEXT below, scoped as a design/
+  content task distinct from this correctness fix. / VERIFY: `rm -rf .next && npm install && npm run
+  build` — compiled successfully (`✓ Compiled successfully`, exit 0); same 9 pre-existing `(app)/*` +
+  `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only
+  secret) — confirmed identical route list, not a regression. `/destinations/[slug]` is a hand-rolled
+  `route.ts` (no static `.html` output, same as the homepage's `arlo/route.ts`), so `next start` doesn't
+  work in this sandbox (missing `prerender-manifest.json` from the same known Convex-env gap) — verified
+  instead via `next dev` on a scratch port and `curl`+Python-parsed the live response for
+  `/destinations/looker_studio`, `/destinations/power_bi`, `/destinations/bigquery`: confirmed per-page
+  `og:title` (e.g. "Looker Studio — BI & Dashboards Destination | ARLO", "Power BI — BI & Dashboards
+  Destination | ARLO" — no longer the SEO-specialist string), correct `canonical` per page, `WebPage`
+  JSON-LD `name`/`url`/`description` matching the real page (not the homepage), 3-level breadcrumb with
+  the correct leaf name/URL, and well-formed `FAQPage` JSON-LD present and matching the rendered FAQ
+  items verbatim on all three spot-checked pages. `npm run lint` clean (only the same pre-existing
+  unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only the 2 intended files touched
+  after reverting the build-regenerated `src/content/blog/manifest.json` diff (same pattern as every
+  prior session) — staged only those 2 files.
+
+NEXT:
+1. **`sxo.md` quick-win #6 remains open**: reframe 2–3 top `/destinations/[slug]` pages (Looker Studio,
+   Power BI, BigQuery — highest-searched "alternative to X" terms per Section 3) with explicit
+   comparison framing, a feature table, and pricing context — currently ~150–250 word single-screen
+   pages. This is a content/design task, distinct from this session's schema/metadata correctness fix;
+   the shared `_template/_shell.html` has no `{{#if}}` support (`arlo/_render.ts` mustache-lite is
+   `{{#each}}`/`{{var}}` only), so a per-page-optional section needs a pre-rendered HTML-string content
+   var (same pattern used here for `faqSchemaHtml`), not a template conditional.
+2. **`mailchimp` eta "August 2026" is now current-month with about a week left** — still `coming_soon`
+   in catalog.ts, unchanged for the 4th consecutive session. Worth a human confirming ship status; if it
+   flips to `live`, that's the first new connector-matrix page available in 5+ months
+   (`/connect/mailchimp-mcp`). Everything else in catalog.ts unchanged and overdue: `meta_ads` (3+
+   months), `hubspot`/`mailerlite` (past due), `shopify` (4+ months, most overdue entry), `stripe`
+   (past due).
+3. Human decisions still open (unchanged, now 12+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still
+   0 of 6, most overdue item on the whole plan (flagged since Week 4) — needs a human with a browser,
+   this sandbox has no outbound HTTP.
+4. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it).
+5. A fresh-keyword-pull blog post (the pattern used 2026-08-20) remains a viable human-independent
+   lever if a future session prefers content over more on-page/technical fixes — re-pull rather than
+   assume `keyword-research.md`'s static list is current.
+6. Next weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position
+   report) due — last full pulse was 2026-08-21, established Friday cadence puts the next one around
+   2026-08-28.
+
 ## 2026-08-21 (Fri) — Weekly SEO pulse: rank positions still flat 0/22 after a 3rd full week (Month 2 KPIs now off track as August closes); catalog.ts drift — every coming_soon entry now past its own ETA, mailchimp's Aug 2026 date is due and still unshipped, shopify (Apr 2026) is now the most-overdue entry in the catalog; CI 23/24 green, off-page still 0/6, GSC/GA4 still pending — see reports/outbox/2026-08-21-weekly-pulse.json.
 
 ## 2026-08-20 (Thu) — "Google Ads Reporting for Agencies" blog post — closes the highest-volume unaddressed P1 keyword left in keyword-research.md's Cluster 3
