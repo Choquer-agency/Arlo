@@ -6,6 +6,129 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-27 (Thu) — Added "alternative to X" comparison sections (feature table + when-to-choose lists) to the 3 highest-searched `/destinations/[slug]` pages (Looker Studio, Power BI, BigQuery); added missing `dateModified` to all 15 destination pages' WebPage schema
+
+CONTEXT: session started by discovering the 2026-08-24 session's two commits
+(`99835a7` schema/metadata fix, `0f516ca` archive) existed only in a detached
+HEAD in this sandbox's clone, never reachable from `origin/main` — confirmed
+via `git merge-base --is-ancestor` before touching anything, fast-forwarded
+local `main` to that commit, then re-fetched and found `origin/main` was
+already at the same commit (a stale local remote-tracking ref from clone
+time, not an actual unpushed-work incident) — no data was at risk, but
+worth flagging in case it recurs. `catalog.ts` re-checked and still
+unchanged this session: `mailchimp` (Aug 2026 eta, now past due),
+`meta_ads`/`hubspot`/`mailerlite`/`shopify`/`stripe` all still overdue — no
+new connector-matrix page available. With the connector matrix (5/5 live)
+and comparison hub (5/5 named competitors) both still fully caught up, and
+the 2026-08-24 correctness fix already closed, moved to the top of NEXT
+item 1: `sxo.md` quick-win #6 / Section 8 item 6, open since the 2026-07-04
+audit — reframe the 3 most-searched "alternative to X" `/destinations/[slug]`
+pages with comparison depth.
+- PAGE: `/destinations/looker_studio`, `/destinations/power_bi`,
+  `/destinations/bigquery` (comparison section, new) + all 15
+  `/destinations/[slug]` pages (`dateModified` schema field, new) / CHANGE:
+  two files. (1) `src/app/destinations/[slug]/route.ts` — added
+  `COMPARISON_CONTENT`, a record keyed by destination id holding a TL;DR
+  intro, a `[toolName]` vs. ARLO feature table (6 rows for Looker
+  Studio/Power BI, 5 for BigQuery: setup, cost/licensing, data
+  connections/freshness, scale, skill required), and two when-to-choose
+  lists ("Skip `[tool]` when" / "Keep `[tool]` when") — only populated for
+  `looker_studio`, `power_bi`, `bigquery`; every other id resolves to an
+  empty string via `comparisonSectionHtml()`, same optional-section pattern
+  used for `faqSchemaHtml` in the prior session (the shared
+  `_template/_shell.html` mustache-lite has no `{{#if}}`, so an
+  empty-string content var is how a section stays page-specific). Table/
+  when-grid renderer functions and their inline styles are copied from the
+  proven `/compare/[slug]/route.ts` pattern (`comparisonTable`,
+  `whenGrid`) for visual consistency with the site's other comparison
+  content, not reinvented. Also added a shared `CONTENT_LAST_UPDATED`
+  constant, passed into `content.dateModified` for every destination page.
+  (2) `src/app/destinations/_template/_shell.html` — added `"dateModified":
+  "{{dateModified}}"` to the existing `WebPage` JSON-LD block, and a new
+  `{{comparisonHtml}}` placeholder between the hero block and the "How it
+  works" section (empty on the other 12 pages). / TARGET: no new keyword —
+  this closes the SXO intent-mismatch flagged in `audits/sxo.md` (Section
+  3's SERP-consensus finding that "[BI tool] alternative" queries reward
+  Comparison-type content; Section 8 quick-win #6 named these exact 3
+  pages: Looker Studio, Power BI, BigQuery). Existing/expected organic
+  terms these pages already partially rank for or could: "looker studio
+  alternative", "power bi alternative", "bigquery alternative for
+  marketing reporting" — commercial-intent, low-competition per the
+  audit's Section 3 SERP read (personal blogs/micro-tools, not DA-88
+  fortresses). / WHY: these 3 pages serve two distinct search intents —
+  "I already use `[tool]`, connect ARLO's live data to it" (the page's
+  existing content) and "I'm evaluating whether I need `[tool]` at all"
+  (previously unserved — audit Section 3's Budget-Conscious Solo Business
+  Owner persona explicitly names this gap: "wants to know if a no-ETL,
+  no-warehouse tool exists... blocked by price/format sensitivity and
+  unclear differentiation... closest matching content is a thin feature
+  page with no pricing comparison or 'why leave Looker Studio' framing").
+  Framed the new section honestly as serving both readers ("ARLO is
+  both") rather than pretending the destination-connector page is purely a
+  competitor teardown — it still primarily explains how to push ARLO data
+  into these tools. No competitor pricing figures were invented: Looker
+  Studio's "free" status is stated plainly (uncontroversial, stable fact);
+  Power BI and BigQuery are described only in directional/structural terms
+  (per-user licensing required to share, usage-based storage+query
+  pricing) rather than specific dollar amounts this sandbox has no way to
+  verify live (no outbound web access) — same caution the 2026-08-20 blog
+  post applied to invented statistics. Bundled the `dateModified` fix
+  (sxo.md Section 8 item 8, a one-line addition to the same `WebPage`
+  schema block already being touched for a real reason) rather than
+  opening a second session for it. / VERIFY: `rm -rf .next && npm install
+  && npm run build` — `✓ Compiled successfully`, exit 1 only from the same
+  9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior
+  session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — same
+  route list, not a regression. `npm run lint` clean (only the same
+  pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). Verified via
+  `next dev` on a scratch port (this route has no static `.html` output,
+  same known Convex-env gap as the 2026-08-24 session): confirmed the new
+  comparison section (feature table + both when-lists) renders on
+  `/destinations/looker_studio`, `/destinations/power_bi`, and
+  `/destinations/bigquery`, is absent from a control page
+  (`/destinations/tableau`), and `dateModified: "2026-08-27"` appears in
+  the `WebPage` JSON-LD on all 4 spot-checked pages. `git status` showed
+  only the 2 intended files after reverting the build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior
+  session) — staged only those 2 files.
+
+NEXT:
+1. **`sxo.md` quick-win #6 is now closed** for the 3 named pages. The
+   remaining 12 `/destinations/[slug]` pages are still thin
+   (~150–250 words, shared prompts/FAQ only) but weren't named by the
+   audit's own priority list — leave as-is unless a future keyword pull
+   surfaces demand for one of them specifically (e.g. "snowflake
+   alternative", "tableau alternative").
+2. **`mailchimp` eta "August 2026" is now the current month and, per this
+   session's date, effectively due** — still `coming_soon` in catalog.ts,
+   unchanged for the 5th consecutive session. Worth a human confirming
+   ship status; if it flips to `live`, that's the first new
+   connector-matrix page available in 5+ months (`/connect/mailchimp-mcp`).
+   Everything else in catalog.ts unchanged and overdue: `meta_ads` (3+
+   months), `hubspot`/`mailerlite` (past due), `shopify` (4+ months, most
+   overdue entry), `stripe` (past due).
+3. Human decisions still open (unchanged, now 13+ sessions): the dormant
+   6-persona `route.ts` scaffold (open since 2026-07-30); GSC submission
+   (open since kickoff, 2026-07-04). Off-page Phase 1 still 0 of 6, most
+   overdue item on the whole plan (flagged since Week 4) — needs a human
+   with a browser, this sandbox has no outbound HTTP.
+4. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06
+   is still an open human-check item (confirm ChatGPT connector support is
+   actually tested/live before building pages for it).
+5. A fresh-keyword-pull blog post (the pattern used 2026-08-20) remains a
+   viable human-independent lever if a future session prefers content over
+   more on-page/technical fixes — re-pull rather than assume
+   `keyword-research.md`'s static list is current.
+6. Next weekly-pulse-style session (backlinks, CI status, catalog.ts
+   re-check, full rank-position report) due — last full pulse was
+   2026-08-21, established Friday cadence puts the next one around
+   2026-08-28, right after this session.
+7. **Verify at session start that `origin/main` actually matches what
+   `git log` shows** (`git fetch origin main` before trusting a cached
+   `origin/main` ref) — this session's local clone had a stale
+   remote-tracking ref that briefly looked like unpushed prior-session
+   work; harmless this time, but worth a fast check before relying on it.
+
 ## 2026-08-24 (Mon) — Fixed broken OG/Twitter meta + wrong-page WebPage schema + missing FAQPage schema across all 15 `/destinations/[slug]` pages
 
 CONTEXT: catalog.ts unchanged again this session (mailchimp still `coming_soon` eta "August 2026" —
