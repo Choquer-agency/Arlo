@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-28 (Fri) — Weekly pulse: rank positions still flat 0/22 after 4th full week; Month 2 closed with neither KPI met; catalog.ts/off-page blockers unchanged. See reports/outbox/2026-08-28-weekly-pulse.json.
+
 ## 2026-08-27 (Thu) — Added "alternative to X" comparison sections (feature table + when-to-choose lists) to the 3 highest-searched `/destinations/[slug]` pages (Looker Studio, Power BI, BigQuery); added missing `dateModified` to all 15 destination pages' WebPage schema
 
 CONTEXT: session started by discovering the 2026-08-24 session's two commits
