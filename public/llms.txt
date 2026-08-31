@@ -53,7 +53,7 @@ ARLO exposes an MCP (Model Context Protocol) server that Claude Desktop treats a
 - [Blog](https://askarlo.app/blog)
 - [Connect GA4 to Claude (Google Analytics MCP)](https://askarlo.app/connect/google-analytics-mcp)
 - [Connect Google Ads to Claude (Google Ads MCP)](https://askarlo.app/connect/google-ads-mcp)
-- [Connect Search Console to Claude (Search Console MCP)](https://askarlo.app/connect/search-console-mcp)
+- [Connect Search Console to Claude (Google Search Console MCP)](https://askarlo.app/connect/search-console-mcp)
 - [Connect YouTube Analytics to Claude (YouTube MCP)](https://askarlo.app/connect/youtube-mcp)
 - [Connect Google Business Profile to Claude (Google Business Profile MCP)](https://askarlo.app/connect/google-business-profile-mcp)
 - [Compare ARLO (hub)](https://askarlo.app/compare)

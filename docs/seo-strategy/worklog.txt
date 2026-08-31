@@ -6,6 +6,102 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-08-31 (Mon) — On-page retarget: `/connect/search-console-mcp` now leads with "Google Search Console MCP" — the exact-match phrase went from 0 to 390/mo (KD 16, competition 0.05) over the last 4 months while the page still only targeted "Search Console MCP" (50/mo)
+
+CONTEXT: `sxo.md` quick-win #6 closed last session (2026-08-27) for its 3 named pages; connector matrix
+(5/5 live Google sources) and comparison hub (5/5 named competitors) both still fully caught up;
+`catalog.ts` re-checked again — `mailchimp` eta "August 2026" is now the current month with no ETA
+slack left and still `coming_soon` (unchanged for a 6th session), `meta_ads`/`hubspot`/`mailerlite`/
+`shopify`/`stripe` all still overdue, no new connector-matrix page available. Rather than open an 11th
+blog post or re-scope the fresh-keyword-pull item cold, re-pulled live SE Ranking metrics (US) on the
+FOCUS cluster's core terms first — `mcp for marketing`, `meta ads reporting`, `search console mcp`,
+`google search console mcp`, `ga4 mcp`, `meta ads mcp`, `shopify mcp`, `hubspot mcp`, `conversational
+analytics`, `supermetrics alternative`, `agencyanalytics alternative`, `whatagraph alternative` — to
+check for drift against the 2026-07-04 keyword-research.md audit before picking a target. Found one
+term with real, verified movement: `google search console mcp` now shows 390/mo (US), KD 16, competition
+0.05, on a clean 0→170→215→260→390 climb over the last 4 months (`google-search-console-mcp` wasn't in
+the original audit at all — an emerged term, not a stale re-pull). The live `/connect/search-console-mcp`
+page (shipped 2026-07-06) only targeted the plain "Search Console MCP" phrasing — a live pull on that
+exact term this session shows just 50/mo, an 8x smaller opportunity than the phrase actually gaining
+share. Checked `agencyanalytics alternative` too (480/mo, KD 9 — the single highest-volume/lowest-KD
+combination pulled this session) but it's a false lead: `comparisons.ts`'s `agencyanalytics-vs-arlo`
+entry already leads its `metaTitle` with "AgencyAnalytics Alternative" (shipped, not a gap). `meta ads
+mcp` (590/mo, up from 210) and `hubspot mcp` (20/mo) are both real demand but gated — Meta Ads and
+HubSpot are still `coming_soon` in `catalog.ts`, so a dedicated connector page for either would
+overclaim a connector that doesn't exist (same trap flagged repeatedly since 2026-07-20). `conversational
+analytics` (320/mo, KD 38) remains P2 pillar-tier, not a quick win. This left the Search Console MCP
+retarget as the single verified, human-independent, on-page (not new-page) opportunity — smaller in
+scope than a new page, but "quality over volume" per the routine's own hard rules, and the page already
+exists/is already indexed, so this is a pure upside capture with no cannibalization or new-content risk.
+- PAGE: `/connect/search-console-mcp` (existing, retargeted — no new page, no slug change, no internal
+  links broken) / CHANGE: `src/content/connectors.ts`, the `search-console-mcp` entry only. `title`:
+  "Search Console MCP: Connect GSC to Claude" → "**Google Search Console MCP**: Connect GSC to Claude"
+  (renders as the page's literal `<h1>` and the `WebPage` JSON-LD `name`). `metaTitle`: "Search Console
+  MCP | Connect Google Search Console to Claude — ARLO" → "**Google Search Console MCP** | Connect GSC
+  to Claude — ARLO" (the `<title>` tag — now leads with the exact 390/mo phrase instead of burying it
+  mid-string). `metaDescription` and `tldr` both rewritten to open with "ARLO's Google Search Console
+  MCP" instead of "Connect Google Search Console..." — same facts, phrase moved to the front where it
+  reads most naturally and carries the most on-page weight. `why.heading` (an `<h2>`): "Why connect
+  Search Console to Claude..." → "Why a **Google Search Console MCP** beats digging through the GSC
+  UI" — one more on-page keyword surface, still reads naturally as a section header. `why.body`: one
+  clause changed ("An MCP connector skips the UI" → "A **Google Search Console MCP** connector skips
+  the UI entirely") — not a full rewrite, the rest of the section's substance (weekly re-run pain, CSV
+  comparison) is unchanged. One FAQ question retargeted: "Is this Google's official Search Console MCP
+  server?" → "Is ARLO's **Google Search Console MCP** an official Google product?" (answer edited to
+  match, same "no, third-party, OAuth to your own properties" substance — not a new claim). `lastUpdated`
+  bumped 2026-07-06 → 2026-08-31 (matches the site's own `dateModified`-freshness convention, established
+  2026-08-27). Also updated `public/llms.txt`'s one-line description of this page ("Search Console MCP"
+  → "Google Search Console MCP") so the AI-crawler-facing page list matches the page's own new title —
+  no other file references the page's title/metaTitle strings (checked via grep: internal links,
+  `relatedConnectorSlugs`, and blog cross-links all reference the unchanged slug `search-console-mcp`
+  or generic anchor text "Search Console", neither of which needed touching). / TARGET: primary **`google
+  search console mcp`** — 390/mo (US), KD 16, competition 0.05, live SE Ranking pull this session,
+  rising every month for 4 consecutive months (0→170→215→260→390) — genuinely emerged demand, not a
+  stale audit figure. Secondary, unchanged and still served: `search console mcp` (50/mo, KD 18) and
+  `connect google search console to claude` (the page's existing how-to framing). / WHY: verified via a
+  fresh live pull (not the 2026-07-04 static audit, which didn't carry this exact phrasing) that the
+  page's current title/meta target a phrase now carrying roughly 1/8th the volume of a near-identical,
+  near-zero-competition variant it doesn't mention anywhere in its `<title>` or `<h1>` — a precise,
+  low-risk on-page fix rather than a new content bet, matching the routine's "quality over volume"
+  instruction better than a marginal 11th blog post or a new connector page gated on an unshipped
+  catalog entry. / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`,
+  exit 1 only from the same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior
+  session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a
+  regression. `npm run lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag
+  warning). Grepped the built static HTML directly
+  (`.next/server/app/connect/search-console-mcp.html`): confirmed `<title>Google Search Console MCP |
+  Connect GSC to Claude — ARLO</title>`, `"name":"Google Search Console MCP: Connect GSC to Claude"` in
+  the `WebPage` JSON-LD, and the phrase "Google Search Console MCP" appearing 31 times total across the
+  rendered page (H1, TL;DR, why-section heading/body, FAQ question/answer) — not a single isolated
+  mention. `git status` showed only `src/content/connectors.ts` + `public/llms.txt` after reverting the
+  build-regenerated `src/content/blog/manifest.json` diff (same pattern as every prior session) — staged
+  only those 2 intended files.
+
+NEXT:
+1. `mailchimp` eta "August 2026" is now the **current month with no days of ETA slack left** — 6th
+   consecutive session unchanged, still `coming_soon`. Worth a human confirming ship status this week;
+   if it flips to `live`, that's the first new connector-matrix page available in 5+ months
+   (`/connect/mailchimp-mcp`). Everything else in catalog.ts unchanged and overdue: `meta_ads` (4+
+   months, and this session confirmed real live demand for `meta ads mcp` at 590/mo — a page is ready
+   to write the moment the connector ships), `hubspot`/`mailerlite` (past due), `shopify` (5+ months,
+   most overdue entry), `stripe` (past due).
+2. `sxo.md` quick-win #6 remains closed (no change this session — not touched). The 12 unreframed
+   `/destinations/[slug]` pages are still thin but weren't named by the audit's own priority list.
+3. Human decisions still open (unchanged, now 14+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still 0
+   of 6, most overdue item on the whole plan (flagged since Week 4) — needs a human with a browser,
+   this sandbox has no outbound HTTP.
+4. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it).
+5. This session's live SE Ranking pull cleared `agencyanalytics alternative` (480/mo, KD 9) as
+   already-shipped (not a gap) and confirmed `conversational analytics` (320/mo, KD 38) remains P2
+   pillar-tier, not a quick win — a future content session doesn't need to re-check either. The one
+   still-open, still-gated opportunity surfaced this session is `meta ads mcp` (590/mo, up from 210) —
+   do not build a page for it before `meta_ads` in `catalog.ts` flips to `live` or `beta`.
+6. Next weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position
+   report) due — last full pulse was 2026-08-28, established Friday cadence puts the next one around
+   2026-09-04.
+
 ## 2026-08-28 (Fri) — Weekly pulse: rank positions still flat 0/22 after 4th full week; Month 2 closed with neither KPI met; catalog.ts/off-page blockers unchanged. See reports/outbox/2026-08-28-weekly-pulse.json.
 
 ## 2026-08-27 (Thu) — Added "alternative to X" comparison sections (feature table + when-to-choose lists) to the 3 highest-searched `/destinations/[slug]` pages (Looker Studio, Power BI, BigQuery); added missing `dateModified` to all 15 destination pages' WebPage schema

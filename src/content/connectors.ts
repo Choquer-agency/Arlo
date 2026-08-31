@@ -207,18 +207,18 @@ export const connectors: Record<string, ConnectorPage> = {
     sourceName: "Google Search Console",
     sourceShortName: "Search Console",
     color: "#4285F4",
-    title: "Search Console MCP: Connect GSC to Claude",
-    metaTitle: "Search Console MCP | Connect Google Search Console to Claude — ARLO",
+    title: "Google Search Console MCP: Connect GSC to Claude",
+    metaTitle: "Google Search Console MCP | Connect GSC to Claude — ARLO",
     metaDescription:
-      "Connect Google Search Console to Claude Desktop through ARLO's MCP server. Ask Claude about clicks, impressions, and average position for any client — no exports, no dashboards.",
+      "ARLO's Google Search Console MCP gives Claude Desktop live access to clicks, impressions, and average position for any client — no exports, no dashboards.",
     tldr:
-      "ARLO is an MCP server that gives Claude live, read-only access to Google Search Console through the Search Analytics API. Connect once with Google OAuth, assign a property to a client, and Claude can answer questions about clicks, impressions, CTR, and average position by query or page — nothing is exported, warehoused, or scheduled.",
-    lastUpdated: "2026-07-06",
+      "ARLO's Google Search Console MCP gives Claude live, read-only access to Search Console through the Search Analytics API. Connect once with Google OAuth, assign a property to a client, and Claude can answer questions about clicks, impressions, CTR, and average position by query or page — nothing is exported, warehoused, or scheduled.",
+    lastUpdated: "2026-08-31",
     sections: {
       why: {
-        heading: "Why connect Search Console to Claude instead of digging through the GSC UI",
+        heading: "Why a Google Search Console MCP beats digging through the GSC UI",
         body:
-          "Search Console's Performance report is powerful but slow to work with: you pick a date range, filter by query or page, then export to compare periods by hand. Most agencies re-run the same checks every week — which queries gained or lost clicks, whether a page's average position moved, which URLs dropped out of the index. An MCP connector skips the UI: Claude calls the Search Analytics API directly, so \"which queries lost the most clicks this month\" becomes a sentence instead of a manual comparison across two exported CSVs.",
+          "Search Console's Performance report is powerful but slow to work with: you pick a date range, filter by query or page, then export to compare periods by hand. Most agencies re-run the same checks every week — which queries gained or lost clicks, whether a page's average position moved, which URLs dropped out of the index. A Google Search Console MCP connector skips the UI entirely: Claude calls the Search Analytics API directly, so \"which queries lost the most clicks this month\" becomes a sentence instead of a manual comparison across two exported CSVs.",
       },
       steps: [
         {
@@ -260,9 +260,9 @@ export const connectors: Record<string, ConnectorPage> = {
       ],
       faqs: [
         {
-          question: "Is this Google's official Search Console MCP server?",
+          question: "Is ARLO's Google Search Console MCP an official Google product?",
           answer:
-            "No. ARLO is a third-party MCP connector built on the public Search Console Search Analytics API. It requires you to grant OAuth access to your own verified properties — it isn't an official Google product.",
+            "No. ARLO's Google Search Console MCP is a third-party connector built on the public Search Console Search Analytics API. It requires you to grant OAuth access to your own verified properties — it isn't built or endorsed by Google.",
         },
         {
           question: "Do I need to know the Search Console API to use this?",
