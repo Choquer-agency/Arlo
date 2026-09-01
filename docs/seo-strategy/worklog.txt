@@ -6,6 +6,61 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-01 (Tue) — Monthly deep-dive: Month 2 review (August 2026) — SCORED Missed (0 of 4 measurable KPIs met)
+
+SCORE — Month 2 goal: **Missed** (0 of 4 measurable KPIs from the 2026-08-01 goal list met). Content
+production stayed strong for a 2nd straight month: 6 net-new indexable pages (Google Business Profile
+connector + 5 blog posts — how-to-set-up-a-claude-mcp-server, client reporting, agency churn, MCP
+server security, Google Ads reporting) plus 3 correctness/depth sessions on already-live pages
+(OG/Twitter/schema fix across all 15 destination pages, comparison-table expansion + `dateModified`
+across all 15, an on-page keyword retarget on the Search Console connector page) — 9 build-gated
+sessions, zero regressions, matching or beating the ~2-pages/week quality bar every session this
+month. But every metric outside the routine's direct control came up empty: live SE Ranking pull this
+session (`PROJECT_getSummary` + `PROJECT_getPositionHistory`, 2026-08-01→2026-09-01, site_id
+12704162) shows avg position flat at 100 (not-ranked floor) on **every single day of the month** —
+0 of 22 tracked keywords measured, let alone in the top 50, against a goal of ≥15 measured / ≥3 in
+top-50. `DATA_getBacklinksSummary` (domain mode): still 2 backlinks / 1 referring domain, identical to
+the 2026-08-01 figure — off-page Phase 1 stayed at 0 of 6 all month, now 2 full months overdue (Week 4
+target). `DATA_getAiSearchOverview` (US): still null brand_presence, 0 link_presence, 0
+ai_opportunity_traffic — unchanged from every prior pulse. All 3 human-decision blockers set as Month 2
+goals (catalog.ts/Meta Ads status, the dormant persona-route scaffold, GSC submission) are still open
+at month's end; re-checked `catalog.ts` this session — `mailchimp`'s "August 2026" ETA has now also
+lapsed (still `coming_soon`), meaning as of today all 5 gated connectors (meta_ads 4+ months overdue,
+shopify 5+ months overdue, hubspot/mailerlite/mailchimp all past due) are simultaneously overdue for
+the first time. One small positive: SE Ranking's own `domain_trust` for askarlo.app ticked 4→5, and
+`index_google: "1"` confirms Google is indexing the domain despite GSC sitemap submission never having
+been completed by a human.
+
+Full monthly report (leads/CPL proxy, what's working/not, numbers-vs-Month-2-targets table, Month 3
+goal) — see `reports/outbox/2026-09-01-monthly.json`. GA4 (`G-CP22NBPLFP`) still firing since 07-04 but
+conversions remain unqueryable from this sandbox (no outbound GA4 API access) — leads/CPL stays
+"pending" per the strategy doc's own honest frame; unlike Month 1, this month found no equivalent
+self-serve fix for either off-page listings or GSC submission — both genuinely require a human with a
+browser, which this sandbox does not have.
+
+GOAL — Month 3 (September 2026), set this session:
+1. First measured SERP position for **any** of the 22 tracked keywords (de-escalated from Month 2's
+   ≥15 — a domain with zero ranked keywords after 2 full months needs to clear this lower bar before a
+   top-50 target means anything).
+2. Off-page Phase 1 shipped — even 2–3 of the 6 directory/registry listings (Smithery.ai, Glama.ai,
+   mcp.so, awesome-mcp-servers GitHub PR, AlternativeTo, SaaSHub) would be the first referring-domain
+   movement since kickoff; this is now the single highest-leverage open item on the whole plan and
+   needs a human with a browser, not another session flagging it.
+3. Human decisions closed: `catalog.ts` (now 5 of 5 gated connectors overdue — meta_ads, shopify,
+   hubspot, mailerlite, mailchimp), the dormant 6-persona `route.ts` scaffold (open since 2026-07-30),
+   and GSC sitemap submission actually completed (open since kickoff, 2026-07-04 — now 2 months).
+4. Continue quality content pace into 12-week-strategy.md's Week 9–11 items now that the connector
+   matrix and comparison hub are both fully caught up: long-tail connector variants (the
+   ChatGPT-assistant-column variant, pending the still-open 2026-08-06 human check) and a `claude mcp
+   server` pillar page (810/mo+ and climbing — the single highest-volume term in the whole thesis,
+   never given its own dedicated page).
+5. Leads/CPL proxy stays "pending" through Month 3 unless rankings actually appear; if they do, start
+   pulling GA4 conversions as the real goal metric per the strategy doc's own W12 instruction.
+6. Note: September 2026 lands at the end of the original 12-week window (kickoff 2026-07-04 + 12 weeks
+   ≈ 2026-09-26) — the next monthly report should do the full W12 review: score months 1–3 together,
+   refresh the keyword map with a live SE Ranking pull, and decide whether the goal metric flips toward
+   leads or the ramp genuinely needs more runway given zero rankings through month 2.
+
 ## 2026-08-31 (Mon) — On-page retarget: `/connect/search-console-mcp` now leads with "Google Search Console MCP" — the exact-match phrase went from 0 to 390/mo (KD 16, competition 0.05) over the last 4 months while the page still only targeted "Search Console MCP" (50/mo)
 
 CONTEXT: `sxo.md` quick-win #6 closed last session (2026-08-27) for its 3 named pages; connector matrix
