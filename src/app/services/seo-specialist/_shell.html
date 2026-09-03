@@ -133,8 +133,9 @@
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "ARLO for SEO Specialists — Ask Claude About Any Client",
-  "url": "https://askarlo.app",
+  "url": "https://askarlo.app/services/seo-specialist",
   "description": "ARLO plugs Claude Desktop into Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client without opening another tab.",
+  "dateModified": "2026-09-03",
   "isPartOf": {
     "@type": "WebSite",
     "name": "ARLO",
@@ -152,11 +153,30 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "ARLO",
-        "item": "https://askarlo.app"
+        "name": "Services",
+        "item": "https://askarlo.app/services"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "SEO Specialists",
+        "item": "https://askarlo.app/services/seo-specialist"
       }
     ]
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How do I connect a client's Google accounts?","acceptedAnswer":{"@type":"Answer","text":"One Google OAuth grant per client covers GA4, Search Console, Google Ads, YouTube, and Business Profile. Assign each client their properties once, then query them all from Claude."}},
+    {"@type":"Question","name":"Does ARLO store my clients' data?","acceptedAnswer":{"@type":"Answer","text":"No. ARLO is a pure pass-through connector — every metric is fetched live the moment you ask and streamed straight to Claude. Nothing is ever written to disk."}},
+    {"@type":"Question","name":"Which SEO surfaces does ARLO connect to?","acceptedAnswer":{"@type":"Answer","text":"Search Console, GA4, PageSpeed Insights for Core Web Vitals, and Google Business Profile — so rankings, indexation, traffic, and local SEO are all one prompt away."}},
+    {"@type":"Question","name":"How do I actually ask a question?","acceptedAnswer":{"@type":"Answer","text":"Paste your MCP URL into Claude Desktop and ask in plain language. No exports, no dashboards, no tab-hopping."}},
+    {"@type":"Question","name":"Can my whole team use it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every member gets their own MCP token so every query is attributed, while connections stay at the workspace level."}}
+  ]
 }
 </script>
 <style id="arlo-reskin">

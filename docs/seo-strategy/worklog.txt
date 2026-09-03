@@ -6,6 +6,130 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-03 (Thu) — Schema correctness fix: `/services/seo-specialist` was missing the WebPage/breadcrumb/FAQPage fix its 5 sibling persona pages already had; added `dateModified` to all 6
+
+CONTEXT: SE Ranking MCP tools were unauthenticated this session (connector requires a human OAuth
+re-auth this sandbox can't run) — no live keyword pull possible, so the fresh-pull pattern used for
+most recent sessions was unavailable. Re-checked the 2026-09-01 monthly review's Month 3 goal item 4
+("a `claude mcp server` pillar page... never given its own dedicated page") against the worklog and
+found it's **factually wrong**: that exact page shipped 2026-08-06
+(`/blog/how-to-set-up-a-claude-mcp-server`, primary target `claude mcp server` 810/mo KD 21, confirmed
+via `grep` on this session's own re-read) — flagging the correction here rather than re-shipping
+duplicate content. Re-verified connector matrix (5/5 live Google sources: GA4, GSC, Google Ads,
+YouTube, GBP) and comparison hub (5/5 named competitors: Windsor.ai, Supermetrics, AgencyAnalytics,
+Whatagraph, Funnel.io) are both still fully caught up — nothing to build there. Cross-checked
+`keyword-research.md`'s full P1 list against the worklog and confirmed every P1 term now has a
+shipped page (`mcp connector` → what-is-an-mcp-connector post 2026-07-23; `client reporting tool` /
+`marketing agency reporting` / `seo agency reporting software` → secondary targets on the
+client-reporting post 2026-08-10). With SE Ranking down, the static-audit-driven content backlog is
+genuinely exhausted; also ruled out the long-deferred static-render infra change (`README.md` P1 #9,
+deferred 9+ sessions) as this session's task — it needs live OAuth end-to-end verification this
+sandbox cannot do (no `NEXT_PUBLIC_CONVEX_URL`), and every prior session's reason for punting on it
+still holds. Instead re-read `audits/sxo.md`'s Priority Action Plan (#5 FAQPage on the FAQ component,
+#8 `dateModified` on `/services/[slug]`) against the actual shipped code and found a real, previously
+unflagged bug: `/services/seo-specialist` — the SEO Specialist persona page, tied to the site's
+primary SEO-agency-reporting cluster — never got the WebPage-url/breadcrumb/FAQPage fix its 5 sibling
+persona pages (account-manager, agency-owner, google-ads-specialist, meta-ads-specialist,
+solo-business-owner) already have. Grepped all 6 `_shell.html` files to confirm: the 5 siblings all
+have `WebPage.url` pointing at their own canonical path, a 3-level breadcrumb (Home → Services →
+[Persona]), and a hand-authored `FAQPage` JSON-LD block; `seo-specialist` alone had `WebPage.url:
+"https://askarlo.app"` (homepage, the exact class of bug fixed site-wide on `/destinations/[slug]`
+2026-08-24), a 2-level breadcrumb (Home → ARLO, both pointing at the homepage), and zero `FAQPage`
+schema despite rendering a live 5-question FAQ block. Likely explanation: `seo-specialist` was the
+original page other persona shells were cloned from (its exact wrong title string is what leaked onto
+all 15 destination pages, per the 2026-08-24 entry) — the clones got fixed at some later point, the
+source page didn't. Separately, `dateModified` was missing on **all 6** persona shells (confirmed via
+grep, 0 matches each) — sxo.md Priority Action #8, still open.
+- PAGE: all 6 `/services/[slug]` pages (seo-specialist, account-manager, agency-owner,
+  google-ads-specialist, meta-ads-specialist, solo-business-owner) / CHANGE: one file per page (each
+  page is a hand-rolled `_shell.html`, no shared template to edit once — same architecture as the
+  pre-fix `/destinations/[slug]` pages). (1) `seo-specialist/_shell.html`: `WebPage.url` →
+  `https://askarlo.app/services/seo-specialist` (was the homepage); breadcrumb expanded from 2 to 3
+  levels (`Home → Services → SEO Specialists`, matching the exact pattern/wording style of the 5
+  siblings); added a new `FAQPage` JSON-LD block built **verbatim** from
+  `services/seo-specialist/_content/seo.ts`'s `faq.items` array (the same 5 Q&As already rendering
+  visibly via the shared `{{#each items}}` `_components/faq.html` partial) — not invented, not
+  paraphrased, matching the "don't hand-duplicate and risk drift" caution from the 2026-08-24 entry as
+  closely as this static-HTML architecture allows (the 5 sibling pages' own FAQPage blocks are
+  similarly hand-authored copies of their `_content/*.ts` FAQ arrays, since these shells have no
+  dynamic JSON-LD generation the way `/destinations/[slug]`'s `route.ts` does — confirmed this is the
+  existing site-wide pattern for this page type, not a new drift risk introduced here). (2) All 6
+  shells: added `"dateModified": "2026-09-03"` to the `WebPage` JSON-LD block (same field name/position
+  convention as `/destinations/[slug]` and `/compare/[slug]`, both already correct) — the 5 already-
+  fixed siblings only needed this one field; `seo-specialist` got it as part of the same edit block. /
+  TARGET: no new keyword — pure correctness/schema-parity fix on 6 already-indexed, high-priority
+  pages (the SEO Specialist page in particular is the persona page most directly aligned with the
+  site's primary SEO-agency-reporting focus). Directly serves AI-citation accuracy (an LLM or AI
+  Overview parsing this page's structured data for entity/URL/FAQ facts was getting the homepage's
+  identity, not this page's) and Google's own canonical-page-identity signals — same class of fix as
+  the 2026-08-24 destinations-page session, just on the one page type that was still missed. / WHY:
+  the two content engines (connector matrix, comparison hub) are fully caught up against the static
+  keyword audit, SE Ranking was down so no fresh-pull content decision was possible, and the one
+  standing infra item (static-render) can't be safely verified end-to-end in this sandbox — this was
+  the highest-confidence, lowest-risk, genuinely-unaddressed item left that still matches "on-page/
+  schema fixes" from this routine's own task scope, and it closes 2 of sxo.md's still-open Priority
+  Action items (#5 FAQPage parity, #8 dateModified) in one pass. / VERIFY: `rm -rf .next && npm install
+  && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`; same 9
+  pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a regression. `npm run
+  lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). All 18
+  JSON-LD blocks across the 6 shells parsed as valid JSON via a Python check. These are hand-rolled
+  `route.ts` pages (no static `.html` output, same as `/destinations/[slug]` and the homepage), so
+  verified live via `next dev` on a scratch port + `curl`: `/services/seo-specialist` now returns
+  `WebPage.url: "https://askarlo.app/services/seo-specialist"`, `dateModified: "2026-09-03"`, a
+  3-level breadcrumb ending in `"SEO Specialists"`, and a `FAQPage` block with all 5 questions matching
+  the visible FAQ verbatim; spot-checked `/services/account-manager` too, confirmed `dateModified`
+  present alongside its already-correct `url`. `git status` showed only the 6 intended `_shell.html`
+  files after reverting the build-regenerated `src/content/blog/manifest.json` diff (same pattern as
+  every prior session) — staged only the 6 intended files. Also noted: this session's local clone
+  started with `HEAD` detached (matching `origin/main` at `3bdaa64`, not a stale-ref or unpushed-work
+  situation like 2026-08-27's) — recreated a local `main` tracking branch before committing.
+
+NEXT:
+1. **Correction on record:** the 2026-09-01 monthly review's Month 3 goal item 4 ("a `claude mcp
+   server` pillar page... never given its own dedicated page") is stale — that page shipped
+   2026-08-06. A future session doing the next monthly/W12 review should drop this from the goal list
+   rather than propagate the error again.
+2. SE Ranking MCP connector was **unauthenticated this session** (not just rate-limited or empty data —
+   the tool schema itself was gated behind an OAuth step this sandbox can't run). If this persists next
+   session, a human needs to re-authorize the SE Ranking connector (same class of blocker as GSC/
+   off-page — needs a human, not a retry) before any further live-pull-driven content or weekly-pulse
+   rank-check work can happen. Flag this explicitly in the next session's own NEXT-reading pass.
+3. `sxo.md` Priority Action Plan status, re-checked this session: #1 (message mismatch) done at
+   kickoff, #2 (Supermetrics comparison) done, #3 (integration/how-to cluster) done, #4
+   (meta-ads-specialist 404) — unchecked this session, worth a follow-up look since sxo.md flagged it
+   as the single worst persona score (0/100) and catalog.ts still shows `meta_ads` `coming_soon`, #5
+   (FAQPage on FAQ component) **now fully closed** (this session), #6 (destinations comparison reframe)
+   done 2026-08-27, #7 (second case study/testimonial) — still open, needs a human decision (real
+   customer quote or an honest "in our own agency" framing, per `content.md` §3's fabricated-
+   testimonial caution — not something to invent), #8 (dateModified on services/destinations) **now
+   fully closed** (this session + 2026-08-27). Worth checking #4 specifically next session.
+4. `mailchimp` eta "August 2026" is now **past its own ETA with zero days of slack left** (today is
+   2026-09-03) — 8th+ consecutive session unchanged, still `coming_soon` in `catalog.ts`. Worth a human
+   confirming ship status; if it flips to `live`, that's the first new connector-matrix page available
+   in 5+ months (`/connect/mailchimp-mcp`). `meta_ads` (4+ months overdue, real live demand confirmed
+   2026-08-31 at 590/mo for `meta ads mcp`), `hubspot`/`mailerlite`/`shopify`/`stripe` all still
+   overdue too.
+5. Human decisions still open (unchanged, now 15+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still 0
+   of 6, most overdue item on the whole plan (flagged since Week 4) — needs a human with a browser,
+   this sandbox has no outbound HTTP.
+6. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it).
+7. The static-render marketing-pages infra fix (`README.md` P1 #9, deferred 9+ sessions) remains open.
+   Re-scoped this session: the root cause is confirmed (`ConvexAuthNextjsServerProvider` in
+   `src/app/layout.tsx` calls `cookies()` via `@convex-dev/auth`'s `getRequestCookies()`, forcing the
+   whole tree dynamic; an `(app)/layout.tsx` route group already exists and would be the right place to
+   move it) but this sandbox cannot verify OAuth/login still works end-to-end after the move (no
+   `NEXT_PUBLIC_CONVEX_URL` here). Needs either a human to test the deploy preview, or a session
+   explicitly scoped to accept that verification gap with a fast-revert plan ready — not something to
+   ship on the same "never break the live site" pass as a routine content/schema session.
+8. Next weekly-pulse-style session (backlinks, CI status, catalog.ts re-check, full rank-position
+   report) due — last full pulse was 2026-08-28 (plus the 2026-09-01 monthly), next one should land
+   around 2026-09-04/05 per the established cadence, but is blocked on item 2 above (SE Ranking auth)
+   for the rank-position portion specifically — backlinks/CI/catalog.ts checks can still proceed
+   without it.
+
 ## 2026-09-01 (Tue) — Monthly deep-dive: Month 2 review (August 2026) — SCORED Missed (0 of 4 measurable KPIs met)
 
 SCORE — Month 2 goal: **Missed** (0 of 4 measurable KPIs from the 2026-08-01 goal list met). Content
