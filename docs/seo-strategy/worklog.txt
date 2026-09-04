@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-04 (Fri) — Weekly pulse: SE Ranking connector still unauthenticated (2nd consecutive session — human re-auth needed), ranking/traffic reported stale from the 2026-09-01 pull instead of fresh; SEO Report Email workflow double-fired on the 2026-09-03 push (report likely emailed twice, no data lost); catalog.ts/off-page/GSC blockers unchanged. See reports/outbox/2026-09-04-weekly-pulse.json.
+
 ## 2026-09-03 (Thu) — Schema correctness fix: `/services/seo-specialist` was missing the WebPage/breadcrumb/FAQPage fix its 5 sibling persona pages already had; added `dateModified` to all 6
 
 CONTEXT: SE Ranking MCP tools were unauthenticated this session (connector requires a human OAuth
