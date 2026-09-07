@@ -6,6 +6,136 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-07 (Mon) — Closed the last audit-named `/destinations/[slug]` comparison-reframe gap: added the "Tableau alternative" comparison section (sxo.md Section 4 item 5) to `/destinations/tableau`
+
+CONTEXT: 3rd consecutive session with the SE Ranking MCP connector unauthenticated (confirmed again
+this session via the environment's own tool-availability notice, same OAuth-gated blocker as
+2026-09-03/09-04) — no live keyword pull possible, so no fresh-pull content decision could be made.
+Re-verified before picking a task: connector matrix (5/5 live Google sources — GA4, GSC, Google Ads,
+YouTube, GBP) and comparison hub (5/5 named competitors, plus a `/compare` index page that already
+exists with FAQPage schema, cards, and a working breadcrumb — the "dangling index" gap 12-week-
+strategy.md Week 7 names was already closed, not something this session needed to build) are both
+still fully caught up. Re-checked `sxo.md`'s Priority Action #4 (meta-ads-specialist 404, flagged as
+"worth a follow-up look" in the 2026-09-03 NEXT list): confirmed it's **already fixed**, just not
+previously logged as closed — `services/meta-ads-specialist` now has its own dedicated `route.ts`/
+`_shell.html`/`_content` (same architecture as the other 5 persona pages, bypassing the old
+`services/[slug]/page.tsx` tier-1-only static-params gate the 2026-07-04 audit found broken), and it
+already got the 2026-09-03 WebPage/breadcrumb/FAQPage/`dateModified` fix along with its 5 siblings
+(grepped `_shell.html`: `dateModified: "2026-09-03"`, a live `FAQPage` block, correct canonical —
+nothing left to do there. With the SE-Ranking-driven content lever blocked and the standing NEXT items
+either human-decision blockers (off-page, GSC, `catalog.ts` gated connectors, the dormant persona
+scaffold, ChatGPT-column variant) or explicitly too risky to ship unattended (the static-render infra
+change), re-read `sxo.md` end-to-end for any still-open, human-independent item and found one: Section
+4 item 5 names **`/destinations/looker_studio`, `/destinations/power_bi`, `/destinations/tableau`** for
+the comparison-section reframe, but the 2026-08-27 session that shipped this treatment used Section 8's
+shorter list instead (Looker Studio, Power BI, **BigQuery**) — Tableau, though named once in the same
+audit, was never actually built. Every worklog NEXT entry since 2026-08-28 has described the remaining
+12 `/destinations/[slug]` pages as "not named by the audit's own priority list," which is true of 11 of
+them but not Tableau. Tableau is also the highest-confidence pick among the remaining 12 on general BI-
+market knowledge alone (Salesforce-owned, one of the two or three most recognized enterprise BI tools,
+same "[BI tool] alternative" query shape as the 3 already-shipped pages) — a reasonable, low-risk choice
+even without a fresh SE Ranking pull to confirm exact volume, unlike the other 11 which have no similar
+named signal.
+- PAGE: `/destinations/tableau` (comparison section, new) / CHANGE: one file,
+  `src/app/destinations/[slug]/route.ts`. Added a `tableau` entry to `COMPARISON_CONTENT` — same shape
+  as the 3 existing entries (intro paragraph framing ARLO as serving both "already use Tableau, want
+  ARLO's live data in it" and "evaluating whether you need Tableau at all" readers; a 6-row feature
+  table: setup, licensing, data connections, refresh, multi-client agencies, skill required; two
+  when-to-choose lists). Reused the same `comparisonTable`/`comparisonWhenGrid` renderers the 3 existing
+  entries already use — no new rendering code. Also split the previously-shared `CONTENT_LAST_UPDATED`
+  constant (which fed `dateModified` identically into all 15 pages regardless of which one actually
+  changed) into a base date plus a small `CONTENT_LAST_UPDATED_OVERRIDES` map, so only `tableau`'s
+  `dateModified` moves to `2026-09-07` — the other 14 pages keep `2026-08-27`, their real last-content-
+  change date, rather than every destination page falsely claiming today's edit. / TARGET: no live-
+  pull-confirmed keyword (SE Ranking blocked this session) — this closes the specific `sxo.md`-named gap
+  described above; expected served terms are the same class already validated for the 3 sibling pages,
+  "tableau alternative" / "tableau vs [tool]" commercial-intent queries. / WHY: with the connector matrix
+  and comparison hub both fully caught up, `sxo.md`'s meta-ads-specialist item already resolved, and
+  every other standing NEXT item genuinely blocked on a human (SE Ranking OAuth, off-page listings, GSC
+  submission, gated `catalog.ts` connectors, the static-render infra risk), this was the one remaining
+  task that is (a) explicitly named in the site's own SXO audit, (b) human-independent, (c) reuses
+  proven infrastructure rather than inventing new page architecture, and (d) matches this routine's
+  "quality over volume" rule — one well-scoped page, not a dozen thin ones. Facts about Tableau are kept
+  directional/structural (per-user Creator/Explorer/Viewer licensing, calculated fields/LOD expressions,
+  extract-refresh cadence) with no invented pricing figures or statistics, same caution applied to the
+  Power BI and BigQuery entries on 2026-08-27 (no outbound web access this sandbox has to verify a
+  specific dollar figure). / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session
+  (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a regression.
+  `npm run lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). This
+  route has no static `.html` output (hand-rolled `route.ts`, same as the other destination pages), so
+  verified via `next dev` on a scratch port + `curl`: `/destinations/tableau` now renders the new
+  comparison section (H2 "Tableau alternative — or a live Tableau data source? ARLO is both", the
+  6-row table, both "Skip/Keep Tableau when" lists) and `dateModified: "2026-09-07"`; a control page
+  (`/destinations/snowflake`, no comparison section) still returns no comparison heading and its
+  original `dateModified: "2026-08-27"`; `/destinations/looker_studio` (one of the 3 pre-existing
+  comparison pages) spot-checked unaffected, still `dateModified: "2026-08-27"`. Parsed all JSON-LD
+  blocks on both `/destinations/tableau` and `/destinations/snowflake` via a Python `json.loads` check
+  — both pages' 3 blocks each are valid JSON. `git status` showed only
+  `src/app/destinations/[slug]/route.ts` after reverting the build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior session) — staged only the one
+  intended file.
+
+NEXT:
+1. **`sxo.md`'s comparison-reframe list (Section 4 item 5 + Section 8 item 6) is now fully closed** —
+   all 4 named destinations (Looker Studio, Power BI, BigQuery, Tableau) have the comparison section.
+   The remaining 11 `/destinations/[slug]` pages (Google Sheets, Excel, Snowflake, Redshift, Databricks,
+   Slack, Notion, Airtable, Shareable Dashboard, Email, PDF) are genuinely un-named by any audit
+   priority list — leave as-is unless a future live SE Ranking pull surfaces real "[tool] alternative"
+   demand for one specifically (Snowflake and Redshift are the next most plausible candidates on general
+   market knowledge if a session ever needs one without fresh data, but neither was named the way
+   Tableau was — don't repeat this session's Tableau reasoning as license to keep going without a
+   stronger signal).
+2. **SE Ranking MCP connector needs a human OAuth re-authorization** — unauthenticated for a 3rd
+   consecutive session now (2026-09-03, 2026-09-04, 2026-09-07), confirmed again via this session's own
+   environment tool-availability notice. This is now the single most-repeated blocker in the last 3
+   sessions' NEXT lists and is stalling both fresh-pull content decisions and the weekly pulse's own
+   rank-check data — needs a person to click through the OAuth prompt this sandbox cannot reach.
+2b. **Correction on record (repeating the 2026-09-03 note since it hasn't been actioned yet):** the
+   2026-09-01 monthly review's Month 3 goal item 4 ("a `claude mcp server` pillar page... never given
+   its own dedicated page") is stale — that page shipped 2026-08-06. The next monthly/W12 review should
+   drop this from the goal list.
+3. `sxo.md` Priority Action Plan status, fully re-checked this session: #1 (message mismatch) done at
+   kickoff, #2 (Supermetrics comparison) done, #3 (integration/how-to cluster) done, #4 (meta-ads-
+   specialist 404) **confirmed fully closed this session** — already fixed, just not previously logged
+   as such (see CONTEXT above), #5 (FAQPage on FAQ component) done, #6 (destinations comparison reframe)
+   **now fully closed this session** (all 4 audit-named pages done), #7 (second case study/testimonial)
+   — still open, needs a human decision (real customer quote or an honest "in our own agency" framing,
+   per `content.md` §3's fabricated-testimonial caution — not something to invent), #8 (dateModified on
+   services/destinations) done. **Every item on this 8-item plan is now closed except #7, which
+   explicitly requires a human decision.**
+4. `catalog.ts` re-checked again this session, unchanged: `mailchimp` eta "August 2026" is now fully
+   past its own ETA month (today is 2026-09-07) — 9th+ consecutive session unchanged, still
+   `coming_soon`. `meta_ads`/`linkedin_ads`/`meta_pages` (May 2026, 4+ months overdue), `tiktok_ads`/
+   `stripe` (June 2026, 3+ months overdue), `hubspot`/`mailerlite` (July 2026, 2+ months overdue),
+   `shopify` (April 2026, 5+ months overdue, still the single most-overdue entry). If any of these flip
+   to `live`, that's a new connector-matrix page opportunity — none have.
+5. Human decisions still open (unchanged, now 16+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30, and now worth noting the persona-page migration this session found — dedicated
+   `route.ts` per persona — may have superseded whatever this scaffold was for; worth a human check on
+   whether it's still relevant); GSC submission (open since kickoff, 2026-07-04). Off-page Phase 1 still
+   0 of 6, most overdue item on the whole plan (flagged since Week 4) — needs a human with a browser,
+   this sandbox has no outbound HTTP.
+6. The ChatGPT-assistant-column connector-page variant flagged 2026-08-06 is still an open human-check
+   item (confirm ChatGPT connector support is actually tested/live before building pages for it).
+7. The static-render marketing-pages infra fix (`README.md` P1 #9, 12-week-strategy.md Week 1, deferred
+   10+ sessions) remains open — same re-scoping as 2026-09-03: root cause confirmed
+   (`ConvexAuthNextjsServerProvider` forcing the whole tree dynamic), but needs a human to verify OAuth/
+   login end-to-end after the move (no `NEXT_PUBLIC_CONVEX_URL` in this sandbox) — not something to ship
+   unattended.
+8. With `sxo.md`'s action plan now essentially exhausted (only #7 open, human-gated) and both content
+   engines fully caught up, the next content-capable session should either: (a) get a working SE Ranking
+   pull and re-scope from fresh data (preferred — this has been blocked 3 sessions running), or (b) if
+   still blocked, consider 12-week-strategy.md's Week 9-11 items not yet covered — specifically the
+   `claude mcp server` pillar page is already done (see item 2b), but the ChatGPT-column variant (item 6,
+   human-gated) and digital-PR/guest-byline outreach (Week 10, needs a human relationship, not something
+   this sandbox can execute) are the only named items left, both human-gated. A genuinely new blog post
+   from the static `keyword-research.md` list (last resort, since every prior session preferred a fresh
+   pull) is the fallback if SE Ranking is still down next session and no other human-independent task
+   surfaces.
+9. Next weekly-pulse-style session due — last full pulse was 2026-09-04, established cadence puts the
+   next one around 2026-09-11.
+
 ## 2026-09-04 (Fri) — Weekly pulse: SE Ranking connector still unauthenticated (2nd consecutive session — human re-auth needed), ranking/traffic reported stale from the 2026-09-01 pull instead of fresh; SEO Report Email workflow double-fired on the 2026-09-03 push (report likely emailed twice, no data lost); catalog.ts/off-page/GSC blockers unchanged. See reports/outbox/2026-09-04-weekly-pulse.json.
 
 ## 2026-09-03 (Thu) — Schema correctness fix: `/services/seo-specialist` was missing the WebPage/breadcrumb/FAQPage fix its 5 sibling persona pages already had; added `dateModified` to all 6

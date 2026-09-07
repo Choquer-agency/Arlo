@@ -91,9 +91,15 @@ function faqSchemaHtml(items: { q: string; a: string }[]): string {
 }
 
 // ── Optional "alternative to X" comparison section (sxo.md quick-win #6) ──
-// Only the 3 highest-searched "alternative to X" destinations get this
-// treatment (Looker Studio, Power BI, BigQuery — audits/sxo.md Section 3,
-// Section 8 item 6). Every other destination page renders none of this;
+// 4 destinations get this treatment: Looker Studio, Power BI, BigQuery
+// (audits/sxo.md Section 8 item 6's short list) plus Tableau, which
+// Section 4 item 5 also named for this exact reframe ("Reframe
+// /destinations/looker_studio, /destinations/power_bi, /destinations/tableau")
+// but never got it in the 2026-08-27 session that shipped the other 3 —
+// Section 8's shorter list swapped in BigQuery instead, and the worklog
+// since then read "not named by the audit" for the remaining 12, missing
+// that Tableau was in fact named once. Every other destination page
+// renders none of this;
 // _shell.html has no {{#if}} support, so an empty string is how a section
 // stays optional (same pattern used for faqSchemaHtml above).
 const esc = (s: string) =>
@@ -225,6 +231,30 @@ const COMPARISON_CONTENT: Record<string, ComparisonEntry> = {
       "You're joining marketing data with other business systems (product, finance) in one place",
     ],
   },
+  tableau: {
+    toolName: "Tableau",
+    heading: "Tableau alternative — or a live Tableau data source? ARLO is both",
+    intro:
+      "If your clients already open a Tableau workbook, the rest of this page shows how ARLO feeds it live data. But if you're evaluating whether you need Tableau at all: it's built for deep, exploratory BI — calculated fields, LOD expressions, extract-refresh schedules, a per-user Creator/Explorer/Viewer license to share outside your org. That's real infrastructure for a question most clients ask in one sentence: \"how did we do?\" ARLO skips the workbook step entirely; you ask Claude and get the number.",
+    table: [
+      { feature: "Setup", values: ["Build a workbook, wire calculated fields, publish to a site", "Ask Claude — no workbook to build"] },
+      { feature: "Licensing", values: ["Creator/Explorer/Viewer license per person who touches it", "Free to start, live queries included"] },
+      { feature: "Data connections", values: ["A connector or extract configured per source", "One OAuth grant covers GA4, Ads, Search Console, and more"] },
+      { feature: "Refresh", values: ["Scheduled extract refresh, or a live connection you maintain", "Live on every question"] },
+      { feature: "Multi-client agencies", values: ["A workbook and site permissions to maintain per client", "Assign accounts per client inside one connection"] },
+      { feature: "Skill required", values: ["Calculated fields, LOD expressions, dashboard design", "Plain English"] },
+    ],
+    whenArlo: [
+      "You want the answer, not a workbook to design and maintain",
+      "You don't have a dedicated analyst who lives in calculated fields",
+      "You'd rather onboard a new client in minutes than build a new site permission set",
+    ],
+    whenTool: [
+      "You need deep, exploratory visual analysis beyond standard reporting",
+      "Clients want a governed, branded workbook they log into and explore themselves",
+      "You're already standardized on Tableau across a wider analytics team",
+    ],
+  },
 };
 
 function comparisonSectionHtml(id: string): string {
@@ -234,9 +264,14 @@ function comparisonSectionHtml(id: string): string {
 }
 
 // sxo.md Section 8 item 8: /destinations/[slug] pages had no dateModified
-// signal (unlike /compare/[slug]). All 15 share this shell, so one shared
-// date covers the whole page type until a page's own content next changes.
+// signal (unlike /compare/[slug]). All 15 share this shell, so this is the
+// default date for the 14 pages whose content hasn't changed since; a page
+// whose content actually changes gets its own override below so
+// dateModified keeps meaning "this page," not "this page type."
 const CONTENT_LAST_UPDATED = "2026-08-27";
+const CONTENT_LAST_UPDATED_OVERRIDES: Record<string, string> = {
+  tableau: "2026-09-07", // this session: added the comparison section
+};
 
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
@@ -269,7 +304,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }
     faq: FAQ,
     faqSchemaHtml: faqSchemaHtml(FAQ.items),
     comparisonHtml: comparisonSectionHtml(entry.id),
-    dateModified: CONTENT_LAST_UPDATED,
+    dateModified: CONTENT_LAST_UPDATED_OVERRIDES[entry.id] ?? CONTENT_LAST_UPDATED,
     cta: { eyebrow: "Get started", heading: "Connect once. Send your data anywhere.", buttonText: "Start For Free", buttonHref: "/welcome" },
     // per-destination branded PDF (public/arlo/downloads/<id>-50-prompts.pdf)
     pdfFile: `${entry.id}-50-prompts.pdf`,
