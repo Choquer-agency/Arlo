@@ -6,6 +6,160 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-10 (Thu) — SE Ranking finally re-authenticated (4th session it was checked, 1st live pull since 2026-08-31); fresh full pull found no new human-independent content gap, so shipped the standing technical item instead: site-wide security headers (`README.md` P1 #14)
+
+CONTEXT: SE Ranking MCP tools were unauthenticated for 3 consecutive prior sessions
+(2026-09-03, 2026-09-04, 2026-09-07) per their own NEXT lists. This session's own
+tool-availability check found the connector fully working — confirmed with a live
+`PROJECT_listProjects` call (39 projects returned, askarlo.app site_id 12704162
+present) before trusting any pull. Ran the full weekly-pulse-style data set first:
+`PROJECT_getSummary` + `PROJECT_getPositionHistory` (2026-08-10→2026-09-10, daily) —
+avg position flat at 100 (not-ranked floor) on **every single day**, 0 of 22 tracked
+keywords measured, unchanged from every prior pulse since kickoff. `DATA_getDomainKeywords`
+(organic, no filter) confirms 0 keywords ranking site-wide, not just within the 22
+tracked — the domain genuinely has no organic footprint yet. `DATA_getBacklinksSummary`
+(domain mode): 3 backlinks / 2 refdomains, up from the 2-backlinks/1-refdomain figure
+reported every pulse since 2026-08-01 — the first backlink movement in 6+ weeks, though
+still off-page Phase 1 at 0 of 6 deliberate listings (this is incidental, not a shipped
+directory listing). `domain_trust` still 5 (unchanged since ticking 4→5 on 2026-09-01),
+`index_google: "1"` still confirms indexed.
+
+Then re-scoped content from a fresh `DATA_getKeywordsMetrics` pull (US) across the full
+FOCUS cluster (18 terms: connector-matrix keywords + comparison-alternative terms) to
+check for drift against the last live pull (2026-08-31) before picking a task, per the
+2026-09-07 NEXT list's explicit instruction to prefer this over the static audit list.
+Findings: real, rising demand exists for `meta ads mcp` (590/mo, stable), `shopify mcp`
+(220/mo, up from 115), `hubspot mcp` (70/mo, up from 20), and a newly-surfaced
+`mailchimp mcp` (90/mo, up from 80, KD 0) — but all four sit behind connectors still
+`coming_soon` in `catalog.ts` (re-checked: meta_ads eta May 2026 now 4+ months overdue,
+shopify eta April 2026 now 5+ months overdue — still the most-overdue entry, hubspot eta
+July 2026 now 2+ months overdue, mailchimp eta August 2026 now past its own month) —
+building a page for any of them would overclaim a connector that doesn't exist, the same
+trap flagged every session since 2026-07-20. `google analytics mcp` (590/mo, up from 390)
+and `google search console mcp` (390/mo) are both already the *leading* phrase in their
+respective `/connect/*` page's `title`/`metaTitle` (verified by reading
+`src/content/connectors.ts` directly — the GA4 page already opens with "Google Analytics
+MCP", the Search Console page was retargeted to lead with this exact phrase on
+2026-08-31) — not a gap. `agencyanalytics alternative` (480/mo) was already confirmed
+shipped on 2026-08-31 (comparisons.ts already leads with it) — re-checked, still true.
+`DATA_getRelatedKeywords` off `claude mcp server` surfaced two very high-volume broad
+terms (`mcp servers` 9,900/mo KD 69, `claude mcp` 4,400/mo KD 75) — both far outside the
+low-KD wedge strategy (`README.md`'s own thesis: don't fight DA-88-fortress-tier
+difficulty) and a poor fit for ARLO's positioning as one specific connector, not a
+directory of MCP servers — rejected as off-strategy, not a gap. A second `getRelatedKeywords`
+call (seed `mcp connector`) hit the API's own rate limit ("too many requests") — did not
+retry blind past that, the first pull was decisive enough. Net result: the fresh pull
+this session's own NEXT list called for did not surface a new human-independent content
+opportunity — every genuinely rising term is either already-shipped, already-optimized,
+gated on a still-overdue `catalog.ts` connector, or off-strategy on pure keyword-difficulty
+grounds.
+
+With content genuinely exhausted again and every other standing NEXT item still
+human-gated (off-page, GSC, catalog.ts, the dormant persona scaffold, the static-render
+infra risk, sxo.md's #7 needing a real testimonial), re-read `README.md`'s own P1 #14
+quick-win list end to end for anything still open and found one: "add security headers"
+— checked `next.config.mjs`'s `headers()` function and confirmed it only ever set
+`X-Robots-Tag` on the noindex route list; no `X-Content-Type-Options`, `X-Frame-Options`,
+`Referrer-Policy`, `Permissions-Policy`, or `Strict-Transport-Security` anywhere in the
+codebase (grepped `next.config.mjs`, `vercel.json`, `src/middleware.ts` — none of the
+three touch response headers beyond the existing noindex block). This is the one part of
+P1 #14 that's safely shippable unattended: the other named items in the same bullet
+(`www` redirect mode, IndexNow) either live at the Vercel domain-config layer this
+sandbox has no access to, or require actually pinging an external API
+(`api.indexnow.org`) at runtime to be meaningful — this sandbox blocks all outbound web
+requests, so an IndexNow integration couldn't be verified here beyond "the code compiles,"
+a materially weaker verification bar than every other change this routine has shipped.
+Left both out rather than ship something unverifiable.
+- PAGE: site-wide (all routes) / CHANGE: `next.config.mjs` only. Added a second
+  `headers()` block (`securityHeaders`, matched on `source: "/(.*)"`) returned alongside
+  the existing `noindexHeaders` array (`return [...securityHeaders, ...noindexHeaders]`
+  — Next.js merges multiple matching header blocks per route by key, confirmed via live
+  test below that noindex routes correctly get both). Five headers, each chosen to be
+  safe by construction with no live-testing gap: `X-Content-Type-Options: nosniff`
+  (blocks MIME-sniffing, no behavioral risk), `X-Frame-Options: SAMEORIGIN` (checked
+  first for any legitimate cross-origin iframe-embed use case — grepped the whole `src/`
+  tree for `iframe`/`frame-ancestors`/embed-related patterns and read
+  `src/app/share/[token]/page.tsx` in full: it's a standalone page meant to be visited
+  directly via a share link, not embedded cross-origin in a client's own site — no
+  legitimate framing use case found, so SAMEORIGIN is safe), `Referrer-Policy:
+  strict-origin-when-cross-origin` (modern browser default already, made explicit),
+  `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()` (locks down
+  four browser features the app has no use for — checked, none of camera/mic/geo/payment
+  APIs are used anywhere in `src/`), `Strict-Transport-Security: max-age=63072000;
+  includeSubDomains; preload` (site is Vercel-hosted HTTPS-only already, HSTS just makes
+  that binding). Deliberately did NOT add a Content-Security-Policy: a real CSP needs
+  live testing against every third-party script actually loaded (Google Tag Manager,
+  Convex's client SDK, any font/analytics beacons) to avoid breaking them, which this
+  sandbox has no way to do end-to-end — flagged as a separate, larger, human-verified
+  task in NEXT rather than shipped blind. / TARGET: no keyword — pure technical-SEO/
+  security correctness fix named directly in `README.md` P1 #14 ("add security headers"),
+  unaddressed since the 2026-07-04 audit. / WHY: with the fresh SE Ranking pull finding
+  no new content gap and every other standing item human-gated, this was the one
+  remaining named audit item that is (a) human-independent, (b) fully verifiable in this
+  sandbox (unlike IndexNow or the `www` redirect), and (c) low-risk by construction (pure
+  additive HTTP headers, no auth/rendering/business logic touched — checked against the
+  one plausible risk, iframe embedding, and ruled it out by reading the actual share-page
+  code). / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every
+  prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route
+  list, not a regression. `npm run lint` clean (only the same pre-existing unrelated
+  `sitemap/page.tsx` CSS-tag warning). Live-verified via `next dev` on a scratch port +
+  `curl -I`: homepage and `/blog` both return all 5 new headers; `/sign-in` (on the
+  noindex list) returns all 5 new headers **plus** the pre-existing `X-Robots-Tag:
+  noindex, nofollow` — confirmed the two header blocks merge rather than one overriding
+  the other. Also spot-checked that nothing else broke: the `.well-known` OAuth-discovery
+  rewrites (`/.well-known/oauth-protected-resource`) still return `HTTP 200`, and
+  `/connect/google-analytics-mcp` still renders `HTTP 200`. `git status` showed only
+  `next.config.mjs` after reverting the build-regenerated `src/content/blog/manifest.json`
+  diff (same pattern as every prior session) — staged only the one intended file.
+
+NEXT:
+1. **SE Ranking is authenticated again** — first live pull since 2026-08-31, after 3
+   consecutive sessions (2026-09-03, 2026-09-04, 2026-09-07) reporting it down. Worth
+   watching whether this holds or the auth lapses again; if it stays up, the routine can
+   go back to leading every session with a fresh pull instead of falling back to static
+   audits.
+2. **`README.md` P1 #14 is now partially closed**: security headers shipped this
+   session. Two items remain, both needing a human: (a) making `www` a permanent
+   (301/308) redirect instead of 307 — this lives at the Vercel project's domain-config
+   layer, not in this repo's code, so needs a human with Vercel dashboard access; (b)
+   IndexNow — needs a human decision on whether to build it, since any implementation
+   can only be verified end-to-end (an actual successful ping to `api.indexnow.org`)
+   outside this sandbox's blocked-outbound-web environment.
+3. A real Content-Security-Policy remains open and explicitly NOT attempted this
+   session — flagged here rather than silently skipped. It needs an inventory of every
+   third-party script/connection the live site actually makes (GTM, Convex realtime
+   websocket, any font/analytics origins) and live testing against each, which requires
+   either a human with a real browser against the Vercel preview/prod deploy, or a
+   session explicitly scoped to accept an unverified CSP with a fast-revert plan ready —
+   same class of risk as the still-deferred static-render infra change (item 6 below).
+4. This session's fresh SE Ranking pull cleared the entire FOCUS cluster of new
+   opportunities: `meta ads mcp`/`shopify mcp`/`hubspot mcp`/`mailchimp mcp` are all
+   real, growing demand but gated on `catalog.ts` (do not build pages for these before
+   their connectors ship — same standing caution as every session since 2026-07-20);
+   `google analytics mcp`/`google search console mcp`/`agencyanalytics alternative` are
+   all already correctly targeted on their live pages, nothing to do. A future content
+   session should re-pull rather than reuse this session's numbers once they're stale.
+5. `catalog.ts` re-checked and unchanged: `shopify` (April 2026 eta, now 5+ months
+   overdue, still the single most-overdue entry), `meta_ads`/`linkedin_ads`/`meta_pages`
+   (May 2026, 4+ months overdue), `tiktok_ads`/`stripe` (June 2026, 3+ months overdue),
+   `hubspot`/`mailerlite` (July 2026, 2+ months overdue), `mailchimp` (August 2026, now
+   past its own month). If any flip to `live`, that's a new connector-matrix page
+   opportunity — none have. This session's live pull confirms real search demand is
+   waiting for at least 4 of these (see item 4) — worth a human prioritizing whichever
+   ships first for an immediate content follow-up.
+6. Human decisions still open (unchanged, now 17+ sessions): the dormant 6-persona
+   `route.ts` scaffold (open since 2026-07-30); GSC submission (open since kickoff,
+   2026-07-04); off-page Phase 1 still 0 of 6 deliberate listings (the incidental
+   +1 backlink/+1 refdomain noted above is not a substitute); the static-render
+   marketing-pages infra fix (`README.md` P1 #9, deferred 11+ sessions, same
+   can't-verify-OAuth-end-to-end blocker as every prior session); sxo.md action-plan
+   item #7 (second case study/testimonial — needs a real quote, not something to
+   invent).
+7. Next weekly-pulse-style session (this session effectively folded the pulse data into
+   its CONTEXT above — rank/backlinks/catalog.ts/CI all checked) — a dedicated pulse
+   isn't urgently due again until data would meaningfully differ, roughly one week out.
+
 ## 2026-09-07 (Mon) — Closed the last audit-named `/destinations/[slug]` comparison-reframe gap: added the "Tableau alternative" comparison section (sxo.md Section 4 item 5) to `/destinations/tableau`
 
 CONTEXT: 3rd consecutive session with the SE Ranking MCP connector unauthenticated (confirmed again
