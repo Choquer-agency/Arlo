@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-11 (Fri) — Weekly pulse: SE Ranking authenticated for a 2nd straight session, fresh pull confirms rank/backlinks/AI-visibility all still flat (0/22 keywords, 3/2 backlinks, 10th week unchanged); CI green (34/35 all-time), catalog.ts's 5 gated connectors and off-page/GSC blockers unchanged. See reports/outbox/2026-09-11-weekly-pulse.json.
+
 ## 2026-09-10 (Thu) — SE Ranking finally re-authenticated (4th session it was checked, 1st live pull since 2026-08-31); fresh full pull found no new human-independent content gap, so shipped the standing technical item instead: site-wide security headers (`README.md` P1 #14)
 
 CONTEXT: SE Ranking MCP tools were unauthenticated for 3 consecutive prior sessions
