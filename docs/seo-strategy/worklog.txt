@@ -6,6 +6,111 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-14 (Mon) — Schema correctness fix: connector-matrix pages (`/connect/[slug]`) were emitting an unresolvable `publisher` reference (`{"@id": ".../#business"}` pointing to a node no page defines) — now a self-contained `Organization` node, matching the pattern already used on `/blog/[slug]`
+
+CONTEXT: SE Ranking authenticated again (3rd straight session, confirmed via a live `PROJECT_listProjects`
+call — askarlo.app site_id 12704162 present, 22 tracked keywords). Ran the weekly-pulse-style checks
+first: `PROJECT_getPositionHistory` (2026-09-10→2026-09-14) — avg position still flat at 100 (not-ranked
+floor) every day. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since the 09-11 pulse. `catalog.ts` re-checked: all 8 `coming_soon` connectors (meta_ads/linkedin_ads/
+meta_pages May 2026, tiktok_ads/stripe June 2026, hubspot/mailerlite July 2026, mailchimp August 2026)
+remain `coming_soon` and overdue — no new connector-matrix page available.
+
+Then re-pulled the FOCUS cluster fresh (24 terms) to check for drift since the 09-10 pull, per that
+session's own NEXT instruction. Findings: `claude mcp server` (910/mo, up from 880) and `mcp connector`
+(880/mo, up from a 210/mo baseline two months ago — a genuine 4x category-wide MCP-hype surge, not
+noise) are both already the primary target of live, well-optimized pages (the `claude-mcp-server` blog
+pillar shipped 2026-08-06; `what-is-an-mcp-connector.md`, shipped 2026-07-23, already leads its
+title/H1/tags with "MCP Connector") — confirmed via source read, not a gap. `google analytics mcp`
+(590/mo) and `google search console mcp` (390/mo) remain already-targeted (confirmed 08-31/09-10).
+`agencyanalytics alternative` (480/mo) and all 5 named comparisons (windsor, supermetrics,
+agencyanalytics, whatagraph, funnel — confirmed via `grep` on `comparisons.ts`) are shipped — the
+comparison hub is fully complete, closing the last open item from 12-week-strategy.md Week 7.
+`meta ads mcp`/`shopify mcp`/`hubspot mcp`/`mailchimp mcp`/`stripe mcp`/`tiktok ads mcp`/
+`linkedin ads mcp` are all real but gated on still-overdue `catalog.ts` connectors (same standing
+caution since 2026-07-20). `conversational analytics` (320/mo, KD 40) remains off-strategy (too
+competitive for the low-KD wedge thesis). Net: the FOCUS cluster is genuinely exhausted again, 5th
+consecutive session confirming this.
+
+With no new keyword-driven page/retarget opportunity, re-read the two structured-data audits
+(`technical.md`, `onpage-schema.md`) against the **current** live code rather than trusting their
+2026-07-04 findings verbatim (most of their Critical items — canonical bug, missing `@context` on
+`BlogPosting`, dead/wrong-brand `schema.ts`, missing OG image/`metadataBase`, sitemap `lastModified` —
+are already fixed, confirmed by direct source read this session). One finding from `onpage-schema.md`
+Critical #2 ("dangling `@id` references") turned out to still be live and previously unflagged as such:
+`src/lib/schema.ts`'s `generateSchema()` was rewritten correctly for ARLO at some point (real
+Organization/SoftwareApplication/Person/WebSite graph, defines `#business`/`#founder`) but is **still
+dead code** — confirmed via `grep -rn "generateSchema"` across `src/`, zero call sites. The homepage's
+actual live schema lives in `src/app/arlo/_shell.html` (hand-authored inline, a different architecture
+than `schema.ts` — this migration explains why `generateSchema()` went dead without anyone removing it)
+and never defines an `@id` at all, so nothing on the live site actually defines
+`https://askarlo.app/#business` or `#founder` as a resolvable node. Checked every page type for bare
+`{"@id": ...}` references to these two fragments (`grep -rn '"@id": ' src/app --include="*.tsx"` plus a
+check of every hand-rolled `_shell.html`): `blog/[slug]/page.tsx`'s `author`/`publisher` nodes carry the
+same `@id` but are self-contained (full `@type`+`name`+`url` alongside it), so they degrade gracefully
+and aren't actually broken; `compare/[slug]/route.ts`'s `WebPage.publisher` no longer references
+`#business` at all (already fixed in an earlier session, silently). The one genuinely broken instance:
+`src/app/connect/[slug]/page.tsx:65` — `WebPage.publisher: { "@id": \`${SITE_URL}/#business\` }`, a
+**bare** reference with no `@type`/`name`/`url` alongside it, live on all 7 connector-matrix pages (the
+site's core content engine — GA4, Search Console, Google Ads, YouTube, GBP + others).
+- PAGE: all `/connect/[slug]` pages (7 live connector pages) / CHANGE: one file,
+  `src/app/connect/[slug]/page.tsx`. Replaced the bare `publisher: { "@id": \`${SITE_URL}/#business\` }`
+  with a self-contained `publisher: { "@type": "Organization", name: AGENCY_NAME, url: SITE_URL }` — same
+  inline-Organization pattern already proven correct on `blog/[slug]/page.tsx`, so every connector page's
+  `WebPage` JSON-LD is now valid on its own without relying on a cross-page `@id` resolution that no page
+  actually provides (most schema consumers, including Google's Rich Results Test, validate one page's
+  JSON-LD in isolation — a bare `@id`-only reference to an undefined node effectively drops the
+  `publisher` property). Did not touch `blog/[slug]/page.tsx`'s equivalent `@id` fields (harmless —
+  already self-contained) or wire up the still-dead `src/lib/schema.ts` (out of scope for a single-
+  session, low-risk fix; flagged in NEXT). / TARGET: no keyword — pure structured-data correctness fix on
+  the connector-matrix pages, which are the primary landing pages for the entire MCP-integration keyword
+  wedge this whole strategy is built around (`google analytics mcp`, `google ads mcp`,
+  `search console mcp`, etc.) — a broken `publisher` reference on the page type Google/AI answer engines
+  are most likely to cite for these exact queries is a real (if narrow) AI-citation-accuracy risk. / WHY:
+  this was the one genuinely open, human-independent, low-risk, previously-unflagged-as-fixed item found
+  after the FOCUS keyword cluster came up empty for a 5th straight session and both content engines
+  (connector matrix, comparison hub) were re-confirmed fully built out — a real, still-live structured-
+  data defect beats a marginal 11th blog post or repeating a "next most plausible" `/destinations/[slug]`
+  guess without a fresh keyword signal (explicitly cautioned against in the 2026-09-07 NEXT list). /
+  VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating
+  static pages (87/87)`; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior
+  session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a
+  regression. `npm run lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag
+  warning). Live-verified via `next dev` on a scratch port: fetched `/connect/google-analytics-mcp` and
+  `/connect/google-ads-mcp`, parsed each page's JSON-LD with Python `json.loads` (both valid) and
+  confirmed `WebPage.publisher` on both now reads `{"@type": "Organization", "name": "ARLO", "url":
+  "https://askarlo.app"}` instead of the bare `@id`. `git status` showed only
+  `src/app/connect/[slug]/page.tsx` after reverting the build-regenerated `src/content/blog/manifest.json`
+  diff (same pattern as every prior session) — staged only the one intended file.
+
+NEXT:
+1. **`src/lib/schema.ts`'s `generateSchema()` remains dead code** — correctly rewritten for ARLO (real
+   Organization/SoftwareApplication/Person/WebSite graph) but never imported anywhere; the homepage's
+   actual live schema is hand-authored separately in `src/app/arlo/_shell.html`. Not itself broken
+   (nothing currently references its `@id`s), but worth a human decision: either delete `schema.ts` as
+   unreachable dead code, or reconcile it with the homepage's inline schema (the homepage's version is
+   thinner — only a Free-tier `Offer`, missing the Solo/Studio/Agency/Scale tiers `schema.ts` already has
+   built out) and wire it in properly. Not urgent (no live defect), just noted so it isn't mistaken for
+   "already fixed" again by a future session skimming `onpage-schema.md`.
+2. FOCUS keyword cluster genuinely exhausted for a 5th consecutive session (2026-08-31, 09-03, 09-07,
+   09-10, 09-14 in different forms) — connector matrix (7/7 live sources) and comparison hub (5/5 named
+   competitors) both fully built out against every term pulled so far. A future content session should
+   keep re-pulling fresh (terms are moving fast — `mcp connector` alone 4x'd in two months) rather than
+   assume exhaustion is permanent; watch specifically for any `catalog.ts` connector flipping to
+   `live`/`beta` (would unlock the first new connector-matrix page in months) or a genuinely new term
+   emerging the way `google search console mcp` did on 2026-08-31.
+3. `catalog.ts` re-checked again, unchanged: `meta_ads`/`linkedin_ads`/`meta_pages` (May 2026, 4+ months
+   overdue), `tiktok_ads`/`stripe` (June 2026, 3+ months overdue), `hubspot`/`mailerlite` (July 2026, 2+
+   months overdue), `mailchimp` (August 2026, past its own month). All 8 still `coming_soon`.
+4. Human decisions still open (unchanged, now 18+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04); off-page Phase 1 still 0 of
+   6; the static-render marketing-pages infra fix (`README.md` P1 #9); a real Content-Security-Policy
+   (needs live third-party-script testing this sandbox can't do); the `www` redirect 307→301/308 (Vercel
+   domain-config layer); IndexNow (needs a human decision + live outbound ping to verify); sxo.md action
+   item #7 (second case study/testimonial — needs a real quote, not something to invent).
+5. Next weekly-pulse-style session due — last full pulse was 2026-09-11, established cadence puts the
+   next one around 2026-09-18.
+
 ## 2026-09-11 (Fri) — Weekly pulse: SE Ranking authenticated for a 2nd straight session, fresh pull confirms rank/backlinks/AI-visibility all still flat (0/22 keywords, 3/2 backlinks, 10th week unchanged); CI green (34/35 all-time), catalog.ts's 5 gated connectors and off-page/GSC blockers unchanged. See reports/outbox/2026-09-11-weekly-pulse.json.
 
 ## 2026-09-10 (Thu) — SE Ranking finally re-authenticated (4th session it was checked, 1st live pull since 2026-08-31); fresh full pull found no new human-independent content gap, so shipped the standing technical item instead: site-wide security headers (`README.md` P1 #14)

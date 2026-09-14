@@ -62,7 +62,7 @@ export default async function ConnectorPage({ params }: PageProps) {
         description: page.metaDescription,
         url: `${SITE_URL}/connect/${page.slug}`,
         dateModified: page.lastUpdated,
-        publisher: { "@id": `${SITE_URL}/#business` },
+        publisher: { "@type": "Organization", name: AGENCY_NAME, url: SITE_URL },
         breadcrumb: {
           "@type": "BreadcrumbList",
           itemListElement: [
