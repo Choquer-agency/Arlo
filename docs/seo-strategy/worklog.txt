@@ -6,6 +6,98 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-17 (Thu) — New content: `/destinations/google_sheets` gets the "alternative to X" comparison section — a fresh SE Ranking pull found `google sheets alternative` at a sustained 590/mo (KD 11), a genuine emerging term the FOCUS cluster and every prior destinations-page session missed
+
+CONTEXT: SE Ranking authenticated again (3rd straight session) — confirmed via a live `PROJECT_listProjects`
+call, askarlo.app site_id 12704162 present, 22 tracked keywords. Ran the weekly-pulse checks first (last
+full pulse was 2026-09-11, due again ~09-18, close enough to fold in): `PROJECT_getPositionHistory`
+(2026-09-10→09-17) — avg position still flat at 100 (not-ranked floor) every day. `DATA_getBacklinksSummary`
+(domain mode): still 3 backlinks / 2 refdomains, unchanged since 09-10. GitHub Actions checked directly:
+last 5 SEO Report Email runs (09-07 through 09-14) all green, 37/37 all-time. `src/lib/connectors/catalog.ts`
+re-checked: all 8 gated connectors (meta_ads/linkedin_ads/meta_pages May 2026, tiktok_ads/stripe June 2026,
+hubspot/mailerlite July 2026, mailchimp August 2026) remain `coming_soon` and overdue — unchanged, no new
+connector-matrix page available.
+
+Re-pulled the FOCUS cluster (24 terms) for drift — 6th consecutive session confirming it's exhausted:
+`claude mcp server` (910/mo, up from 880), `mcp connector` (880/mo, flat) both already lead their live
+pages. `google analytics mcp` (590, up from 390) and `google search console mcp` (390, flat) remain
+already-targeted. `hubspot mcp` (70/mo, up from 20 — a real 3.5x jump) and `stripe mcp` (100/mo, down
+from 260) are both real movement but gated on still-overdue `catalog.ts` connectors — same standing
+caution since 2026-07-20. `agencyanalytics alternative` (480/mo) and all 5 named comparisons remain
+shipped. Net: FOCUS cluster genuinely exhausted again.
+
+With FOCUS exhausted, re-read the 2026-09-07/09-14 NEXT notes' own caution against guessing a
+`/destinations/[slug]` comparison-section candidate (Snowflake/Redshift) "without a stronger signal" —
+so instead of guessing, pulled fresh SE Ranking data on the 11 still-un-augmented `/destinations/[slug]`
+pages' plausible "[tool] alternative" queries (Snowflake, Redshift, Databricks, Google Sheets, Airtable,
+Notion, Slack, Excel). Found exactly the kind of signal those NEXT notes asked for: `google sheets
+alternative` — 590/mo, KD 11 (competition 0.21), on a flat 10/mo→590/mo step-change 5 months ago that's
+held steady every month since (not a one-off spike) — an order of magnitude bigger and lower-difficulty
+than every other candidate pulled (`excel alternative` 540/mo KD 26, `notion alternative` 320/mo KD 17,
+`snowflake alternative` 210/mo KD 6, the rest ≤90/mo). `google_sheets` is a live ARLO destination
+(`status: "beta"`, push sync) with no comparison section yet — same un-augmented state as Snowflake/
+Redshift/etc.
+- PAGE: `/destinations/google_sheets` (comparison section, new) / CHANGE: one file,
+  `src/app/destinations/[slug]/route.ts`. Added a `google_sheets` entry to `COMPARISON_CONTENT` — same
+  shape as the 4 existing entries (Looker Studio, Power BI, BigQuery, Tableau): intro paragraph framing
+  ARLO as serving both "already pushes to Sheets, want it live/scheduled" and "building a manual client-
+  reporting sheet, wondering if there's a better way" readers; a 6-row feature table (setup, refresh,
+  multi-client scale, ad-hoc questions, cost, skill required) naming the real cost of a Sheets-based
+  reporting workflow (Zapier/Apps Script glue, formulas that break, someone remembering to refresh) without
+  inventing pricing or stats; two when-to-choose lists. Reused the exact `comparisonTable`/
+  `comparisonWhenGrid` renderers the 4 existing entries already use — no new rendering code. Added
+  `google_sheets: "2026-09-17"` to `CONTENT_LAST_UPDATED_OVERRIDES` (only this page's `dateModified`
+  moves; the other 14 keep their real last-change date). Also updated the stale header comment above
+  `COMPARISON_CONTENT` (still described only the original 4-destination sxo.md list) to reflect that a
+  5th was added off a live keyword signal, and to tell a future session to require the same before adding
+  a 6th. / TARGET: `google sheets alternative` (590/mo, KD 11, US) — live-pull-confirmed commercial-intent
+  term, sustained 5 months, not a stale audit guess. / WHY: FOCUS cluster and every gated `catalog.ts`
+  connector were re-confirmed exhausted/blocked for a 6th session running; rather than guess a
+  `/destinations/[slug]` candidate the way prior sessions were explicitly told not to, pulled fresh data on
+  the actual candidate set and found a real, previously-unflagged, order-of-magnitude opportunity — reuses
+  proven page infrastructure (zero new rendering code), matches "quality over volume" (one well-scoped
+  addition), and closes a real content gap rather than repeating a static-audit guess. / VERIFY: `rm -rf
+  .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`;
+  same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a regression. `npm run lint`
+  clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). This route has no
+  static `.html` output (hand-rolled `route.ts`), so verified via `next dev` on a scratch port + `curl`:
+  `/destinations/google_sheets` now renders the new comparison section (H2 "Google Sheets alternative — or
+  a live Google Sheets destination? ARLO is both", the 6-row table, both when-to-choose lists) and
+  `dateModified: "2026-09-17"`; a control page (`/destinations/snowflake`, no comparison section) still
+  returns no comparison heading and its original `dateModified: "2026-08-27"`. Parsed all 3 JSON-LD blocks
+  on both pages via a Python `json.loads` check — all valid. `git status` showed only
+  `src/app/destinations/[slug]/route.ts` after reverting the build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior session) — staged only the one
+  intended file. Local clone started with `HEAD` detached (matching `origin/main` after a fetch) — recreated
+  a local `main` tracking branch before committing, same as the 2026-09-03 session.
+
+NEXT:
+1. **A 5th destination now has the comparison section** — Looker Studio, Power BI, BigQuery, Tableau,
+   Google Sheets. The remaining 10 `/destinations/[slug]` pages (Excel, Snowflake, Redshift, Databricks,
+   Slack, Notion, Airtable, Shareable Dashboard, Email, PDF) still have no live-pull signal strong enough
+   to justify one — `excel alternative` (540/mo, KD 26) is the next-closest candidate if a future session
+   wants to re-check it, but confirm with a fresh pull rather than reusing this session's numbers cold.
+2. FOCUS keyword cluster (MCP-integration terms) genuinely exhausted for a 6th consecutive session
+   (2026-08-31 through 2026-09-17 in different forms) — connector matrix (7/7 live sources) and comparison
+   hub (5/5 named competitors) both fully built out. `hubspot mcp` (70/mo, up from 20 — the most real
+   movement of this pull) and every other rising MCP term remain gated on `catalog.ts`. Keep re-pulling
+   fresh rather than assuming permanent exhaustion — this session's Google Sheets find is proof a real
+   signal can still emerge outside the named MCP list.
+3. `catalog.ts` re-checked again, unchanged: `meta_ads`/`linkedin_ads`/`meta_pages` (May 2026, 4+ months
+   overdue), `tiktok_ads`/`stripe` (June 2026, 3+ months overdue), `hubspot`/`mailerlite` (July 2026, 2+
+   months overdue), `mailchimp` (August 2026, past its own month). All 8 still `coming_soon`.
+4. `src/lib/schema.ts`'s `generateSchema()` remains dead code (correctly rewritten for ARLO but never
+   imported — flagged 2026-09-14, still just a human-decision item, not a live defect).
+5. Human decisions still open (unchanged, now 19+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04); off-page Phase 1 still 0 of
+   6; the static-render marketing-pages infra fix (`README.md` P1 #9); a real Content-Security-Policy
+   (needs live third-party-script testing this sandbox can't do); the `www` redirect 307→301/308 (Vercel
+   domain-config layer); IndexNow (needs a human decision + live outbound ping to verify); sxo.md action
+   item #7 (second case study/testimonial — needs a real quote, not something to invent).
+6. Next weekly-pulse-style session (this session folded the pulse checks into its CONTEXT above —
+   rank/backlinks/CI/catalog.ts all checked) — due again roughly 2026-09-24/25 per the established cadence.
+
 ## 2026-09-14 (Mon) — Schema correctness fix: connector-matrix pages (`/connect/[slug]`) were emitting an unresolvable `publisher` reference (`{"@id": ".../#business"}` pointing to a node no page defines) — now a self-contained `Organization` node, matching the pattern already used on `/blog/[slug]`
 
 CONTEXT: SE Ranking authenticated again (3rd straight session, confirmed via a live `PROJECT_listProjects`

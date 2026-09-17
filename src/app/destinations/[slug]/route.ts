@@ -91,15 +91,12 @@ function faqSchemaHtml(items: { q: string; a: string }[]): string {
 }
 
 // ── Optional "alternative to X" comparison section (sxo.md quick-win #6) ──
-// 4 destinations get this treatment: Looker Studio, Power BI, BigQuery
-// (audits/sxo.md Section 8 item 6's short list) plus Tableau, which
-// Section 4 item 5 also named for this exact reframe ("Reframe
-// /destinations/looker_studio, /destinations/power_bi, /destinations/tableau")
-// but never got it in the 2026-08-27 session that shipped the other 3 —
-// Section 8's shorter list swapped in BigQuery instead, and the worklog
-// since then read "not named by the audit" for the remaining 12, missing
-// that Tableau was in fact named once. Every other destination page
-// renders none of this;
+// Started as the 4 destinations sxo.md named for this reframe (Looker
+// Studio, Power BI, BigQuery, Tableau); Google Sheets was added later once a
+// live SE Ranking pull found real, sustained demand ("google sheets
+// alternative" 590/mo, KD 11) the static audit never named. Every other
+// destination page renders none of this — add a fresh SE-Ranking-confirmed
+// term before adding another one, not a guess.
 // _shell.html has no {{#if}} support, so an empty string is how a section
 // stays optional (same pattern used for faqSchemaHtml above).
 const esc = (s: string) =>
@@ -255,6 +252,30 @@ const COMPARISON_CONTENT: Record<string, ComparisonEntry> = {
       "You're already standardized on Tableau across a wider analytics team",
     ],
   },
+  google_sheets: {
+    toolName: "Google Sheets",
+    heading: "Google Sheets alternative — or a live Google Sheets destination? ARLO is both",
+    intro:
+      "If your clients already live in a shared Google Sheet, the rest of this page shows how ARLO writes clean rows into it on a schedule. But if you're evaluating whether Sheets should be the reporting workflow at all: a client reporting sheet usually means stitching together exports, Zapier, or an Apps Script per source, formulas that break when a column shifts, and someone remembering to refresh it before the call. ARLO can still push rows into Sheets on your cadence (that's the rest of this page) — or you can skip the sheet altogether and just ask Claude the number.",
+    table: [
+      { feature: "Setup", values: ["Build formulas + pull data per source (export, Zapier, or Apps Script)", "Ask Claude — or pick a template, no formulas to maintain"] },
+      { feature: "Refresh", values: ["Someone re-pulls it, or a script that breaks silently", "Scheduled push on your cadence, or live on every question"] },
+      { feature: "Multi-client scale", values: ["A sheet — and its formulas — to copy and maintain per client", "Assign accounts per client inside one connection"] },
+      { feature: "Ad-hoc questions", values: ["Limited to whatever columns are already in the sheet", "Any question, in plain English"] },
+      { feature: "Cost", values: ["Free, but the glue (Zapier, exports, Apps Script) often isn't", "Free to start, live queries included"] },
+      { feature: "Skill required", values: ["Spreadsheet formulas, or scripting for automation", "Plain English"] },
+    ],
+    whenArlo: [
+      "You want the number, not a spreadsheet to maintain and debug",
+      "You don't want to own a Zapier/Apps Script pipeline just to keep a sheet current",
+      "Clients ask questions the sheet's current columns don't answer",
+    ],
+    whenTool: [
+      "Your team or client genuinely wants a shared, editable, always-open sheet",
+      "You're layering manual analysis or formulas on top of the raw numbers",
+      "Sheets is already the system of record other tools in your stack read from",
+    ],
+  },
 };
 
 function comparisonSectionHtml(id: string): string {
@@ -270,7 +291,8 @@ function comparisonSectionHtml(id: string): string {
 // dateModified keeps meaning "this page," not "this page type."
 const CONTENT_LAST_UPDATED = "2026-08-27";
 const CONTENT_LAST_UPDATED_OVERRIDES: Record<string, string> = {
-  tableau: "2026-09-07", // this session: added the comparison section
+  tableau: "2026-09-07", // added the comparison section
+  google_sheets: "2026-09-17", // this session: added the comparison section
 };
 
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
