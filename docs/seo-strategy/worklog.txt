@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-18 (Fri) — Weekly pulse: SE Ranking authenticated for a 4th straight session, fresh pull confirms rank/backlinks all still flat (0/22 keywords, 3/2 backlinks, 11th week unchanged); AI Result Tracker has zero LLM engines configured (no AI-visibility baseline yet, flagged for a human); CI green (38/38 all-time), catalog.ts's 8 gated connectors and off-page/GSC blockers unchanged. See reports/outbox/2026-09-18-weekly-pulse.json.
+
 ## 2026-09-17 (Thu) — New content: `/destinations/google_sheets` gets the "alternative to X" comparison section — a fresh SE Ranking pull found `google sheets alternative` at a sustained 590/mo (KD 11), a genuine emerging term the FOCUS cluster and every prior destinations-page session missed
 
 CONTEXT: SE Ranking authenticated again (3rd straight session) — confirmed via a live `PROJECT_listProjects`
