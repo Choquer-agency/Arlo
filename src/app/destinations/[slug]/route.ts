@@ -7,6 +7,7 @@ import {
   STATUS_LABELS,
   type DestinationEntry,
 } from "@/lib/destinations/catalog";
+import { CONTENT_LAST_UPDATED, CONTENT_LAST_UPDATED_OVERRIDES } from "../_content/lastUpdated";
 
 // id → self-hosted favicon file under /arlo/dest/ (see public/arlo/dest/).
 const FAVICON: Record<string, string> = {
@@ -289,11 +290,12 @@ function comparisonSectionHtml(id: string): string {
 // default date for the 14 pages whose content hasn't changed since; a page
 // whose content actually changes gets its own override below so
 // dateModified keeps meaning "this page," not "this page type."
-const CONTENT_LAST_UPDATED = "2026-08-27";
-const CONTENT_LAST_UPDATED_OVERRIDES: Record<string, string> = {
-  tableau: "2026-09-07", // added the comparison section
-  google_sheets: "2026-09-17", // this session: added the comparison section
-};
+// sxo.md Section 8 item 8: /destinations/[slug] pages had no dateModified
+// signal (unlike /compare/[slug]). CONTENT_LAST_UPDATED / _OVERRIDES now live
+// in ../_content/lastUpdated (not here) so sitemap.ts can import the same
+// values — Next.js rejects any route.ts export that isn't a recognized route
+// field ("X is not a valid Route export field"), confirmed by a failed build
+// this session when they were first added directly to this file.
 
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;

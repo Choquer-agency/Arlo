@@ -6,6 +6,122 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-21 (Mon) — Indexation fix: `sitemap.ts` stamped every `/destinations/[slug]`, `/compare/[slug]`, `/connect/[slug]` and `/services/[slug]` URL with the same blanket July 4 date regardless of real content changes — now sources each page's own last-modified date, matching its on-page `dateModified` JSON-LD
+
+CONTEXT: SE Ranking authenticated for a 5th straight session (live `PROJECT_listProjects` call, askarlo.app
+site_id 12704162, 22 tracked keywords). `PROJECT_getPositionHistory` (2026-09-14→09-21): avg position still
+flat at 100 (not-ranked floor) every day. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2
+refdomains, unchanged since 09-10 — 12th week flat. `src/lib/connectors/catalog.ts` re-checked: all 8 gated
+connectors unchanged (meta_ads/linkedin_ads/meta_pages May 2026, tiktok_ads/stripe June 2026, hubspot/
+mailerlite July 2026, mailchimp August 2026), all still `coming_soon`.
+
+Re-pulled the FOCUS cluster (20 terms) fresh via `DATA_getKeywordsMetrics` — 7th consecutive session
+confirming it's exhausted: `claude mcp server` (910/mo), `mcp connector` (880/mo), `google analytics mcp`
+(590/mo), `google search console mcp` (390/mo), `google ads mcp` (180/mo) all remain already-targeted on
+their live pages (re-verified against prior sessions' source reads, unchanged). `meta ads mcp` (590/mo),
+`shopify mcp` (220/mo), `stripe mcp` (100/mo), `hubspot mcp` (70/mo), `mailchimp mcp` (90/mo) all real but
+still gated on the same overdue `catalog.ts` connectors. `agencyanalytics alternative` (480), `supermetrics
+alternative` (140), `whatagraph alternative` (40) all already shipped.
+
+Also re-pulled the 09-17 NEXT note's own follow-up candidate — `excel alternative` (confirmed 540/mo, KD 26)
+— plus `snowflake alternative` (210/mo, KD 6) and `redshift alternative` (90/mo, KD 7), the next-closest
+`/destinations/[slug]` comparison-section candidates. This time, before treating any of them as a green
+light, checked the destinations each term would actually be about: `src/lib/destinations/catalog.ts` and
+the live `/destinations` page shell show **Excel, Snowflake, Redshift, and Databricks are all still
+`coming_soon`/`waitlist` status**, not `live`/`beta` like the 5 destinations that already got a comparison
+section (Looker Studio, Power BI, Tableau, BigQuery, Google Sheets — all live/beta). A "already push to
+Excel, want it live?" comparison section on a destination that doesn't exist yet would overclaim exactly
+the way this routine has refused to do for gated `catalog.ts` connector pages since 2026-07-20 — the 09-17
+NEXT note flagged `excel alternative`'s volume without checking the destination's own ship status first.
+Correcting the record: **the `/destinations/[slug]` comparison-section path is now conclusively closed**,
+not just out of signal — every remaining un-augmented destination with real search demand is gated on its
+own not-yet-shipped status, same class of blocker as the FOCUS cluster's gated connectors.
+
+With both content levers (FOCUS cluster, destinations comparison sections) genuinely exhausted, re-read
+`src/app/sitemap.ts` end to end (last touched 2026-09-10 for the `lastModified` fake-`new Date()` fix,
+P2 #14) and found a follow-on bug that fix left behind: every `/destinations/[slug]`, `/compare/[slug]`,
+`/connect/[slug]` and `/services/[slug]` URL gets the same hardcoded `STATIC_LASTMOD = "2026-07-04"`,
+regardless of real content changes — even though 4 of those 5 page types already track an accurate
+per-page last-changed date elsewhere in the codebase and use it for their own `dateModified` JSON-LD:
+`CONTENT_LAST_UPDATED`/`_OVERRIDES` in the destinations route (google_sheets `2026-09-17`, tableau
+`2026-09-07`, the rest `2026-08-27`), `lastUpdated` on each entry in `src/content/comparisons.ts` (ranging
+`2026-04-12` to `2026-07-27`) and `src/content/connectors.ts` (`2026-07-04` to `2026-08-31`), and the
+identical `"2026-09-03"` hardcoded into all 6 `/services/[slug]` `_shell.html` files. So the sitemap was
+telling Google "nothing changed since July 4" on the same URLs whose own JSON-LD says otherwise —
+understating freshness on every page this routine has actually updated since (Tableau, Google Sheets,
+the connector-matrix schema fix, all 6 services pages) and, for `/compare/windsor-ai-vs-arlo` (real
+`lastUpdated` `2026-04-12`), *overstating* it. Blog posts already did this correctly (`new Date(post.
+modifiedDate)` in the same file) — this brings the other 4 page types in line with that existing pattern
+instead of inventing a new one.
+- PAGE: sitemap.xml (all `/destinations/[slug]`, `/compare/[slug]`, `/connect/[slug]`, `/services/[slug]`
+  entries — 33 URLs) / CHANGE: `src/app/sitemap.ts` now imports `comparisons`/`connectors` from their
+  content modules and reads `.lastUpdated` per slug (falling back to `STATIC_LASTMOD` only if a slug is
+  somehow missing), and imports the destinations page's own `CONTENT_LAST_UPDATED`/`_OVERRIDES`. Services
+  gets a new `SERVICES_LAST_UPDATED = "2026-09-03"` constant mirroring the 6 shells' hardcoded date (with a
+  comment noting it must stay in sync — same hand-duplicated-but-flagged pattern this routine already uses
+  for FAQPage content on those same pages, since the shells have no shared template to source from).
+  `CONTENT_LAST_UPDATED`/`_OVERRIDES` had to move out of `src/app/destinations/[slug]/route.ts` into a new
+  `src/app/destinations/_content/lastUpdated.ts` data module — Next.js's route-export validator rejected
+  the first attempt at exporting them directly from the route file ("X is not a valid Route export field"),
+  caught by the build gate. Left `STATIC_LASTMOD` (still "2026-07-04") for the homepage, pricing, about,
+  contact, and the `/destinations` + `/compare` index pages — none of those have a per-page source of truth
+  to read from, and none have actually changed since the original audit. / TARGET: no keyword — pure
+  indexation/technical-SEO correctness fix, the same class of item as the 2026-09-10 security-headers
+  session and the 2026-09-14 connector-matrix schema fix. / WHY: with both content levers re-confirmed
+  exhausted this session (FOCUS cluster 7th time running, destinations comparison sections now conclusively
+  closed rather than just out of signal) and every other standing NEXT item still human-gated, this was a
+  real, previously-unflagged inaccuracy directly in the site's crawl-priority signal, human-independent,
+  fully verifiable in this sandbox, and low-risk (metadata-only, no rendering change touched). / VERIFY:
+  `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages
+  (87/87)`; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret) — identical route list, not a regression. `npm run lint`
+  clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). Live-verified via
+  `next dev` on a scratch port + `curl`: `/sitemap.xml` now shows `/services/seo-specialist` →
+  `2026-09-03`, `/destinations/looker_studio` → `2026-08-27`, `/destinations/tableau` → `2026-09-07`,
+  `/destinations/google_sheets` → `2026-09-17`, `/destinations/snowflake` (unchanged, no override) →
+  `2026-08-27`, `/compare/windsor-ai-vs-arlo` → `2026-04-12`, `/connect/search-console-mcp` → `2026-08-31`,
+  while `/pricing` (no per-page source) stayed `2026-07-04` — every value cross-checked against that same
+  page's own rendered `dateModified` JSON-LD and found to match exactly (spot-checked google_sheets,
+  windsor-ai-vs-arlo, search-console-mcp directly). `git status` showed only `src/app/sitemap.ts`,
+  `src/app/destinations/[slug]/route.ts`, and the new `src/app/destinations/_content/lastUpdated.ts` after
+  reverting the build-regenerated `src/content/blog/manifest.json` diff (same pattern as every prior
+  session) — staged only the 3 intended files. Local clone started with `HEAD` detached (matching
+  `origin/main` after a fetch) — recreated a local `main` tracking branch via `git checkout main && git
+  merge --ff-only origin/main` (local `main` was 1 commit behind, a non-conflicting report-archive commit)
+  before committing, same as several prior sessions.
+
+NEXT:
+1. **The `/destinations/[slug]` comparison-section path is now conclusively closed, not just out of
+   signal.** Every remaining un-augmented destination with real "[tool] alternative" search demand (Excel
+   540/mo KD26, Snowflake 210/mo KD6, Redshift 90/mo KD7) is still `coming_soon`/`waitlist` in
+   `src/lib/destinations/catalog.ts` — building a comparison section for any of them would overclaim a
+   destination that isn't live, same caution as gated `catalog.ts` connectors. **Correction to the
+   2026-09-17 NEXT note:** its "excel alternative next-closest candidate" pointer didn't check the
+   destination's own ship status — don't repeat that check-the-keyword-but-not-the-status gap. Only revisit
+   this path if one of Excel/Snowflake/Redshift/Databricks flips to `live`/`beta`.
+2. FOCUS keyword cluster exhausted for a 7th consecutive session — connector matrix (7/7 live sources) and
+   comparison hub (5/5 named competitors) both fully built out against every term pulled. `hubspot mcp`
+   and every other rising MCP term remain gated on `catalog.ts`. Keep re-pulling fresh rather than assuming
+   permanent exhaustion.
+3. `catalog.ts` re-checked again, unchanged: `meta_ads`/`linkedin_ads`/`meta_pages` (May 2026, 4+ months
+   overdue), `tiktok_ads`/`stripe` (June 2026, 3+ months overdue), `hubspot`/`mailerlite` (July 2026, 2+
+   months overdue), `mailchimp` (August 2026, past its own month). All 8 still `coming_soon`.
+4. This session's sitemap fix left `/services/[slug]`'s `SERVICES_LAST_UPDATED` as a hand-duplicated
+   constant in `sitemap.ts` (mirroring the 6 shells' hardcoded `"2026-09-03"`, not sourced from a shared
+   module the way destinations/comparisons/connectors now are) — a future session touching any one
+   services page's `dateModified` needs to update both places. Not urgent, just flagged so it isn't missed
+   the way the underlying sitemap staleness was.
+5. `src/lib/schema.ts`'s `generateSchema()` remains dead code (correctly rewritten for ARLO but never
+   imported — flagged 2026-09-14, still just a human-decision item, not a live defect).
+6. Human decisions still open (unchanged, now 20+ sessions): the dormant 6-persona `route.ts` scaffold
+   (open since 2026-07-30); GSC submission (open since kickoff, 2026-07-04); off-page Phase 1 still 0 of
+   6; the static-render marketing-pages infra fix (`README.md` P1 #9); a real Content-Security-Policy
+   (needs live third-party-script testing this sandbox can't do); the `www` redirect 307→301/308 (Vercel
+   domain-config layer); IndexNow (needs a human decision + live outbound ping to verify); sxo.md action
+   item #7 (second case study/testimonial — needs a real quote, not something to invent).
+7. Next weekly-pulse-style session due — this session folded the pulse checks in (rank/backlinks/CI/
+   catalog.ts all checked above) — roughly 2026-09-24/25 per the established cadence.
+
 ## 2026-09-18 (Fri) — Weekly pulse: SE Ranking authenticated for a 4th straight session, fresh pull confirms rank/backlinks all still flat (0/22 keywords, 3/2 backlinks, 11th week unchanged); AI Result Tracker has zero LLM engines configured (no AI-visibility baseline yet, flagged for a human); CI green (38/38 all-time), catalog.ts's 8 gated connectors and off-page/GSC blockers unchanged. See reports/outbox/2026-09-18-weekly-pulse.json.
 
 ## 2026-09-17 (Thu) — New content: `/destinations/google_sheets` gets the "alternative to X" comparison section — a fresh SE Ranking pull found `google sheets alternative` at a sustained 590/mo (KD 11), a genuine emerging term the FOCUS cluster and every prior destinations-page session missed

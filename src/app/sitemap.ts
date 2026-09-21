@@ -2,14 +2,26 @@ import { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/siteConfig";
 import { services } from "@/content/services";
 import { getAllBlogPosts } from "@/content/blog";
-import { getAllComparisonSlugs } from "@/content/comparisons";
-import { getAllConnectorSlugs } from "@/content/connectors";
+import { comparisons, getAllComparisonSlugs } from "@/content/comparisons";
+import { connectors, getAllConnectorSlugs } from "@/content/connectors";
 import { DESTINATION_CATALOG } from "@/lib/destinations/catalog";
+import {
+  CONTENT_LAST_UPDATED as DESTINATION_LAST_UPDATED,
+  CONTENT_LAST_UPDATED_OVERRIDES as DESTINATION_LAST_UPDATED_OVERRIDES,
+} from "./destinations/_content/lastUpdated";
 
-// Stable lastmod for static/marketing pages. Using `new Date()` stamped every
-// URL with "modified now" on every build — a false signal Google ignores/distrusts.
-// Bump this when marketing pages are meaningfully updated.
+// Stable lastmod for pages with no per-page "last changed" data of their own
+// (homepage, pricing, about, contact, and the /destinations, /compare index
+// pages). Using `new Date()` stamped every URL with "modified now" on every
+// build — a false signal Google ignores/distrusts. Bump this when one of
+// these specific pages is meaningfully updated.
 const STATIC_LASTMOD = "2026-07-04";
+
+// All 6 /services/[slug] shells share this hardcoded dateModified (see e.g.
+// src/app/services/seo-specialist/_shell.html) — mirrored here rather than
+// the blanket STATIC_LASTMOD above so the sitemap doesn't understate a real
+// content change. Keep in sync if a services shell's dateModified moves.
+const SERVICES_LAST_UPDATED = "2026-09-03";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const serviceSlugs = services.map((s) => s.slug);
@@ -20,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const serviceEntries: MetadataRoute.Sitemap = serviceSlugs.map((slug) => ({
     url: `${SITE_URL}/services/${slug}`,
-    lastModified: STATIC_LASTMOD,
+    lastModified: SERVICES_LAST_UPDATED,
     changeFrequency: "monthly" as const,
     priority: 0.9,
   }));
@@ -65,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...destinationSlugs.map((slug) => ({
       url: `${SITE_URL}/destinations/${slug}`,
-      lastModified: STATIC_LASTMOD,
+      lastModified: DESTINATION_LAST_UPDATED_OVERRIDES[slug] ?? DESTINATION_LAST_UPDATED,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
@@ -77,13 +89,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...comparisonSlugs.map((slug) => ({
       url: `${SITE_URL}/compare/${slug}`,
-      lastModified: STATIC_LASTMOD,
+      lastModified: comparisons[slug]?.lastUpdated ?? STATIC_LASTMOD,
       changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
     ...connectorSlugs.map((slug) => ({
       url: `${SITE_URL}/connect/${slug}`,
-      lastModified: STATIC_LASTMOD,
+      lastModified: connectors[slug]?.lastUpdated ?? STATIC_LASTMOD,
       changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
