@@ -6,6 +6,76 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-24 (Thu) — Weekly pulse + correction: `content.md`'s "blog is empty" finding is stale — 10 real posts already shipped (2026-07-04→2026-08-20); caught and discarded a near-duplicate "What Is MCP" draft before it shipped
+
+CONTEXT: SE Ranking authenticated for a 9th straight session (live `PROJECT_listProjects`, askarlo.app
+site_id 12704162, 22 tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-09-17→09-24, daily):
+avg position flat at 100 (not-ranked floor) every day — unchanged since kickoff. `DATA_getBacklinksSummary`
+(domain mode): still 3 backlinks / 2 refdomains, unchanged since 2026-09-10 — 2 weeks flat. GitHub Actions
+checked directly (`actions_list`, workflow id 307242249): last 5 `SEO Report Email` runs (09-11 through
+09-21) all green, 40/40 all-time. `PROJECT_listLlmEngines` still returns empty — AI Result Tracker remains
+unconfigured, no AI-visibility baseline, unchanged, human-gated. `src/lib/connectors/catalog.ts` and
+`src/lib/destinations/catalog.ts` re-checked byte-for-byte: all 8 gated connectors and all 4 gated
+destinations (Excel/Snowflake/Redshift/Databricks) unchanged from 2026-09-21 — the destinations
+comparison-section path stays conclusively closed.
+
+Re-pulled the FOCUS cluster fresh (20 terms via `DATA_getKeywordsMetrics`) — 8th consecutive session
+confirming exhaustion: every term (`claude mcp server` 910/mo, `mcp connector` 880/mo, `meta ads mcp` 590,
+`google analytics mcp` 590, `agencyanalytics alternative` 480, `google search console mcp` 390, down to
+`mailerlite mcp` 30) is either already the primary target of a live page or gated on a still-`coming_soon`
+`catalog.ts` connector. No new signal.
+
+With FOCUS, destinations, connector matrix (5/5), and comparison hub (5/5) all re-confirmed caught up,
+turned to `content.md`'s §9 "Blog Assessment — Currently Empty" (dated 2026-07-04, its 12-post skeleton
+naming "What is MCP" as post #1) and drafted `src/content/blog/posts/us/what-is-mcp.md` against that
+brief. Before committing, a full-repo check of `src/content/blog/posts/us/` (not just the parent dir,
+whose `ls` output this session initially misread as empty) turned up **10 existing real posts**, dated
+2026-07-04 through 2026-08-20, including `what-is-an-mcp-connector.md` (2026-07-23) — a near-identical
+"What Is an MCP Connector? A Plain-English Guide for Marketing Agencies" post covering the same
+definitional ground the new draft was about to duplicate. Cross-checked the worklog's own history (lines
+~603, 798, 848, 1017 of prior entries) and found several sessions since 08-20 already explicitly declined
+an "11th blog post" for the same reason — `content.md`'s blog-empty finding predates all 10 posts and is
+now stale; the draft was deleted, not committed, and the build-regenerated `manifest.json` diff it left
+behind was reverted via `git checkout --`, leaving a clean tree. Also ruled out two other candidate
+fixes before settling on pulse-only: `public/llms.txt`'s pricing line (`Free ($0) → Solo ($19/mo) → ... →
+Scale ($499/mo)`) cross-checked against `src/lib/billing.ts`'s `PLAN_LIMITS` — matches exactly, not a bug
+(the live `/pricing` page's "free during early access" framing is promotional copy layered on top of the
+same real tier structure, not a contradiction); `TrustBar.tsx`'s "Trusted by 40+ companies to own their
+technology" line re-confirmed dead code (component not imported anywhere in `src/app` or `src/components`),
+same class as the already-flagged `schema.ts` — not a live defect.
+
+No code shipped this session — this is the legitimate outcome of a genuinely exhausted content backlog
+plus a near-miss caught before it became a duplicate-content mistake, not a skipped task.
+- PAGE: none / CHANGE: none (draft blog post written then deleted; `manifest.json` reverted to its
+  committed state) / TARGET: n/a / WHY: FOCUS cluster (8th session), destinations path (re-confirmed
+  closed), and now the blog content list are all genuinely exhausted against current site state; shipping
+  the drafted post would have been near-duplicate content against `what-is-an-mcp-connector.md`, a worse
+  outcome than shipping nothing. / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`; same 9 pre-existing `(app)/*` + `/welcome` prerender
+  failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression.
+  `git status` clean after reverting the build-regenerated `manifest.json`.
+
+NEXT:
+1. **Correction to `content.md` §9:** "Blog Assessment — Currently Empty" is stale. 10 real posts exist
+   (`src/content/blog/posts/us/*.md`, 2026-07-04→2026-08-20), covering MCP definitional content, security,
+   churn, client reporting, Google Ads reporting, AI-for-SEO, a case study, and a Windsor.ai comparison.
+   A future session should treat the blog as caught up against the static audit, not empty — re-check
+   `src/content/blog/posts/us/` directly (not just the parent dir) before drafting a new post, and search
+   existing post titles/tags for topic overlap first.
+2. FOCUS keyword cluster exhausted for an 8th consecutive session — connector matrix (5/5 live Google
+   sources) and comparison hub (5/5 named competitors) both fully built out.
+3. `catalog.ts`/destinations catalog re-checked again, byte-for-byte unchanged from 2026-09-21: all 8
+   connectors and 4 destinations still gated. If any flips to live, that's a new content opportunity.
+4. Human decisions still open (unchanged, now 21+ sessions): the dormant 6-persona `route.ts` scaffold;
+   GSC submission; off-page Phase 1 still 0 of 6; the static-render marketing-pages infra fix; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; `sxo.md` #7 (second case
+   study/testimonial); AI Result Tracker has no LLM engines configured (no AI-visibility baseline).
+5. Next weekly-pulse-style session due ~2026-09-28/10-01 per the established cadence — but with FOCUS,
+   destinations, and now blog all confirmed exhausted, the next content-capable session should prioritize
+   re-reading `technical.md`/`onpage-schema.md`/`sxo.md` end-to-end for a genuinely new, previously-
+   unflagged on-page defect (the pattern that found the 09-03 FAQPage gap, the 09-14 dangling-@id bug, and
+   the 09-21 sitemap staleness bug) over forcing new content into an exhausted backlog.
+
 ## 2026-09-21 (Mon) — Indexation fix: `sitemap.ts` stamped every `/destinations/[slug]`, `/compare/[slug]`, `/connect/[slug]` and `/services/[slug]` URL with the same blanket July 4 date regardless of real content changes — now sources each page's own last-modified date, matching its on-page `dateModified` JSON-LD
 
 CONTEXT: SE Ranking authenticated for a 5th straight session (live `PROJECT_listProjects` call, askarlo.app
