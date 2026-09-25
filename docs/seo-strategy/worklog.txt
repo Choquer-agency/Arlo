@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-25 (Fri) — Weekly pulse: rank flat at not-ranked floor across all 22 tracked keywords every day this week (9th+ week unchanged), backlinks flat 3/2 (3rd week), CI green 41/41 all-time, catalog.ts's 8 gated connectors and destinations catalog (Excel/Snowflake/Redshift/Databricks) unchanged; AI Result Tracker still has zero LLM engines configured (no AI-visibility baseline); GA4 conversions marked pending (no outbound GA4 API access from this sandbox). See reports/outbox/2026-09-25-weekly-pulse.json.
+
 ## 2026-09-24 (Thu) — Weekly pulse + correction: `content.md`'s "blog is empty" finding is stale — 10 real posts already shipped (2026-07-04→2026-08-20); caught and discarded a near-duplicate "What Is MCP" draft before it shipped
 
 CONTEXT: SE Ranking authenticated for a 9th straight session (live `PROJECT_listProjects`, askarlo.app
