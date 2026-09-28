@@ -6,6 +6,103 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-09-28 (Mon) — Indexation fix: `/privacy` and `/terms` are live, correctly-canonicalized pages that have never been listed in `sitemap.xml` — added both (technical.md M5, dated 2026-07-04, never previously fixed)
+
+CONTEXT: SE Ranking authenticated again (live `PROJECT_listProjects` call, askarlo.app site_id 12704162
+confirmed, 22 tracked keywords). `PROJECT_getPositionHistory` (2026-09-21→09-28, daily): avg position
+still flat at 100 (not-ranked floor) every day — unchanged since kickoff. `DATA_getBacklinksSummary`
+(domain mode): still 3 backlinks / 2 refdomains, unchanged since 2026-09-10 — 3rd week flat.
+`PROJECT_listLlmEngines` still returns empty — AI Result Tracker remains unconfigured, no AI-visibility
+baseline. `src/lib/connectors/catalog.ts` re-checked: all 8 gated connectors (meta_ads/linkedin_ads/
+meta_pages May 2026, tiktok_ads/stripe June 2026, hubspot/mailerlite July 2026, mailchimp August 2026)
+remain `coming_soon`, unchanged. `src/lib/destinations/catalog.ts` re-checked: Excel/Snowflake (`coming_soon`)
+and Redshift/Databricks/Notion/Airtable (`waitlist`) all unchanged — the destinations comparison-section
+path stays conclusively closed, per the 2026-09-21 finding.
+
+Re-pulled the FOCUS cluster fresh (20 terms via `DATA_getKeywordsMetrics`, US) — 9th consecutive session
+confirming exhaustion: `claude mcp server` (910/mo), `mcp connector` (880/mo), `meta ads mcp` (590),
+`google sheets alternative` (590), `google analytics mcp` (590), `excel alternative` (540, KD 26 — the
+destination is still `coming_soon`), `agencyanalytics alternative` (480), `google search console mcp`
+(390), all the way down to `tiktok ads mcp` (40) — every term is either already the primary target of a
+live page or gated on a still-`coming_soon`/`waitlist` catalog entry. No new signal.
+
+With FOCUS, destinations, and blog all re-confirmed exhausted (per the 2026-09-25 NEXT note), followed
+its instruction to re-read `technical.md`/`onpage-schema.md`/`sxo.md` end-to-end against **current** code
+rather than trusting the 2026-07-04 findings verbatim. Most items in both audits are already fixed
+(confirmed by direct source read, not by trusting the doc): canonical bug (C1) fixed, `/about` rewritten,
+`llms.txt` dead links fixed, security headers shipped (09-10), sitemap `lastModified` staleness fixed
+(09-21), `noindex` on auth/app routes present, `BreadcrumbList`+`WebPage` JSON-LD already present on
+`/destinations/[slug]` (verified by reading `src/app/destinations/_template/_shell.html` directly — a
+first grep of `src/app/destinations/[slug]/route.ts` alone missed it, since the schema lives in the
+shared shell template, not the route file; a second grep across `_shell.html` files confirmed it before
+this was mistakenly logged as a gap). `/work` and `/services` hub routes no longer exist at all (the
+`src/app/services/[slug]` directory now sits alongside standalone per-persona route directories, e.g.
+`account-manager/`, `agency-owner/`; no `services/page.tsx` or any `work/` directory remains) — so their
+absence from `sitemap.ts` is correct, not a defect, contrary to what a stale re-read of `technical.md`
+would suggest.
+
+One item from `technical.md` M5 was still genuinely open: "`/privacy` and `/terms` are excluded from
+`sitemap.xml`." Verified directly: both routes exist (`src/app/privacy/page.tsx`, `src/app/terms/page.tsx`),
+both resolve `200`, and both already set correct self-referencing canonicals
+(`alternates: { canonical: \`${siteConfig.url}/privacy\` } }` and the `/terms` equivalent) — but
+`src/app/sitemap.ts` has never listed either URL. Grepped the entire worklog history (`privacy|/terms|
+sitemap\.ts`) to confirm this was never previously fixed in the 20+ sessions since the 2026-07-04 audit
+(every `sitemap.ts` touch on record was the 09-10 `lastModified` fix, the 09-21 per-page-date fix, and
+several "add new slug automatically" notes for compare/connect — none added these two static pages).
+- PAGE: sitemap.xml (2 new entries: `/privacy`, `/terms`) / CHANGE: one file, `src/app/sitemap.ts`. Added
+  both URLs using the existing `STATIC_LASTMOD` constant (same pattern already used for the homepage,
+  `/pricing`, `/about`, `/contact` — pages with no per-page last-changed source of truth), `changeFrequency:
+  "yearly"` (legal pages, unlike the "monthly"/"weekly" content pages) and `priority: 0.3` (lowest priority
+  tier on the sitemap — legal boilerplate, not commercial-intent content). / TARGET: no keyword — pure
+  indexation-completeness fix, the same class as the 09-21 sitemap `lastModified` fix. / WHY: with FOCUS,
+  destinations, and blog all re-confirmed exhausted for a 9th/2nd/2nd consecutive session respectively, and
+  every other standing NEXT item still human-gated, this was the one genuinely open, human-independent,
+  fully verifiable, low-risk item found after a careful re-read of `technical.md` that also correctly
+  screened out several stale findings (the destinations-BreadcrumbList false alarm, the vanished /work
+  and /services hubs) rather than shipping a fix for something already resolved or no longer applicable. /
+  VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static
+  pages (87/87)`; same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session
+  (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), identical route list, not a regression. `npm run
+  lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `next start`
+  against the fresh build failed to boot (`ENOENT prerender-manifest.json` — the same incomplete-export
+  side effect as the 9 known Convex-gated routes; not new), so live-verified via `next dev` on a scratch
+  port instead (same fallback prior sessions have used for hand-rolled `route.ts` pages): `/sitemap.xml`
+  now lists `https://askarlo.app/privacy` and `https://askarlo.app/terms` (URL count 48→50), and both
+  `/privacy` and `/terms` return `HTTP 200` directly. `git status` showed only `src/app/sitemap.ts` after
+  reverting the build-regenerated `src/content/blog/manifest.json` diff (same pattern as every prior
+  session) — staged only the one intended file. Local clone started on a merged `origin/main` fast-forward
+  (4 commits behind, all non-conflicting report-archive/pulse commits) — synced via `git checkout main &&
+  git merge --ff-only origin/main` before committing, same as several prior sessions.
+
+NEXT:
+1. FOCUS keyword cluster exhausted for a 9th consecutive session — connector matrix (7/7 live sources) and
+   comparison hub (5/5 named competitors) both fully built out against every term pulled so far. Keep
+   re-pulling fresh rather than assuming permanent exhaustion; watch specifically for any `catalog.ts`
+   connector or destinations-catalog entry flipping to `live`/`beta`.
+2. **Correction for future sessions re-reading `onpage-schema.md`/`technical.md` cold:** both audits are
+   dated 2026-07-04 and now describe a site that has moved on in two ways beyond the many items already
+   logged as fixed: (a) `/destinations/[slug]` DOES already have `BreadcrumbList`+`WebPage` JSON-LD — it
+   lives in `src/app/destinations/_template/_shell.html`, not in `route.ts`, so grep only the route file
+   and you'll wrongly conclude it's missing (this session almost did); (b) the `/work` hub, `/work/[slug]`
+   case-study pages, and the `/services` hub described throughout both audits **no longer exist as
+   routes** — `src/app/work/` is gone entirely and `src/app/services/page.tsx` doesn't exist (only
+   `src/app/services/[slug]` plus standalone per-persona directories like `account-manager/`). Any future
+   "add X to sitemap" or "add schema to Y" task referencing `/work` or `/services` (hub) should first
+   confirm the route still exists before treating the audit's line item as actionable.
+3. `technical.md`'s M5 is now closed (`/privacy`, `/terms` added to sitemap). Its other still-open items
+   (M6 IndexNow, L1 www redirect mode) remain the same human-gated blockers as every prior session.
+4. `catalog.ts`/destinations catalog re-checked again, unchanged from 2026-09-21/25: all 8 connectors and
+   the Excel/Snowflake/Redshift/Databricks/Notion/Airtable destinations still gated.
+5. Human decisions still open (unchanged, now 22+ sessions): the dormant 6-persona `route.ts` scaffold;
+   GSC submission; off-page Phase 1 still 0 of 6; the static-render marketing-pages infra fix; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; `sxo.md` #7 (second case
+   study/testimonial); AI Result Tracker has no LLM engines configured (no AI-visibility baseline).
+6. Next weekly-pulse-style session due ~2026-10-01/02 per the established cadence. With FOCUS, destinations,
+   blog, and now this on-page/technical pass all re-confirmed caught up or closed, a future content-capable
+   session should re-check `sxo.md` end-to-end next (not yet re-read this cycle) for any remaining
+   previously-unflagged item, applying the same "verify against current source, not audit prose" discipline
+   this session used to catch the two stale findings above.
+
 ## 2026-09-25 (Fri) — Weekly pulse: rank flat at not-ranked floor across all 22 tracked keywords every day this week (9th+ week unchanged), backlinks flat 3/2 (3rd week), CI green 41/41 all-time, catalog.ts's 8 gated connectors and destinations catalog (Excel/Snowflake/Redshift/Databricks) unchanged; AI Result Tracker still has zero LLM engines configured (no AI-visibility baseline); GA4 conversions marked pending (no outbound GA4 API access from this sandbox). See reports/outbox/2026-09-25-weekly-pulse.json.
 
 ## 2026-09-24 (Thu) — Weekly pulse + correction: `content.md`'s "blog is empty" finding is stale — 10 real posts already shipped (2026-07-04→2026-08-20); caught and discarded a near-duplicate "What Is MCP" draft before it shipped
