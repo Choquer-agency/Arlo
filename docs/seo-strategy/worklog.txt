@@ -6,6 +6,71 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-01 (Thu) — Quarterly review (Q3 2026, 2026-07-01→09-30): technical foundation and both content engines fully closed out; rank/backlinks/AI-visibility flat the entire quarter because the three off-site levers (GSC submission, off-page Phase 1, catalog.ts connector ETAs) are all still untouched 3 months after kickoff
+
+CONTEXT: SE Ranking authenticated (live `PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` for the full quarter (2026-07-01→09-30, daily; data
+returned from 2026-08-01 onward): avg position flat at 100 (not-ranked floor) on every single day,
+0 of 22 tracked keywords ever measured — unchanged since kickoff, the entire quarter. `DATA_getBacklinksSummary`
+(domain mode): 3 backlinks / 2 refdomains, up only incidentally from 2/1 at the start of the quarter
+(the 2026-09-10 bump), not from a shipped off-page listing. `DATA_getDomainAuthority`/`PROJECT_getSummary`:
+domain_inlink_rank / Domain Trust ticked 4→6 over the quarter. `PROJECT_listLlmEngines` still returns
+empty — AI Result Tracker has never been configured, no AI-visibility baseline exists after a full
+quarter. GitHub Actions checked directly (`actions_list`, workflow id 307242249): all 43 `SEO Report
+Email` runs since kickoff green, 43/43 all-time, zero failures. `src/lib/connectors/catalog.ts`
+re-checked: all 8 gated connectors (meta_ads/linkedin_ads/meta_pages, tiktok_ads/stripe, hubspot/
+mailerlite, mailchimp) still `coming_soon` — every one of their ETAs (May through August 2026) is now
+past due.
+
+This is a reporting session, not a content session — no code shipped. Composed the first quarterly
+review (`reports/outbox/2026-10-01-quarterly.json`) covering the ROI bottom line, the quarter in 3
+points, and lead forecast vs. actual (GA4 conversions marked `pending`, as every prior report has —
+this sandbox has no outbound GA4 Reporting API access). The honest finding, cross-checked against
+12-week-strategy.md's own Month-3 KPI ladder (top-20 rankings, measurable sessions, first attributed
+leads): the quarter landed well behind that ladder, but not because on-page/technical work stalled —
+43/43 green sessions shipped every P0/P1 technical fix from the 2026-07-04 audit and built both content
+engines (connector matrix 7/7, comparison hub 5/5 named competitors, 5 destination comparison sections,
+10 blog posts) out to exhaustion against the current product catalog. The three things that actually
+move organic rank — GSC submission (planned Week 1), off-page Phase 1 (planned Week 4, still 0 of 6
+registries listed), and timely connector launches (all 8 gated connectors now overdue) — are all
+human-gated and all still untouched a full quarter in. No amount of further on-page work from this
+routine substitutes for those three moving.
+- PAGE: none (report-only) / CHANGE: `reports/outbox/2026-10-01-quarterly.json` (new quarterly report,
+  subject "ARLO SEO — Quarterly Review — Q3 2026") / TARGET: n/a / WHY: the scheduled quarterly review
+  task, due at the close of Q3 2026 and the end of the original 12-week plan's own timeline. / VERIFY:
+  validated the report JSON parses (`python3 -c "import json; json.load(open(...))"`) and that
+  `subject`/`html` keys match the shape `scripts/send-seo-reports.mjs` expects (same contract as every
+  prior `reports/outbox/*.json`). No app code touched this session, so no build/lint gate applies.
+
+NEXT (Q4 2026 priorities):
+1. **Top priority, human-only, zero cost:** submit the sitemap in Google Search Console and request
+   indexing for the homepage + top 5 pages (open since Week 1 of the original plan, still not done after
+   a full quarter) — likely the single highest-leverage unblocked action available, and GSC data would
+   also finally give this routine a real indexation/impressions signal instead of only SE Ranking's
+   not-ranked floor.
+2. **Off-page Phase 1 still 0 of 6** (Smithery.ai, Glama.ai, mcp.so, awesome-mcp-servers, AlternativeTo,
+   SaaSHub) — all free listings, all human-gated, all unstarted a full quarter after being planned for
+   Week 4.
+3. **Configure at least one engine in SE Ranking's AI Result Tracker** (`PROJECT_listLlmEngines` has
+   returned empty every session since kickoff) — without it there is no AI-citation baseline at all
+   going into Q4, despite the whole strategy being built around GEO/AI-Overview-eligible content.
+4. `catalog.ts`'s 8 gated connectors are now all past their own ETAs (meta_ads/linkedin_ads/meta_pages
+   since May, tiktok_ads/stripe since June, hubspot/mailerlite since July, mailchimp since August) —
+   shipping any one unlocks the next connector-matrix page this routine has had ready to write for
+   months. Same for the Excel/Snowflake/Redshift/Databricks destinations (`coming_soon`/`waitlist`,
+   unchanged all quarter).
+5. **Re-read `sxo.md` end-to-end against current code** — flagged as not-yet-re-checked-this-cycle by
+   the 2026-09-28 session, still true. Keep re-pulling SE Ranking fresh every session rather than
+   trusting "exhausted" as permanent — both the Google Sheets comparison section (09-17) and the
+   sitemap legal-pages fix (09-28) this quarter came from treating it as provisional.
+6. Still open, unchanged from last quarter: a real Content-Security-Policy (needs live third-party-script
+   testing this sandbox can't do), the `www` redirect mode (307→301/308, Vercel domain-config layer),
+   IndexNow (needs a human decision + live outbound ping), `sxo.md` #7 (a second case study/testimonial
+   needs a real client quote, not something to invent), and `src/lib/schema.ts`'s dead `generateSchema()`
+   (still just a human decision — delete or wire in).
+7. Next weekly-pulse-style session due ~2026-10-05/06 per the established cadence; next quarterly review
+   due ~2027-01-01 (end of Q4 2026).
+
 ## 2026-09-28 (Mon) — Indexation fix: `/privacy` and `/terms` are live, correctly-canonicalized pages that have never been listed in `sitemap.xml` — added both (technical.md M5, dated 2026-07-04, never previously fixed)
 
 CONTEXT: SE Ranking authenticated again (live `PROJECT_listProjects` call, askarlo.app site_id 12704162
