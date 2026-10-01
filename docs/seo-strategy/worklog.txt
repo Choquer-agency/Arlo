@@ -6,6 +6,112 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-01 (Thu) — sxo.md fully re-verified against current code for the first time this cycle (closed except the human-gated 2nd case study); corrected a stale NEXT item from earlier today; screened out a new candidate (1ClickReport comparison) for zero measured demand; no code shipped — content backlog stays genuinely exhausted
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-09-24→10-01, daily): avg position flat
+at 100 (not-ranked floor) every day — unchanged since kickoff. `DATA_getBacklinksSummary` (domain
+mode): still 3 backlinks / 2 refdomains, unchanged since 2026-09-10. `PROJECT_listLlmEngines` still
+returns empty — AI Result Tracker remains unconfigured (noted below: a `PROJECT_createLlmEngine` tool
+is available in this session's SE Ranking toolset, but configuring it is a spend/account decision on
+someone else's subscription that past sessions have correctly treated as human-gated, not a content/
+code change this routine's task scope covers — left untouched rather than used on my own judgment).
+`src/lib/connectors/catalog.ts` re-checked byte-for-byte: all 9 gated connectors (meta_ads/linkedin_ads/
+meta_pages May 2026, tiktok_ads/stripe June 2026, hubspot/mailerlite July 2026, mailchimp August 2026)
+remain `coming_soon`, every ETA still past due, unchanged. GitHub Actions checked directly
+(`actions_list`, workflow id 307242249): all 45 `SEO Report Email` runs since kickoff green, 45/45
+all-time, zero failures.
+
+**Correction to today's earlier monthly-deep-dive NEXT item 4** ("ship the `claude mcp server` pillar
+page"): stale. Checked directly — `src/content/blog/posts/us/how-to-set-up-a-claude-mcp-server.md`
+already exists and has been live since 2026-08-06 (confirmed in this file's own 2026-08-06 and
+2026-09-01 entries). The monthly review that produced that NEXT item was restating an old Month-3 goal
+without re-checking current source first, the same class of mistake this worklog has caught and
+corrected before (the 09-24 "blog is empty" near-miss, the 09-25 stale destinations-schema finding).
+Future sessions should treat this item as closed, not reopen it a third time.
+
+Re-pulled the FOCUS cluster fresh (20 terms via `DATA_getKeywordsMetrics`, US) — exhausted again, same
+terms/volumes as every recent session (`claude mcp server` 910/mo, `mcp connector` 880/mo, `meta ads
+mcp`/`google analytics mcp` 590/mo, down to `mailerlite mcp` 30/mo), every one already the primary
+target of a live page or gated on a still-`coming_soon` connector. Went one step further than usual and
+ran `DATA_getRelatedKeywords` off `mcp connector` (120 related terms, top 30 reviewed) looking for a
+genuinely new angle: the high-volume definitional terms (`mcp`, `mcp server`, `what is mcp`, `model
+context protocol` — 8,000–60,500/mo) are all KD 69–97, already correctly classified P3/not-winnable in
+`keyword-research.md`; the one high-relevance result, `mcp connectors` (660/mo, KD 11), is just the
+plural of the already-covered `mcp connector`/`what-is-an-mcp-connector.md` intent. No new opportunity.
+
+With FOCUS re-confirmed exhausted, did the full `sxo.md` (2026-07-04) re-verification against current
+code that the 09-28 session's NEXT note asked for — the one static audit not yet re-checked this cycle.
+Went through all 8 items in its Section 8 priority list directly against source, not audit prose:
+1. `/services`/`/work` message mismatch — **closed**, confirmed again: neither route exists any more
+   (`src/app/work/` and `src/app/services/page.tsx` are both gone, matching the 09-28 finding).
+2. `supermetrics-vs-arlo` — **closed**, shipped (`src/content/comparisons.ts` now has 5 entries:
+   windsor-ai, supermetrics, agencyanalytics, whatagraph, funnel.io).
+3. Integration/how-to cluster ("GA4 in Claude" etc.) — **closed**, shipped as the 5 live
+   `/connect/[slug]` pages plus the `how-to-set-up-a-claude-mcp-server` blog post.
+4. `meta-ads-specialist` 404 — **closed**. Read `src/app/services/[slug]/page.tsx` directly:
+   `generateStaticParams()` now maps over every service in `src/content/services.ts`, not just
+   `tier === 1`, and `meta-ads-specialist` additionally has its own dedicated static route
+   (`src/app/services/meta-ads-specialist/route.ts` + `_shell.html`). No 404 in current code — the
+   audit's finding was already fixed in a prior, unlogged-by-name session.
+5. `FAQPage` schema on `<FAQ />` — **closed**, shipped (matches the worklog's 09-03 fix).
+6. Reframe top `/destinations/[slug]` pages with comparison framing — **closed** for every candidate
+   with real, SE-Ranking-confirmed demand: `src/app/destinations/[slug]/route.ts`'s
+   `COMPARISON_CONTENT` map covers all 3 pages `sxo.md` named (Looker Studio, Power BI, BigQuery) plus
+   Tableau (09-07) and Google Sheets (09-17), each added only after a live keyword pull justified it
+   (the file's own comments say so). The other 10 destinations stay `coming_soon`/`waitlist` and
+   correctly have no comparison section — adding one would be the same false-capability-claim problem
+   flagged elsewhere in the audits.
+7. Second, independent case study/testimonial — **still open**, unchanged, human-only (needs a real
+   client quote, nothing to fabricate).
+8. `dateModified` on `/destinations/[slug]` — **closed**, shipped (`_content/lastUpdated.ts`).
+
+That closes every code-actionable item `sxo.md` raised except #7. One more candidate surfaced reading
+Section 4 of the same audit: item 4, `/compare/1clickreport-vs-arlo` (1ClickReport named as ARLO's
+closest positioning match, recommended as a "defend-the-category" page). Pulled fresh SE Ranking data
+before acting on it — `DATA_getKeywordsMetrics` for `1clickreport`, `1clickreport alternative`,
+`1clickreport vs arlo`, `1clickreport review`: **zero tracked search volume for every variant**
+(`dataFound: false` across the board). The audit's recommendation was built on a WebSearch-inferred SERP
+presence, not measured demand, and this routine's own rule is to ship pages against confirmed keyword
+volume (the same bar `excel alternative` and the Google Sheets/Tableau additions were held to). Ruled
+out — not building a page with zero measurable search demand behind it.
+
+No code shipped this session. Like 2026-09-24, this is the legitimate outcome of a content backlog that
+re-verification confirms is actually exhausted, not a skipped task — and unlike that session, this one
+closes out the one static audit (`sxo.md`) that hadn't been re-checked against current code yet.
+- PAGE: none / CHANGE: none (verification-only session; `src/content/blog/manifest.json`'s
+  build-regenerated diff reverted via `git checkout --`, same as every prior no-code session) / TARGET:
+  n/a / WHY: FOCUS cluster, destinations, blog, and now `sxo.md` are all re-confirmed caught up against
+  current source; the one new candidate found (`1clickreport-vs-arlo`) failed the keyword-volume bar
+  this routine holds every new page to. / VERIFY: `rm -rf .next && npm install && npm run build` —
+  `✓ Compiled successfully`, `✓ Generating static pages (87/87)`; same 9 pre-existing `(app)/*` +
+  `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only
+  secret), not a regression. `git status` clean after reverting the build-regenerated `manifest.json`.
+
+NEXT:
+1. **`sxo.md` is now closed** except item 7 (second case study/testimonial — human-only, needs a real
+   client quote). A future session doesn't need to re-read it from scratch; this entry's item-by-item
+   list above is the current state.
+2. **Correction, now resolved:** today's earlier monthly-deep-dive NEXT item 4 ("ship the `claude mcp
+   server` pillar page") was stale — that page shipped 2026-08-06. Don't resurface it a third time.
+3. FOCUS cluster exhausted again, cross-checked two ways this session (direct 20-term pull +
+   `DATA_getRelatedKeywords` expansion off `mcp connector`, 120 terms). Keep re-pulling fresh each
+   session rather than assuming permanent exhaustion, but don't force new content without a genuine new
+   signal — that's the one thing left to watch for, not a backlog to work through.
+4. `catalog.ts`'s 9 gated connectors all still overdue, unchanged; same for the Excel/Snowflake/
+   Redshift/Databricks/Notion/Airtable destinations. Any status flip to `live`/`beta` is the next real
+   content opportunity.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (a `PROJECT_createLlmEngine` tool exists in this session's
+   toolset, but spending on someone else's SE Ranking subscription isn't this routine's call to make
+   unilaterally — flagging it for an explicit human decision rather than using it); the dormant
+   6-persona `route.ts` scaffold; a real Content-Security-Policy; the `www` redirect 307→301/308;
+   IndexNow; the second case study/testimonial (sxo.md #7).
+6. Next weekly-pulse-style session due ~2026-10-05/08 per the established cadence. With every static
+   audit (`technical.md`, `onpage-schema.md`, `sxo.md`) now re-verified against current code and closed
+   out, a future session has nothing left to re-read cold — just keep re-pulling SE Ranking fresh and
+   re-checking `catalog.ts`/destinations catalog for a status flip.
+
 ## 2026-10-01 (Thu) — Quarterly review (Q3 2026, 2026-07-01→09-30): technical foundation and both content engines fully closed out; rank/backlinks/AI-visibility flat the entire quarter because the three off-site levers (GSC submission, off-page Phase 1, catalog.ts connector ETAs) are all still untouched 3 months after kickoff
 
 CONTEXT: SE Ranking authenticated (live `PROJECT_listProjects`, askarlo.app site_id 12704162, 22
