@@ -6,6 +6,73 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-05 (Mon) — Weekly pulse: 14th straight week flat — rank still 0/22, backlinks flat 3/2 (unchanged since 09-10), CI 47/47 green all-time; fresh FOCUS re-pull again finds no new keyword/catalog signal
+
+CONTEXT: SE Ranking authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22 tracked
+keywords confirmed). `PROJECT_getPositionHistory` (2026-10-01→10-05, daily): avg position flat at 100
+(not-ranked floor) every single day — unchanged since kickoff. `DATA_getBacklinksSummary` (domain
+mode): still 3 backlinks / 2 refdomains / domain_inlink_rank 6, unchanged since the 2026-09-10 bump.
+`PROJECT_listLlmEngines` still returns empty — AI Result Tracker remains unconfigured, no AI-visibility
+baseline. GitHub Actions checked directly (`actions_list`, workflow id 307242249): all 47
+`SEO Report Email` runs since kickoff green, 47/47 all-time, zero failures.
+
+`src/lib/connectors/catalog.ts` re-checked byte-for-byte: all 9 gated connectors (meta_ads/
+linkedin_ads/meta_pages May 2026, shopify April 2026, tiktok_ads/stripe June 2026, hubspot/mailerlite
+July 2026, mailchimp August 2026) remain `coming_soon`, every ETA still past due. `src/lib/destinations/
+catalog.ts` re-checked too: `power_bi` (July 2026) and `excel` (August 2026) ETAs now past due,
+`snowflake` (September 2026) now also past due, and `shareable_dashboard`'s October 2026 ETA falls this
+very month — none have flipped status yet, so none is a shippable content trigger today, but
+`shareable_dashboard` is the one to watch first over the next few sessions.
+
+Pulled a fresh batch of 10 FOCUS-adjacent candidate terms via `DATA_getKeywordsMetrics` (US) looking for
+a genuinely new angle beyond the terms already exhausted in prior sessions: `mcp connectors` (1,000/mo,
+but KD 63 — too hard, and still just the plural of the already-covered `mcp connector`/
+`what-is-an-mcp-connector.md` intent) and `search console mcp` (50/mo, KD 19 — already the live target
+of `/connect/search-console-mcp`, confirmed via `src/content/connect*.ts`'s `search-console-mcp` slug and
+`src/app/connect/[slug]/page.tsx`). The other 8 terms tried (`youtube analytics mcp`, `model context
+protocol connector`, `mcp integration agency`, `mcp for marketing agencies`, `google ads mcp server`,
+`ga4 mcp server`, `claude mcp connector`, `ai reporting mcp`) returned no SE Ranking data at all
+(`dataFound: false`). No new opportunity found — the FOCUS cluster and the live connector-matrix pages
+stay exhausted against current demand.
+
+Also spot-checked the three still-open technical items from prior sessions' NEXT lists directly against
+source rather than re-trusting old audit prose: `next.config.mjs` still deliberately ships no
+Content-Security-Policy (the inline comment explains why — needs live third-party-script testing this
+sandbox can't do) and has no `www` redirect logic (confirmed that lever lives at Vercel's domain-config
+layer, not in this repo, matching every prior session's finding). `src/app/api/indexnow/route.ts`
+already exists (built in an earlier session) but still can't be verified end-to-end without a live
+outbound ping to `api.indexnow.org`, which this sandbox blocks. All three remain correctly human-gated,
+not code-actionable today.
+
+No code shipped this session — this is the legitimate outcome of a 14th consecutive week where every
+code-actionable lever (connector matrix, comparison hub, destinations comparisons, blog, all three
+closed-out static audits) stays caught up against current demand, and the one open catalog lever
+(`shareable_dashboard`'s October ETA) hasn't flipped yet.
+- PAGE: none / CHANGE: none (verification-only session) / TARGET: n/a / WHY: fresh SE Ranking pull +
+  catalog re-check found no new keyword, connector-status, or technical-item signal to act on. / VERIFY:
+  `npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`; same 9
+  pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression. `git status` clean after reverting the
+  build-regenerated `src/content/blog/manifest.json` diff (same pattern as every prior session).
+
+NEXT:
+1. **Watch `shareable_dashboard`** (`src/lib/destinations/catalog.ts`) — its `coming_soon` ETA is
+   "October 2026", the only catalog entry whose ETA falls in the current month. If it flips to
+   `live`/`beta` before the next pulse, that's the next real content opportunity (a destination landing
+   page or comparison-section addition), ahead of the other still-overdue connectors/destinations.
+2. FOCUS cluster, connector matrix, comparison hub, destinations comparisons, and blog all re-confirmed
+   exhausted again this session (10-term fresh pull, only 2 with any data, both already covered). Keep
+   re-pulling fresh each session rather than assuming permanent exhaustion.
+3. `catalog.ts`'s 9 gated connectors all still overdue, unchanged. `destinations/catalog.ts`: `power_bi`,
+   `excel`, and now `snowflake` are all past due too; `shareable_dashboard` is due this month (see #1).
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (same `PROJECT_createLlmEngine` spend-decision flag as every
+   prior session); the dormant 6-persona `route.ts` scaffold; a real Content-Security-Policy (needs live
+   third-party-script testing); the `www` redirect 307→301/308 (Vercel domain-config layer); IndexNow
+   (route already built, needs a live outbound ping this sandbox can't make); the second case
+   study/testimonial (sxo.md #7, needs a real client quote).
+5. Next weekly-pulse-style session due ~2026-10-08/09 per the established cadence.
+
 ## 2026-10-02 (Fri) — Weekly pulse: 13th straight week flat across the board — rank still 0/22 at the not-ranked floor, backlinks flat 3/2 (4th week), CI green 46/46 all-time, catalog.ts's 9 gated connectors and the destinations catalog unchanged, AI Result Tracker still has zero LLM engines configured (no AI-visibility baseline); GA4 conversions marked pending (no outbound GA4 API access from this sandbox). No new content gap found — yesterday's session already closed the last open static audit. Human asks unchanged: GSC sitemap submission, off-page Phase 1 (0/6). See reports/outbox/2026-10-02-weekly-pulse.json.
 
 ## 2026-10-01 (Thu) — sxo.md fully re-verified against current code for the first time this cycle (closed except the human-gated 2nd case study); corrected a stale NEXT item from earlier today; screened out a new candidate (1ClickReport comparison) for zero measured demand; no code shipped — content backlog stays genuinely exhausted
