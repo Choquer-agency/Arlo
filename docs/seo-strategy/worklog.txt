@@ -6,6 +6,100 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-08 (Thu) — On-page/schema fix: found and fixed a site-wide copy-paste bug — 4 live static pages + the shared page template were shipping wrong OG/Twitter cards and wrong JSON-LD, and all 5 live `/compare/[slug]` pages were emitting a duplicate, conflicting WebPage schema block alongside their correct one; also closed the audit's original P0 #5 pricing-schema gap
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-01→10-08, daily): avg position
+still flat at 100 (not-ranked floor) every day — 15th straight week unchanged since tracking began.
+`DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged since
+2026-09-10. `DATA_getDomainKeywords` for askarlo.app returns zero ranking keywords — no organic
+footprint yet. GitHub Actions checked directly (workflow id 307242249, `list_workflow_runs`): all 48
+`SEO Report Email` runs since kickoff green, 48/48 all-time, zero failures.
+
+`src/lib/connectors/catalog.ts` and `src/lib/destinations/catalog.ts` re-checked byte-for-byte:
+unchanged from 10-05 — all 9 gated connectors and `power_bi`/`excel`/`snowflake` still `coming_soon`
+past their ETAs; `shareable_dashboard`'s "October 2026" ETA has not flipped yet. Fresh 10-term
+keyword pull (US, `DATA_getKeywordsMetrics`) targeting genuinely new MCP/agency-reporting phrasing
+not tried in prior sessions (`mcp agency reporting`, `mcp report generator`, `shopify mcp connector`,
+etc.) — 0 of 10 returned any SE Ranking data. FOCUS cluster stays exhausted.
+
+With no new keyword signal again, did a closer read of the structured-data/on-page layer than prior
+sessions' byte-for-byte `catalog.ts` re-checks — specifically, read every static page's actual
+`<head>` block (not audit prose) looking for the kind of schema bug the 2026-09-14 session found on
+the connector-matrix pages. Found two real, previously unflagged, code-actionable bugs:
+
+1. **Stale copy-paste contamination.** `src/app/about/_shell.html`, `blog/_shell.html`,
+   `contact/_shell.html`, and `pricing/_shell.html` all had their `og:title`/`og:description`/
+   `twitter:title`/`twitter:description` meta tags AND their JSON-LD `WebPage` block hardcoded to
+   **`services/seo-specialist`'s content** ("ARLO for SEO Specialists — Ask Claude About Any Client",
+   describing Search Console/PageSpeed/GBP, `url` pointing at the homepage, breadcrumb naming "ARLO"
+   instead of the real page) — clearly a clone-and-forget-to-rename artifact. `about`/`blog` also
+   shared `pricing`'s plain meta description verbatim ("Everything agencies ask before connecting
+   their first client."), wrong for both. Net effect: anyone sharing an About/Blog/Contact/Pricing
+   link on social got the wrong preview card, and Google/AI crawlers reading each page's own JSON-LD
+   in isolation saw it mis-described as the SEO-specialist persona page. `src/app/base-template/
+   _shell.html` — the literal template every new static page gets cloned from (per its own route.ts
+   comment) — carried the identical bug, meaning it would keep propagating into future pages; replaced
+   its placeholders with obvious `REPLACE ME` markers instead of plausible-looking wrong copy.
+2. **Duplicate, conflicting WebPage schema on all 5 live `/compare/[slug]` pages** (windsor-ai,
+   supermetrics, agencyanalytics, whatagraph, funnel.io vs ARLO — the comparison hub, a P1 priority
+   page set). `compare/[slug]/route.ts` already builds a fully correct, dynamic WebPage+FAQPage+
+   BreadcrumbList schema per page (right title, URL, `dateModified`, real competitor name, real FAQs)
+   and injects it via `{{schemaHtml}}` — confirmed still wired correctly. But `_shell.html` *also*
+   hardcoded a second, static WebPage block with the same wrong SEO-specialist content described
+   above, so every comparison page was shipping two contradictory `WebPage` entities for the same URL.
+   Removed the dead hardcoded block; the correct dynamic one is untouched and still renders.
+
+Separately closed the original 2026-07-04 audit's P0 #5 ("ship real Product/Offer schema with the 6
+real pricing tiers") for the one page it's most relevant to: `/pricing`'s `SoftwareApplication.offers`
+was a single generic `{price: "0", description: "Free plan available"}` Offer. Replaced with an
+`AggregateOffer` (`lowPrice: 0`, `highPrice: 499`, `offerCount: 6`) listing all 6 real tiers from
+`src/content/shared.ts`'s `pricingTiers` (Free/Solo/Studio/Agency/Scale/Enterprise) — the same pattern
+the dead `src/lib/schema.ts generateSchema()` function already modeled correctly but was never wired
+in. (That function remains unused/dead — still a human call on delete-vs-wire-in, unchanged.)
+
+Verified `src/lib/schema.ts`'s `generateSchema()` is still genuinely dead (only reference is its own
+definition) and that the homepage's existing Organization/WebSite/SoftwareApplication/WebPage JSON-LD
+(baked directly into `arlo/_shell.html`, not via that function) is otherwise intact and correct — the
+dead-code question is unchanged from the 09-14 session's finding, left untouched as before.
+- PAGE: `src/app/about/_shell.html`, `src/app/blog/_shell.html`, `src/app/contact/_shell.html`,
+  `src/app/pricing/_shell.html`, `src/app/base-template/_shell.html`, `src/app/compare/[slug]/
+  _shell.html` / CHANGE: fixed stale cloned-page OG/Twitter/JSON-LD metadata on 4 live pages + the
+  shared template; removed a duplicate conflicting WebPage JSON-LD block from all 5 live comparison
+  pages; added a 6-tier AggregateOffer to `/pricing`'s existing SoftwareApplication schema / TARGET:
+  n/a (on-page/schema correctness fix, not a new keyword page) — benefits social-share CTR and
+  AI/Google's ability to correctly parse each page's own structured data, including the comparison
+  hub's `supermetrics-vs-arlo` / `agencyanalytics-vs-arlo` / `whatagraph-vs-arlo` / `funnel-io-vs-arlo`
+  / `windsor-ai-vs-arlo` pages this strategy's P1 priority rests on / VERIFY: `npm install && npm run
+  build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`; same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret), not a regression. Validated every edited file's JSON-LD blocks parse as valid
+  JSON (`python3 -I`, standalone `json.loads` per block). `git status` clean except the intended 6
+  files after reverting the build-regenerated `manifest.json` diff (same pattern as every prior
+  session).
+
+NEXT:
+1. **Worth a follow-up pass:** this session only read the 4 pages + 1 template + the compare-page
+   template closely enough to find this bug class; the remaining static shells (`destinations/
+   _template`, `services/*`, `connect/[slug]` if it has a shell) were spot-checked for the exact same
+   "SEO Specialists" string (none found beyond what's fixed) but not given the same full head-to-head
+   title/og/JSON-LD audit this session gave about/blog/contact/pricing/compare. A future session could
+   do the same close read on the remaining page types as a cheap way to find more of this bug class
+   now that we know the pattern exists (clone a shell, forget to update the OG/schema block).
+2. `src/lib/schema.ts`'s `generateSchema()` is still dead code (same finding as 2026-09-14) — still a
+   human call on delete vs. wire in; the homepage's own equivalent schema (baked into `arlo/_shell.html`
+   directly) already covers the same ground correctly, independent of that function.
+3. FOCUS cluster, connector matrix, comparison hub, destinations comparisons, and blog all re-confirmed
+   exhausted again this session (fresh 10-term pull, 0 of 10 had data). Keep re-pulling fresh each
+   session rather than assuming permanent exhaustion.
+4. `catalog.ts`'s 9 gated connectors and the destinations catalog (power_bi/excel/snowflake past due,
+   shareable_dashboard due this month) all unchanged — any status flip is the next real content lever.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); `generateSchema()` delete-vs-wire-in (#2 above).
+6. Next weekly-pulse-style session due ~2026-10-12/13 per the established cadence.
+
 ## 2026-10-05 (Mon) — Weekly pulse: 14th straight week flat — rank still 0/22, backlinks flat 3/2 (unchanged since 09-10), CI 47/47 green all-time; fresh FOCUS re-pull again finds no new keyword/catalog signal
 
 CONTEXT: SE Ranking authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22 tracked

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Pricing — Free while we're early | ARLO</title><meta content="Everything agencies ask before connecting their first client." name="description"/><meta content="ARLO for SEO Specialists — Ask Claude About Any Client" property="og:title"/><meta content="ARLO connects Claude to your clients' Google marketing data — Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client, live, without opening another tab." property="og:description"/><meta content="https://askarlo.app/arlo/og-image.png" property="og:image"/><meta content="ARLO for SEO Specialists — Ask Claude About Any Client" name="twitter:title"/><meta content="ARLO connects Claude to your clients' Google marketing data — Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client, live, without opening another tab." name="twitter:description"/><meta content="https://askarlo.app/arlo/og-image.png" name="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="/arlo/lib/arlo-base.css" rel="stylesheet" type="text/css"/><link rel="stylesheet" href="/arlo/arlo-fonts.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-chat.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-nav.css?v=__ARLOV__"/><link href="/arlo/favicon-256.png" rel="shortcut icon" type="image/x-icon"/><link href="/arlo/favicon-256.png" rel="apple-touch-icon"/><link href="https://askarlo.app/pricing" rel="canonical"/>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Pricing — Free while we're early | ARLO</title><meta content="Everything agencies ask before connecting their first client." name="description"/><meta content="ARLO Pricing — Free while we're early" property="og:title"/><meta content="Six plans from Free to Enterprise, priced per business tracked — no per-seat tax, no dashboard-building hours. Start free, upgrade in one click." property="og:description"/><meta content="https://askarlo.app/arlo/og-image.png" property="og:image"/><meta content="ARLO Pricing — Free while we're early" name="twitter:title"/><meta content="Six plans from Free to Enterprise, priced per business tracked — no per-seat tax, no dashboard-building hours. Start free, upgrade in one click." name="twitter:description"/><meta content="https://askarlo.app/arlo/og-image.png" name="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="/arlo/lib/arlo-base.css" rel="stylesheet" type="text/css"/><link rel="stylesheet" href="/arlo/arlo-fonts.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-chat.css?v=__ARLOV__"/><link rel="stylesheet" href="/arlo/arlo-nav.css?v=__ARLOV__"/><link href="/arlo/favicon-256.png" rel="shortcut icon" type="image/x-icon"/><link href="/arlo/favicon-256.png" rel="apple-touch-icon"/><link href="https://askarlo.app/pricing" rel="canonical"/>
 <link rel="preconnect" href="https://askarlo.app" crossorigin>
 
 
@@ -103,10 +103,19 @@
     "operatingSystem": "Web",
     "description": "The MCP layer for agencies. ARLO connects Claude to every client's marketing data — GA4, Search Console, Google Ads, Meta, YouTube, and more — for live answers in plain language.",
     "offers": {
-      "@type": "Offer",
-      "price": "0",
+      "@type": "AggregateOffer",
       "priceCurrency": "USD",
-      "description": "Free plan available"
+      "lowPrice": "0",
+      "highPrice": "499",
+      "offerCount": 6,
+      "offers": [
+        { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "Try ARLO on one business with 100 free queries a month." },
+        { "@type": "Offer", "name": "Solo", "price": "19", "priceCurrency": "USD", "description": "For the single business owner who wants Claude over their own analytics, ads, and store." },
+        { "@type": "Offer", "name": "Studio", "price": "99", "priceCurrency": "USD", "description": "For boutique agencies with up to 10 clients and unlimited team seats." },
+        { "@type": "Offer", "name": "Agency", "price": "249", "priceCurrency": "USD", "description": "The sweet spot for growing agencies handling more clients, sources, and queries." },
+        { "@type": "Offer", "name": "Scale", "price": "499", "priceCurrency": "USD", "description": "For larger agencies running up to 75 clients across unlimited platforms." },
+        { "@type": "Offer", "name": "Enterprise", "price": "0", "priceCurrency": "USD", "description": "For agency networks needing unlimited scale, SSO, and a dedicated CSM.", "eligibleCustomerType": "Enterprise (custom pricing)" }
+      ]
     },
     "creator": {
       "@type": "Organization",
@@ -132,9 +141,9 @@
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "ARLO for SEO Specialists — Ask Claude About Any Client",
-  "url": "https://askarlo.app",
-  "description": "ARLO plugs Claude Desktop into Search Console, GA4, PageSpeed, and Google Business Profile — so you can ask about any client without opening another tab.",
+  "name": "ARLO Pricing — Free while we're early",
+  "url": "https://askarlo.app/pricing",
+  "description": "Everything agencies ask before connecting their first client.",
   "isPartOf": {
     "@type": "WebSite",
     "name": "ARLO",
@@ -152,8 +161,8 @@
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "ARLO",
-        "item": "https://askarlo.app"
+        "name": "Pricing",
+        "item": "https://askarlo.app/pricing"
       }
     ]
   }
