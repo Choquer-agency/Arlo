@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-09 (Fri) — Weekly pulse: rank flat at not-ranked floor across all 22 tracked keywords for a 15th straight week, backlinks flat 3/2 (unchanged since 09-10), CI green 49/49 all-time (incl. Thursday's schema-fix session); catalog.ts's 9 gated connectors and shareable_dashboard's October ETA (still coming_soon, 1/3 of the month gone) unchanged; AI Result Tracker still has zero LLM engines configured; GA4 conversions marked pending (no outbound GA4 API access from this sandbox). See reports/outbox/2026-10-09-weekly-pulse.json.
+
 ## 2026-10-08 (Thu) — On-page/schema fix: found and fixed a site-wide copy-paste bug — 4 live static pages + the shared page template were shipping wrong OG/Twitter cards and wrong JSON-LD, and all 5 live `/compare/[slug]` pages were emitting a duplicate, conflicting WebPage schema block alongside their correct one; also closed the audit's original P0 #5 pricing-schema gap
 
 CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
