@@ -6,6 +6,90 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-12 (Mon) — Weekly pulse + on-page/schema fix: rank flat at not-ranked floor for a 16th straight week, backlinks flat 3/2, CI green 50/50 all-time; found and fixed a real breadcrumb JSON-LD bug on the `/destinations` hub page (follow-up pass promised by 2026-10-08's NEXT item 1)
+
+CONTEXT: local clone started on a detached HEAD 4 commits behind origin/main (the last 4 commits were
+all non-conflicting weekly-pulse/report-archive/schema-fix commits from 2026-10-08/09) — synced via
+`git checkout main && git merge --ff-only origin/main` before doing anything else, same pattern as
+several prior sessions. SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id
+12704162, 22 tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-05→10-12, daily): avg
+position still flat at 100 (not-ranked floor) every day — 16th straight week unchanged since tracking
+began 2026-08-01. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10. `PROJECT_listLlmEngines` still returns empty — AI Result Tracker remains unconfigured,
+no AI-visibility baseline. GitHub Actions checked directly (`actions_list`, workflow id 307242249): all
+50 `SEO Report Email` runs since kickoff green, 50/50 all-time, zero failures.
+
+`src/lib/connectors/catalog.ts` re-checked byte-for-byte: all 9 gated connectors unchanged, every ETA
+still past due. `src/lib/destinations/catalog.ts` re-checked: `shareable_dashboard`'s "October 2026" ETA
+— the one catalog entry due this month — still hasn't flipped from `coming_soon`, now with less than 3
+weeks of the month left. No status-flip content trigger yet.
+
+With FOCUS/catalog both re-confirmed unchanged from Thursday's check, picked up 2026-10-08's NEXT item 1
+directly: that session only gave the OG/JSON-LD copy-paste bug class a full head-to-head audit on
+about/blog/contact/pricing/compare, and flagged the remaining static shells as not yet given the same
+treatment. Enumerated every `_shell.html` in `src/app` (16 total) and closed the gap: the 6
+`services/*/_shell.html` persona pages (account-manager, agency-owner, google-ads-specialist,
+meta-ads-specialist, seo-specialist, solo-business-owner) were checked title-tag/og:title/breadcrumb
+against each other and each correctly names and links itself — no cross-contamination. `connect/[slug]`
+uses a React `page.tsx` (not a static shell), so it isn't exposed to this exact bug class; a
+metadata-generation audit of it is separate, future-session scope. `compare/[slug]/_shell.html` was
+already fixed 2026-10-08.
+
+That left the two hub pages of the destinations product area: `destinations/_shell.html` (the static
+`/destinations` hub, parallel to `compare/_shell.html`) and `destinations/_template/_shell.html` (the
+dynamic per-destination template, parallel to `compare/[slug]/_shell.html`). The template was already
+correct (`"name": "Destinations"`, `"item": "https://askarlo.app/destinations"` at breadcrumb position 2,
+confirmed by direct read). But the static hub's own `WebPage` JSON-LD breadcrumb at position 2 read
+`"name": "ARLO"` / `"item": "https://askarlo.app"` — naming itself "ARLO" and pointing back at the
+homepage instead of naming itself "Destinations" and pointing at `/destinations`, exactly the same bug
+class (a breadcrumb entry that doesn't describe the page it's on) as the one 2026-10-08 fixed on
+about/blog/contact/pricing, just not caught in that pass because it didn't carry the literal
+"SEO Specialists" string that session grepped for. Confirmed the correct pattern two ways before fixing:
+`compare/_shell.html`'s own hub breadcrumb does `"name": "Compare"` / `"item": ".../compare"` at the same
+position, and `destinations/_template/_shell.html`'s breadcrumb already has the correct first two levels
+(`Home` → `Destinations` → `{{name}}`) — the static hub's own second level should match both.
+- PAGE: `/destinations` / CHANGE: one file, `src/app/destinations/_shell.html` — fixed the `WebPage`
+  JSON-LD breadcrumb's position-2 entry from `{"name": "ARLO", "item": "https://askarlo.app"}` to
+  `{"name": "Destinations", "item": "https://askarlo.app/destinations"}`, matching the pattern already
+  correct on `/compare` and on the dynamic `/destinations/[slug]` template. / TARGET: n/a — pure
+  structured-data correctness fix, not a new keyword page; benefits how Google/AI crawlers parse the
+  hub page's own breadcrumb trail (a self-referencing "Destinations" node at the hub, "ARLO" pointing at
+  the homepage was a confusing, incorrect second entity for the same breadcrumb position). / WHY: FOCUS
+  cluster and catalog.ts both re-confirmed exhausted/unchanged again this session (16th/continuing
+  session respectively); this closes the one concrete, human-independent follow-up item the prior
+  session explicitly left open, and the bug is real (verified against two independently-correct sibling
+  patterns, not assumed). / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`; same 9 pre-existing `(app)/*` + `/welcome`
+  prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not
+  a regression. Validated the edited file's 3 JSON-LD blocks parse as valid JSON (`python3 -I`, standalone
+  `json.loads` per block) before and after the edit. Live-verified via `next dev` on a scratch port (same
+  fallback prior sessions use for hand-rolled shells, since `next start` on this build can't boot without
+  the Vercel-only env): fetched `/destinations` and confirmed the rendered page's breadcrumb now reads
+  `"position": 2, "name": "Destinations", "item": "https://askarlo.app/destinations"`. `git status` clean
+  except the one intended file after reverting the build-regenerated `src/content/blog/manifest.json`
+  diff (same pattern as every prior session).
+
+NEXT:
+1. **The "clone a shell, forget to update its breadcrumb/OG/JSON-LD" bug class is now closed for every
+   static shell in `src/app`** — all 16 `_shell.html` files have been given a direct head-to-head check
+   across two sessions (2026-10-08: about/blog/contact/pricing/base-template/compare/[slug]; 2026-10-12:
+   the 6 services personas + destinations hub + destinations template). `connect/[slug]/page.tsx` is the
+   one remaining page using a different (React `generateMetadata`) pattern and hasn't had the equivalent
+   audit — worth a look in a future session, but it's a different bug surface, not more of this same class.
+2. FOCUS cluster, connector matrix, comparison hub, destinations comparisons, and blog all re-confirmed
+   exhausted again this session (same unchanged terms as 10-08's fresh pull). Keep re-pulling fresh each
+   session rather than assuming permanent exhaustion.
+3. `catalog.ts`'s 9 gated connectors and the destinations catalog unchanged; `shareable_dashboard`'s
+   October 2026 ETA now has under 3 weeks left in the month to flip — the one status to watch closely
+   over the next 1-2 sessions before the ETA itself lapses into "overdue" like every other gated entry.
+4. `src/lib/schema.ts`'s `generateSchema()` is still dead code (same finding since 2026-09-14) — still a
+   human call on delete vs. wire in.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); `generateSchema()` delete-vs-wire-in (#4 above).
+6. Next weekly-pulse-style session due ~2026-10-15/16 per the established cadence.
+
 ## 2026-10-09 (Fri) — Weekly pulse: rank flat at not-ranked floor across all 22 tracked keywords for a 15th straight week, backlinks flat 3/2 (unchanged since 09-10), CI green 49/49 all-time (incl. Thursday's schema-fix session); catalog.ts's 9 gated connectors and shareable_dashboard's October ETA (still coming_soon, 1/3 of the month gone) unchanged; AI Result Tracker still has zero LLM engines configured; GA4 conversions marked pending (no outbound GA4 API access from this sandbox). See reports/outbox/2026-10-09-weekly-pulse.json.
 
 ## 2026-10-08 (Thu) — On-page/schema fix: found and fixed a site-wide copy-paste bug — 4 live static pages + the shared page template were shipping wrong OG/Twitter cards and wrong JSON-LD, and all 5 live `/compare/[slug]` pages were emitting a duplicate, conflicting WebPage schema block alongside their correct one; also closed the audit's original P0 #5 pricing-schema gap
