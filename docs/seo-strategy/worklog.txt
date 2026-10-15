@@ -6,6 +6,89 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-15 (Thu) — GEO/AI-citation fix: `public/llms.txt` was still linking to `https://askarlo.app/services`, a hub route that no longer exists in production (confirmed live 404) — removed the dead link; rank flat for a 17th straight week, FOCUS cluster re-confirmed exhausted
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-08→10-15, daily): avg position
+still flat at 100 (not-ranked floor) every day — 17th straight week unchanged since tracking began
+2026-08-01. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10 (5th+ week flat). `PROJECT_listLlmEngines` still returns empty — AI Result Tracker
+remains unconfigured, no AI-visibility baseline. GitHub Actions checked directly (`actions_list`,
+workflow id 307242249): all 51 `SEO Report Email` runs since kickoff green, 51/51 all-time.
+
+`src/lib/connectors/catalog.ts` and `src/lib/destinations/catalog.ts` re-checked byte-for-byte:
+unchanged from 10-12 — all 9 gated connectors still `coming_soon` past their ETAs;
+`shareable_dashboard`'s "October 2026" ETA still hasn't flipped despite the month being half over.
+Fresh 20-term FOCUS pull (`DATA_getKeywordsMetrics`, US) covering the MCP-integration cluster and the
+still-gated connectors/destinations (claude mcp server, mcp connector, meta ads mcp, shopify mcp,
+hubspot/mailchimp/stripe/tiktok/linkedin mcp, excel/snowflake alternative, agencyanalytics/
+supermetrics/whatagraph alternative): every term with real volume is either already the primary
+target of a live connector/comparison/blog page, or gated on a `catalog.ts`/destinations entry still
+stuck at `coming_soon`. FOCUS cluster exhausted again — connector matrix (5/5 live sources) and
+comparison hub (5/5 named competitors) both confirmed still fully built out.
+
+With FOCUS exhausted and every audit's human-independent item already closed (per the 09-14/09-28/
+10-01/10-08/10-12 sessions' exhaustive re-verification of `technical.md`, `onpage-schema.md`, and
+`sxo.md` against current code), did a fresh read of `public/llms.txt` against the **current live
+site** rather than trusting the file's own prose — the same "verify against current source" discipline
+those sessions used. `geo-ai.md`'s original P0 #3 flagged two `llms.txt` dead links (`/pricing`,
+`/docs`), both fixed long ago. But the file's "## Pages" list still carried a third link —
+`[Services (who it's for)](https://askarlo.app/services)` — pointing at a bare `/services` hub route.
+Checked the codebase directly: `src/app/services/` contains only `[slug]/page.tsx` (a dynamic React
+route, itself shadowed/unreachable for every known slug since all 6 persona slugs — seo-specialist,
+google-ads-specialist, meta-ads-specialist, account-manager, agency-owner, solo-business-owner — have
+their own literal static-shell directories that take routing priority) plus those 6 literal persona
+directories — no `page.tsx`/`route.ts` for the bare `/services` path itself, and `src/middleware.ts`
+has no redirect for it either. Confirmed live via `next dev` on a scratch port: `GET /services` → `404`,
+while `GET /services/seo-specialist` → `200`. This is the exact "llms.txt dead link" bug class
+`geo-ai.md` originally flagged (P0 #3), recurring because the `/services` hub route was removed from
+the app at some point after `llms.txt` was hand-written (confirmed via the 2026-09-28 worklog entry,
+which independently found the hub route gone while fixing an unrelated sitemap gap) and nobody updated
+`llms.txt` to match. An AI crawler or agent following this link from the one file explicitly meant to
+hand it a curated site map gets a dead end instead of the services overview it expects.
+- PAGE: `public/llms.txt` / CHANGE: removed the one dead `[Services (who it's for)](https://askarlo.app/services)`
+  line from the "## Pages" list. No replacement URL was added — all 5 real persona pages are already
+  individually linked, by name and with role-specific blurbs, in the file's existing "## Who ARLO Is
+  For" section (lines 28–32), so removing the dead hub-page line loses no coverage; inventing a new
+  single-URL stand-in for a hub that doesn't exist would just recreate the same problem under a
+  different URL. / TARGET: no keyword — pure AI-citation/crawler-accuracy fix, the same class as every
+  prior `llms.txt` correction this routine has made. / WHY: FOCUS cluster and both content engines
+  (connector matrix, comparison hub) all re-confirmed exhausted again this session, and every other
+  standing NEXT item remains human-gated (off-page, GSC, CSP, www redirect, IndexNow, AI Result Tracker,
+  second case study, dormant persona scaffold, static-render infra risk) — this was the one genuinely
+  open, human-independent, fully live-verified, low-risk item found after re-reading `llms.txt` against
+  current app routes rather than trusting its own prose or the 2026-07-04 audit's now-superseded list of
+  dead links. / VERIFY: confirmed the dead `/services` route 404s and `/services/{persona}` pages 200
+  via `next dev` on a scratch port (same fallback prior sessions use, since `next start` can't boot
+  without the Vercel-only `NEXT_PUBLIC_CONVEX_URL`). `rm -rf .next && npm install && npm run build` —
+  `✓ Compiled successfully`, `✓ Generating static pages (87/87)`; same 9 pre-existing `(app)/*` +
+  `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only
+  secret), identical route list, not a regression. `npm run lint` clean (only the same pre-existing
+  unrelated `sitemap/page.tsx` CSS-tag warning). `git status` showed only `public/llms.txt` after
+  reverting the build-regenerated `src/content/blog/manifest.json` diff (same pattern as every prior
+  session) — staged only the one intended file.
+
+NEXT:
+1. FOCUS keyword cluster exhausted for a consecutive session (connector matrix 5/5, comparison hub
+   5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any `catalog.ts`
+   connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+2. `shareable_dashboard`'s "October 2026" ETA is now more than half-elapsed without flipping — worth a
+   close watch over the next 1-2 sessions; if it lapses into "overdue" like every other gated entry,
+   drop it from the active-watch list per the established pattern for Meta Ads/LinkedIn/TikTok/etc.
+3. `src/lib/schema.ts`'s `generateSchema()` is still dead code (unchanged since 2026-09-14) — still a
+   human call on delete vs. wire in.
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); the static-render marketing-pages infra fix (needs human OAuth verification);
+   `generateSchema()` delete-vs-wire-in (#3 above).
+5. Next weekly-pulse-style session due ~2026-10-19/20 per the established cadence. With FOCUS, the
+   connector matrix, the comparison hub, and now every `llms.txt` link re-verified live against current
+   app routes, a future session should spot-check the other static audits' remaining "medium/low"
+   recommendations (e.g. `geo-ai.md` #10 question-form headings, #16 semantic pricing table) for
+   anything genuinely low-risk and code-actionable, rather than re-deriving the same exhausted FOCUS
+   pull from scratch.
+
 ## 2026-10-12 (Mon) — Weekly pulse + on-page/schema fix: rank flat at not-ranked floor for a 16th straight week, backlinks flat 3/2, CI green 50/50 all-time; found and fixed a real breadcrumb JSON-LD bug on the `/destinations` hub page (follow-up pass promised by 2026-10-08's NEXT item 1)
 
 CONTEXT: local clone started on a detached HEAD 4 commits behind origin/main (the last 4 commits were
