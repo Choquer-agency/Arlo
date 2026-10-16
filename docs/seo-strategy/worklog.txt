@@ -6,6 +6,10 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-16 (Fri) — Weekly pulse: 18th straight session flat (rank 0/22, backlinks 3/2 unchanged since 09-10), CI green 52/52 all-time; no new signal since Thursday's llms.txt fix, AI Result Tracker still unconfigured. See reports/outbox/2026-10-16-weekly-pulse.json.
+
+=====================================================================================
+
 ## 2026-10-15 (Thu) — GEO/AI-citation fix: `public/llms.txt` was still linking to `https://askarlo.app/services`, a hub route that no longer exists in production (confirmed live 404) — removed the dead link; rank flat for a 17th straight week, FOCUS cluster re-confirmed exhausted
 
 CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
