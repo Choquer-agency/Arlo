@@ -250,6 +250,38 @@ export function Pricing() {
           </p>
         )}
 
+        {/* Same pricing data as the cards above, as a semantic <table> so search
+            and AI crawlers can extract it as structured tabular data without
+            relying on the visual card layout. Visually hidden; identical content
+            to the cards, not a separate/alternate version. */}
+        <table className="sr-only">
+          <caption>ARLO pricing plans</caption>
+          <thead>
+            <tr>
+              <th scope="col">Plan</th>
+              <th scope="col">Price</th>
+              <th scope="col">Description</th>
+              <th scope="col">What&apos;s included</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pricingTiers.map((tier) => (
+              <tr key={tier.name}>
+                <th scope="row">{tier.name}</th>
+                <td>{tier.priceRange}</td>
+                <td>{tier.description}</td>
+                <td>
+                  <ul>
+                    {tier.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
         <p className="pricing-heading font-sans text-fluid-main text-center mt-10 opacity-50 max-w-[70ch] mx-auto">
           Windsor caps at 14 source types at $499. ARLO gives you unlimited source
           types at Scale — because we don&apos;t warehouse your data, we query live.

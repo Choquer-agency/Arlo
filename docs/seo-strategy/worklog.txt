@@ -6,6 +6,86 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-19 (Mon) — GEO/AI-citation fix: added a semantic `<table>` of the pricing data alongside the visual pricing cards (`geo-ai.md` #16), closing the one item the 2026-10-15 session's NEXT #5 flagged for spot-checking; rank flat for a 19th straight week (0/22), backlinks flat 3/2, CI green 53/53 all-time
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-12→10-19, daily): avg position
+still flat at 100 (not-ranked floor) every day — 19th straight week unchanged since tracking began
+2026-08-01. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10 (7th+ week flat). `PROJECT_listLlmEngines` still returns empty — AI Result Tracker
+remains unconfigured, no AI-visibility baseline. GitHub Actions checked directly (`actions_list`,
+workflow id 307242249): all 53 `SEO Report Email` runs since kickoff green, 53/53 all-time.
+
+`src/lib/connectors/catalog.ts` re-checked: all 9 gated connectors (meta_ads/linkedin_ads May 2026,
+tiktok_ads June 2026, meta_pages May 2026, shopify April 2026, hubspot July 2026, mailchimp August
+2026, mailerlite July 2026, stripe June 2026) still `coming_soon`, every ETA still past due.
+`src/lib/destinations/catalog.ts` re-checked: `shareable_dashboard`'s "October 2026" ETA — the one
+entry due this month, flagged for close watch by the 2026-10-16 session — still hasn't flipped from
+`coming_soon`, with only ~12 days of the month left. FOCUS cluster (connector matrix 5/5, comparison
+hub 5/5, blog 10 posts) re-confirmed exhausted again — no status-flip and no new keyword-driven page
+to ship this session, consistent with every session since 2026-10-01.
+
+With FOCUS and catalog.ts both re-confirmed unchanged, picked up 2026-10-15's NEXT #5 directly: spot-
+check the other static audits' remaining medium/low recommendations for anything genuinely low-risk
+and code-actionable, rather than re-deriving the exhausted FOCUS pull from scratch. Re-read
+`audits/geo-ai.md` §10 (Prioritized Recommendations) end to end. Item #10 ("rewrite H2/H3 headings in
+question form, site-wide") was ruled out as too broad/judgment-heavy for an unattended session — it
+touches marketing copy across many pages with no mechanical "correct" answer. Item #16 ("convert the
+homepage pricing cards to a semantic `<table>` in addition to the visual cards, so it's directly
+extractable as structured data even before the `Offer` schema (#9) ships") was a clean, scoped,
+mechanical, additive fix: `src/components/Pricing.tsx` renders `pricingTiers` (from
+`src/content/shared.ts`) purely as styled `<div>`/card markup — no tabular structure for a crawler or
+AI retriever to parse, exactly the gap #16 describes. Confirmed `#9` (the `Offer`/`SoftwareApplication`
+JSON-LD schema) still hasn't shipped — `src/lib/schema.ts`'s `generateSchema()` remains dead code
+(unchanged, per every prior session back to 2026-09-14) — so #16's own stated rationale ("even before
+the Offer schema ships") still applies.
+- PAGE: `/` (homepage pricing section, `src/components/Pricing.tsx`) / CHANGE: added a visually-hidden
+  (`sr-only`) semantic `<table>` immediately after the existing visual pricing cards, rendering the
+  exact same `pricingTiers` data (plan name, price, description, full `includes` list per tier,
+  Enterprise included) as a real `<table>`/`<caption>`/`<th scope="col">`/`<th scope="row">` structure
+  instead of only as styled cards. The visual cards are untouched — this is a second, machine-readable
+  representation of identical content (not deceptive/cloaked text — same facts, same order, same
+  wording as the cards), the same `sr-only` pattern already used elsewhere in the codebase (a hidden
+  checkbox input in `src/app/demo/team/[id]/page.tsx`) confirming Tailwind's `sr-only` utility is wired
+  up project-wide. / TARGET: no single keyword — a GEO/AI-citation structural fix so answer engines and
+  Google's table-extraction can parse ARLO's pricing directly (plan → price → what's included) without
+  depending on CSS Grid card layout, same rationale as `geo-ai.md`'s own text. / WHY: FOCUS exhausted
+  for a continuing session and every other open NEXT item is either a human-gated decision (GSC, off-
+  page, AI Result Tracker, CSP, `www` redirect, IndexNow, second case study, static-render infra,
+  `generateSchema()` delete-vs-wire-in) or a repeat of an already-closed check (catalog.ts/llms.txt);
+  this was the one concrete, low-risk, code-actionable item still open in the audits per 10-15's own
+  NEXT #5 pointer. / VERIFY: `rm -rf .next && npm install && npm run build` on the change — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome`
+  prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret).
+  Confirmed this is not a regression by stashing the change and rebuilding from the unmodified baseline
+  — identical 9-route failure set, identical exit code. `npm run lint` clean (only the same pre-existing
+  unrelated `sitemap/page.tsx` CSS-tag warning). `git diff` shows the change isolated to the one
+  `<table>` block added to `Pricing.tsx`; the build-regenerated `src/content/blog/manifest.json` diff
+  (same pattern as every prior session) was reverted before staging.
+
+NEXT:
+1. FOCUS keyword cluster exhausted for a 4th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+2. `shareable_dashboard`'s "October 2026" ETA now has under 2 weeks left in the month without
+   flipping — if it lapses into "overdue" like every other gated entry, drop it from the active-watch
+   list per the established pattern for Meta Ads/LinkedIn/TikTok/etc.
+3. `src/lib/schema.ts`'s `generateSchema()` is still dead code (unchanged since 2026-09-14) — still a
+   human call on delete vs. wire in; wiring it in would also let `geo-ai.md` #9 (Offer/SoftwareApplication
+   schema for the 6 tiers) finally ship, which this session's #16 fix explicitly anticipated.
+4. `geo-ai.md` #10 (rewrite H2/H3 headings in question form, site-wide) remains open but was judged too
+   broad/judgment-heavy for an unattended session this round — a future session could scope it down to
+   1-2 specific, high-traffic headings (e.g. one persona page's hero H2) rather than a site-wide pass,
+   if FOCUS stays exhausted.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); the static-render marketing-pages infra fix (needs human OAuth verification);
+   `generateSchema()` delete-vs-wire-in (#3 above).
+6. Next weekly-pulse-style session due ~2026-10-22/23 per the established cadence.
+
+=====================================================================================
+
 ## 2026-10-16 (Fri) — Weekly pulse: 18th straight session flat (rank 0/22, backlinks 3/2 unchanged since 09-10), CI green 52/52 all-time; no new signal since Thursday's llms.txt fix, AI Result Tracker still unconfigured. See reports/outbox/2026-10-16-weekly-pulse.json.
 
 =====================================================================================
