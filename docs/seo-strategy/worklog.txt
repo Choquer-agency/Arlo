@@ -6,6 +6,87 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-22 (Thu) — Trust/contamination fix: removed leftover "custom build" agency-copy from the shared `/services/[slug]` persona-page template (closes original audit's P2 #16), the one remaining item in that bullet; rank flat for a 20th straight week (0/22), backlinks flat 3/2, AI Result Tracker still unconfigured, CI green 54/54 all-time
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-15→10-22, daily): avg position
+still flat at 100 (not-ranked floor) every day — 20th straight week unchanged since tracking began
+2026-08-01. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10 (8th+ week flat). `PROJECT_listLlmEngines` still returns empty — AI Result Tracker
+remains unconfigured, no AI-visibility baseline. GitHub Actions checked directly (`actions_list`,
+workflow id 307242249): all 54 `SEO Report Email` runs since kickoff green, 54/54 all-time.
+
+`src/lib/connectors/catalog.ts` re-checked: all 9 gated connectors (meta_ads/linkedin_ads May 2026,
+tiktok_ads June 2026, meta_pages May 2026, shopify April 2026, hubspot July 2026, mailchimp August
+2026, mailerlite July 2026, stripe June 2026) still `coming_soon`, every ETA still past due.
+`src/lib/destinations/catalog.ts` re-checked: `shareable_dashboard`'s "October 2026" ETA still hasn't
+flipped from `coming_soon`, now with only ~9 days left in the month. FOCUS cluster (connector matrix
+5/5, comparison hub 5/5, blog 10 posts) re-confirmed exhausted again — no status-flip and no new
+keyword-driven page to ship this session, consistent with every session since 2026-10-01.
+
+With FOCUS and catalog.ts both re-confirmed unchanged, picked up 2026-10-19's NEXT #4 (scope the
+geo-ai.md #10 heading-question-form item down to 1-2 concrete headings rather than a site-wide pass)
+by first re-reading the two relevant source files: `src/content/services.ts` (per-persona pain-point/
+benefit copy) and the shared `src/app/services/[slug]/page.tsx` template that renders every one of the
+6 persona pages. Grepping the template for its hardcoded section H2s turned up something more pressing
+than a question-form rewrite: two of the five section H2s are literal leftover agency/custom-dev copy
+— `"What you get with a custom build"` and `"How we build it"` — hardcoded once in the shared template,
+so they render unchanged on all 6 live persona pages (seo-specialist, google-ads-specialist, meta-ads-
+specialist, account-manager, agency-owner, solo-business-owner). This is factually wrong for ARLO: the
+"Process" section underneath "How we build it" is literally ARLO's self-serve signup flow (`Sign up in
+60 seconds → Connect Google → Add your clients → Copy your MCP URL → Ask anything` — confirmed in
+`src/content/services.ts`), not a custom-dev engagement, and ARLO is priced per business tracked, not
+quoted as a bespoke build. This is the exact leftover first flagged in the original 2026-07-04 audit's
+README P2 #16 ("remove leftover 'custom build' template headings on persona pages") — the pricing-
+model half of that same bullet ("per seat" vs. "per business tracked") was already fixed in an earlier
+session (grepped clean, no "per seat" string anywhere in source), but this headings half was still open.
+- PAGE: all 6 `/services/{slug}` persona pages, via the one shared `src/app/services/[slug]/page.tsx`
+  template / CHANGE: changed two hardcoded section `<h2>` strings: `"What you get with a custom build"`
+  → `"What you get with ARLO"` (Solution section, directly above the real per-persona `benefits` list),
+  and `"How we build it"` → `"How it works"` (Process section, directly above the real 5-step self-serve
+  signup flow). No other copy, structure, or the `painPoints`/`benefits`/`processSteps` content itself
+  touched — purely replacing the two mismatched section headers with ones that match the actual content
+  and ARLO's real self-serve SaaS positioning. / TARGET: no single keyword — a trust/E-E-A-T and brand-
+  consistency fix (same class as the original P0 #1/#2 contamination cleanup); matters for conversion
+  and for any AI answer engine or human reader summarizing "how ARLO works," since the old heading would
+  have them describe a custom-build engagement that doesn't exist. / WHY: FOCUS exhausted for a 5th
+  consecutive session and every other open NEXT item is either human-gated (GSC, off-page, AI Result
+  Tracker, CSP, `www` redirect, IndexNow, second case study, static-render infra, `generateSchema()`
+  delete-vs-wire-in) or the site-wide heading-question-form item explicitly deferred as too broad for an
+  unattended pass; re-reading the exact files that item pointed at surfaced this sharper, already-
+  catalogued (P2 #16), scoped, mechanical fix instead. / VERIFY: `rm -rf .next && npm install && npm run
+  build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*`
+  + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only
+  secret), identical route list, not a regression. `npm run lint` clean (only the same pre-existing
+  unrelated `sitemap/page.tsx` CSS-tag warning). `git diff` shows the change isolated to the two heading
+  strings in `page.tsx`; grepped the full source tree afterward for any other "custom build"/"we build"/
+  "we'll build" agency-framing remnants — none found. The build-regenerated `src/content/blog/
+  manifest.json` diff (same pattern as every prior session) was reverted before staging.
+
+NEXT:
+1. FOCUS keyword cluster exhausted for a 5th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+2. `shareable_dashboard`'s "October 2026" ETA now has under 10 days left in the month without
+   flipping — if it lapses into "overdue" like every other gated entry, drop it from the active-watch
+   list per the established pattern for Meta Ads/LinkedIn/TikTok/etc.
+3. `src/lib/schema.ts`'s `generateSchema()` is still dead code (unchanged since 2026-09-14) — still a
+   human call on delete vs. wire in; wiring it in would also let `geo-ai.md` #9 (Offer/SoftwareApplication
+   schema for the 6 tiers) finally ship.
+4. `geo-ai.md` #10 (rewrite H2/H3 headings in question form, site-wide) remains open and was again
+   judged too broad/judgment-heavy for a full site-wide unattended pass; this session's fix addressed
+   the more pressing mismatched-copy half of what that re-read turned up, but the question-form framing
+   itself is still unapplied anywhere. A future session could pick ONE high-traffic page's hero H2 and
+   trial the question-form rewrite there first, if FOCUS stays exhausted.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); the static-render marketing-pages infra fix (needs human OAuth verification);
+   `generateSchema()` delete-vs-wire-in (#3 above).
+6. Next weekly-pulse-style session due ~2026-10-26/27 per the established cadence.
+
+=====================================================================================
+
 ## 2026-10-19 (Mon) — GEO/AI-citation fix: added a semantic `<table>` of the pricing data alongside the visual pricing cards (`geo-ai.md` #16), closing the one item the 2026-10-15 session's NEXT #5 flagged for spot-checking; rank flat for a 19th straight week (0/22), backlinks flat 3/2, CI green 53/53 all-time
 
 CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22

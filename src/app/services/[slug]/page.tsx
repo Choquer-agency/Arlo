@@ -135,7 +135,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="text-center mb-12">
             <p className="eyebrow text-brand mb-4">The Solution</p>
             <h2 className="font-sans font-medium text-fluid-h2 leading-[1.1] text-dark max-w-[22ch] mx-auto">
-              What you get with a custom build
+              What you get with ARLO
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -159,7 +159,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="text-center mb-12">
             <p className="eyebrow text-brand mb-4">Process</p>
             <h2 className="font-sans font-medium text-fluid-h2 leading-[1.1] text-dark max-w-[22ch] mx-auto">
-              How we build it
+              How it works
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-y-8 max-w-5xl mx-auto">
