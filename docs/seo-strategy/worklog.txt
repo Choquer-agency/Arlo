@@ -6,6 +6,91 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-10-26 (Mon) — GEO fix: question-form rewrite trial on the seo-specialist persona page's problem H2 (geo-ai.md #10, scoped to one page per 2026-10-23's NEXT #4); rank flat for a 22nd straight session (0/22), backlinks flat 3/2, AI Result Tracker still unconfigured, CI green 56/56 all-time
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-19→10-26, daily): avg position
+still flat at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, 22nd
+straight session flat. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains,
+unchanged since 2026-09-10 (10th straight week flat). `PROJECT_listLlmEngines` still returns empty —
+AI Result Tracker remains unconfigured, no AI-visibility baseline. GitHub Actions checked directly
+(`actions_list`, workflow id 307242249): all 56 `SEO Report Email` runs since kickoff green, 56/56
+all-time (Friday's 10-23 weekly-pulse report shipped cleanly).
+
+`src/lib/connectors/catalog.ts` re-checked: all 9 gated connectors still `coming_soon`, every ETA
+still past due (May–August 2026). `src/lib/destinations/catalog.ts` re-checked: `shareable_dashboard`'s
+"October 2026" ETA has not flipped, now with only ~5 days left in the month — one session from
+lapsing into "overdue" like every other gated entry; kept on the active-watch list one more session
+since the month isn't over yet. Re-verified from source (not just re-reading the prior write-up):
+`src/content/connectors.ts` (5 connector pages: google-analytics-mcp, google-ads-mcp,
+search-console-mcp, youtube-mcp, google-business-profile-mcp — exactly the 5 `live` entries in
+catalog.ts) and `src/content/comparisons.ts` (5 comparison pages: windsor-ai, supermetrics,
+agencyanalytics, whatagraph, funnel) both confirmed still fully built out against current demand —
+FOCUS keyword cluster re-confirmed exhausted for a 7th consecutive session, no new status-flip and
+no new keyword-driven page to ship.
+
+With FOCUS and both catalogs re-confirmed unchanged, picked up 2026-10-23's NEXT #4 — geo-ai.md
+audit item #10 ("rewrite H2/H3 headings in question form") trialed on ONE high-traffic page's hero-
+adjacent H2, rather than attempted site-wide (explicitly deferred twice already as too broad/judgment-
+heavy for an unattended pass). Chose `/services/seo-specialist` — the exact page the original
+2026-07-04 GEO audit used as its worked example for this finding (geo-ai.md §4 quotes this page's
+"The tab-hopping tax"/"One prompt, every property" H3s as the non-question-form pattern to fix) and
+the persona most directly aligned with the FOCUS cluster's search-console/GA4 MCP terms. Read
+`src/content/services.ts` (single source of truth for all 6 persona pages, rendered by the shared
+`src/app/services/[slug]/page.tsx` template — confirmed this is the live template, not the unused
+`_shell.html` static artifacts sitting alongside it under `src/app/services/*/`, which the 2026-10-22
+session's edit to `page.tsx` already established as the real render path) and found `problemHeading`
+— the one H2 that's genuinely persona-specific content (as opposed to "What you get with ARLO" / "How
+it works" / "Who this is for", which are static strings shared across all 6 pages and out of scope for
+a single-page trial) — stated as a declarative sentence: "Monday morning shouldn't be 45 minutes of
+Search Console tabs."
+- PAGE: `/services/seo-specialist` (via `src/content/services.ts`'s `seo-specialist.problemHeading`,
+  rendered by the shared `src/app/services/[slug]/page.tsx` template as the H2 directly under the
+  "The Problem" eyebrow) / CHANGE: rewrote the H2 from the declarative "Monday morning shouldn't be 45
+  minutes of Search Console tabs." to the question form "Why does Monday morning cost you 45 minutes
+  of Search Console tabs?" — same claim, same length, same Monday-morning/tab-hopping narrative that
+  the surrounding `problemSubhead` and `painPoints` already support, just phrased as the buyer question
+  an AI answer engine or searcher would actually ask. No other heading, copy, or page touched — this is
+  the single-page trial 2026-10-23's NEXT #4 called for, not the site-wide pass geo-ai.md #10 originally
+  scoped (still deferred as too broad/judgment-heavy for an unattended pass). / TARGET: no single
+  keyword — a GEO/AI-citation structural fix (geo-ai.md §4/§10: question-phrased headings are favored by
+  both classic featured-snippet extraction and AI-answer-engine passage retrieval); secondarily
+  reinforces the "search console mcp" / "google analytics mcp" FOCUS terms this persona page targets,
+  since the question form more closely mirrors how a buyer would phrase the underlying query. / VERIFY:
+  `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages
+  (87/87)`, same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), identical route list, not a regression. `npm run lint`
+  clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning). `git diff` shows the
+  change isolated to the single heading string in `services.ts`. The build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior session) was reverted before
+  staging.
+
+NEXT:
+1. FOCUS keyword cluster exhausted for a 7th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+2. `shareable_dashboard`'s "October 2026" ETA now has ~5 days left in the month without flipping —
+   next session (on/after 2026-10-31) should check whether it lapsed; if so, drop it from the
+   active-watch list per the established pattern for Meta Ads/LinkedIn/TikTok/etc.
+3. `src/lib/schema.ts`'s `generateSchema()` is still dead code (unchanged since 2026-09-14) — still a
+   human call on delete vs. wire in; wiring it in would also let `geo-ai.md` #9 (Offer/SoftwareApplication
+   schema for the 6 tiers) finally ship.
+4. `geo-ai.md` #10 (question-form headings) — this session's trial covered ONE H2 on ONE page. If the
+   question-form pattern is judged good (human call — no AI-citation measurement tool is available in
+   this sandbox to verify impact directly), a future session could extend it to the `problemHeading` on
+   the other 5 persona pages (same shared template, same field, genuinely persona-specific content on
+   each) before considering the shared "What you get with ARLO"/"How it works"/"Who this is for" H2s or
+   the FAQ section header ("Common questions") that recur across every page.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; the dormant 6-persona `route.ts` scaffold; a real
+   Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case study/testimonial
+   (sxo.md #7); the static-render marketing-pages infra fix (needs human OAuth verification); the unused
+   `_shell.html` static artifacts under `src/app/services/*/` (confirmed dead this session — candidate
+   for deletion, human call); `generateSchema()` delete-vs-wire-in (#3 above).
+6. Next session due ~2026-10-29/30 per the established cadence.
+
+=====================================================================================
+
 ## 2026-10-23 (Fri) — Weekly pulse: no code changes, pure reporting session; rank flat for a 21st straight session (0/22), backlinks flat 3/2 (9th straight week), AI Result Tracker still unconfigured, CI green 55/55 all-time
 
 CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22

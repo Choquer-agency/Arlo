@@ -20,7 +20,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroSubhead:
       "ARLO plugs Claude Desktop into Search Console, GA4, PageSpeed, and Google Business Profile so you can ask about any client without opening another tab.",
     problemHeading:
-      "Monday morning shouldn't be 45 minutes of Search Console tabs.",
+      "Why does Monday morning cost you 45 minutes of Search Console tabs?",
     problemSubhead:
       "When you manage SEO for 20+ clients, the real work starts after you've finished pulling the data. ARLO gets you there faster.",
     painPoints: [
