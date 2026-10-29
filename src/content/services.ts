@@ -157,7 +157,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroH1: "Audit every Google Ads account without switching once.",
     heroSubhead:
       "ARLO plugs Claude Desktop into your MCC and GA4 so you can ask about spend, conversions, Quality Score, and search terms across every client at once.",
-    problemHeading: "Your MCC was not designed for 30 active accounts.",
+    problemHeading: "Why wasn't your MCC designed for 30 active accounts?",
     problemSubhead:
       "The more clients you add, the slower every question gets. ARLO collapses that workflow into a single prompt.",
     painPoints: [
@@ -295,7 +295,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroSubhead:
       "ARLO connects to GA4 today and brings Meta, LinkedIn, and TikTok ads into Claude Desktop in Phase 2. Plan for the workflow you actually want, not the one three dashboards forced on you.",
     problemHeading:
-      "Paid social reporting is three dashboards in a trench coat.",
+      "Why does paid social reporting feel like three dashboards in a trench coat?",
     problemSubhead:
       "Every platform reports differently, attributes differently, and tells a different lift story. ARLO is being built so you can stop translating between them.",
     painPoints: [
@@ -431,7 +431,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroH1: "Answer the 4pm client ping in under a minute.",
     heroSubhead:
       "ARLO plugs every channel your client runs into Claude Desktop - GA4, Google Ads, Search Console, Business Profile - so you can answer the status question without pinging three specialists.",
-    problemHeading: "Client questions don't wait for the weekly report.",
+    problemHeading: "Why won't client questions wait for the weekly report?",
     problemSubhead:
       "When the CMO asks how this week is going on a Thursday afternoon, you need the answer now, not after you've assembled it from five tools.",
     painPoints: [
@@ -568,7 +568,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroH1: "See every client, every channel, every trend line.",
     heroSubhead:
       "ARLO gives agency owners a single window across GA4, Google Ads, Search Console, and Business Profile, plus an audit log that shows who asked what about which client.",
-    problemHeading: "Most churn is visible six weeks before it happens.",
+    problemHeading: "Why is most churn visible six weeks before it happens?",
     problemSubhead:
       "The signals are in the data. The problem is nobody in the agency has time to pull them all together. ARLO fixes that.",
     painPoints: [
@@ -703,7 +703,7 @@ export const serviceMap: Record<string, ServicePillar> = {
     heroH1: "Your whole business, answerable in one conversation.",
     heroSubhead:
       "ARLO's Solo plan plugs Claude into GA4, Search Console, Google Ads, Meta, Shopify, Stripe and more — for one business, yours. No agency overhead, no per-seat tax. Just ask Claude — free during early access.",
-    problemHeading: "Running your own business means you are the analyst.",
+    problemHeading: "Why does running your own business make you the analyst?",
     problemSubhead:
       "You don't have an agency answering questions at 4pm. You open seven tabs and try to hold it all in your head. That's not a strategy — it's a bottleneck.",
     painPoints: [
