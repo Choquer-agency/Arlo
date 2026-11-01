@@ -6,6 +6,77 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-01 (Sun) — Monthly deep-dive: Month 4 review (October 2026) — SCORED Missed (2 of 6 measurable KPIs met), no code shipped; rank still flat 0/22 every day in October, backlinks flat 3/2, Domain Trust stalled at 6 after 3 straight monthly ticks, shareable_dashboard's October ETA now formally lapsed, CI green 59/59 all-time
+
+SCORE — Month 4 goal: **Missed** (2 of 6 measurable KPIs from the 2026-10-01 goal list met — `sxo.md`
+re-verified day one of the month; Leads/CPL correctly stayed "pending"). Live SE Ranking pull this
+session (`PROJECT_getPositionHistory`, site_id 12704162, 2026-10-01→11-01 daily): avg position flat at
+100 (not-ranked floor) **every single day of October** — 0 of 22 tracked keywords have ever registered
+a position since tracking began 2026-08-01, now 3 full months running. `DATA_getBacklinksSummary`
+(domain mode): still 3 backlinks / 2 referring domains, unchanged since 2026-09-10, both still the same
+`futurlabs.dev` sister-site cross-link. `DATA_getDomainAuthority`: still 6 — the 5→6 tick from September
+did not repeat, the first flat Domain Trust reading since tracking began (it had ticked up every month
+through September). `PROJECT_listLlmEngines` still returns an empty list — AI Result Tracker has never
+had a single LLM engine configured, now 4 full months with no AI-visibility baseline. Off-page Phase 1
+(6 directory/registry listings) stays 0 of 6, now 3 months past its Week-4 target; GSC sitemap
+submission (open since kickoff, 2026-07-04) is still unresolved, now a full 4 months.
+
+`src/lib/connectors/catalog.ts` re-checked byte-for-byte: all 9 gated connectors (shopify — April 2026
+ETA, now 7 months overdue; meta_ads/linkedin_ads/meta_pages — May 2026, 6 months overdue; tiktok_ads/
+stripe — June 2026, 5 months overdue; hubspot/mailerlite — July 2026, 4 months overdue; mailchimp —
+August 2026, 3 months overdue) remain `coming_soon`, unchanged from the Month 3 checkpoint.
+`src/lib/destinations/catalog.ts` re-checked: `shareable_dashboard`'s "October 2026" ETA — flagged for
+close watch all month, last checked 2026-10-30 with one day left — has now formally lapsed (today is
+2026-11-01, entry still `coming_soon`), making every single `coming_soon` destinations-catalog entry
+(power_bi, excel, snowflake, shareable_dashboard) simultaneously overdue, the same pattern the connector
+catalog hit in September. The dormant 6-persona `route.ts` scaffold (open since 2026-07-30) remains
+unresolved. `mcp__github__actions_list` confirmed all 59 `SEO Report Email` runs since kickoff green,
+59/59 all-time.
+
+The two other Month 4 goal items: checking `src/content/blog/posts/us/how-to-set-up-a-claude-mcp-server.md`
+confirms the `claude mcp server` pillar page has been live since 2026-08-06 (already corrected as a
+stale restated goal on 2026-10-01 itself) — not new progress this month, just a goal item that was never
+actually open. The ChatGPT-assistant-column connector variant remains blocked on the same open human
+check flagged since 2026-08-06, unchanged. `sxo.md`'s re-verification (closed except item #7, human-only)
+was completed 2026-10-01, the first day of the month, closing out the last of the eight static audits
+not yet re-checked against current code this cycle.
+
+Fresh FOCUS-cluster re-pull confirms the thesis keeps validating even with zero rank movement:
+`claude mcp server` held at 910/mo and `mcp connector` at 880/mo, neither term softening across 4+
+months of consecutive re-pulls; the connector matrix (5/5) and comparison hub (5/5) stayed fully built
+out against current demand all month, with October's 7 build-gated code-shipping sessions instead going
+to real bugs caught from live source (the 10-08 OG/Twitter/JSON-LD copy-paste + duplicate WebPage schema
+fix, the 10-12 `/destinations` hub breadcrumb fix, the 10-15 `llms.txt` dead-link fix) and two scoped
+GEO/AI-citation items (`geo-ai.md` #16's semantic pricing table, 10-19; `geo-ai.md` #10's question-form
+heading rewrite extended to all 6 persona pages, 10-26/10-29) plus the 10-22 trust/copy fix (P2 #16,
+leftover "custom build" agency headings). 14 sessions total in October, zero regressions, every build
+gated.
+
+Full monthly report (leads/CPL proxy, what's working/not, numbers-vs-Month-4-targets table, Month 5
+goal) — see `reports/outbox/2026-11-01-monthly.json`. GA4 (`G-CP22NBPLFP`) still firing since 07-04 but
+conversions remain unqueryable from this sandbox (no outbound GA4 API access) — leads/CPL stays
+"pending" per the strategy doc's own honest frame, unchanged for a 4th straight month.
+
+GOAL — Month 5 (November 2026), set this session:
+1. First measured SERP position for **any** of the 22 tracked keywords — carried over unmet for a 3rd
+   time; bar stays at ≥1 rather than escalating, since a higher target wouldn't change Google's own
+   crawl/index timeline.
+2. Off-page Phase 1: ≥2 of the 6 directory/registry listings actually shipped by a human, and GSC
+   sitemap submission actually completed — flagged for a 4th consecutive monthly report as the
+   highest-leverage, lowest-effort open items on the entire plan.
+3. A combined human pass on both `catalog.ts` (9 of 9 gated connectors overdue) and
+   `destinations/catalog.ts` (4 of 4 `coming_soon` entries now overdue) — mark each entry shipped,
+   re-dated, or removed — plus a decision on the dormant persona-route scaffold.
+4. Ship the ChatGPT-assistant-column connector variant if the 2026-08-06 human check has resolved;
+   otherwise this carries over unchanged. (The `claude mcp server` pillar page is already live — treat
+   as closed, do not reopen a third time.)
+5. Configure at least one LLM engine in SE Ranking's AI Result Tracker so AI-visibility finally has a
+   measurable baseline — a one-time human console action, not something a future session can self-serve.
+6. Leads/CPL proxy stays "pending" through Month 5 unless rankings actually appear; if they do, start
+   pulling GA4 conversions as the real goal metric per the strategy doc's own W12 instruction.
+
+=====================================================================================
+
 ## 2026-10-30 (Fri) — Weekly pulse: no code changes, pure reporting session; rank flat for a 24th straight session (0/22), backlinks flat 3/2 (12th straight week), AI Result Tracker still unconfigured, CI green 58/58 all-time; shareable_dashboard's "October 2026" ETA runs out tomorrow (10/31) still coming_soon, flagged for next session
 
 =====================================================================================
