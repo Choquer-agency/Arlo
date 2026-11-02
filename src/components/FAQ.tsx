@@ -65,7 +65,7 @@ export function FAQ({ items }: FAQProps) {
           <div className="text-center mb-12">
             <p className="faq-heading eyebrow text-brand mb-4">FAQ</p>
             <h2 className="faq-heading font-sans font-medium text-fluid-h2 leading-[1.1] text-dark">
-              Common questions
+              Got questions about ARLO?
             </h2>
           </div>
 

@@ -6,6 +6,85 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-02 (Mon) — GEO fix: question-form rewrite of the 3 shared persona-page H2s + the FAQ component's default heading (geo-ai.md #10, picking up 2026-10-29's NEXT #4); rank flat for a 25th straight session (0/22), backlinks flat 3/2, AI Result Tracker still unconfigured, CI green 60/60 all-time going into this push
+
+CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords confirmed). `PROJECT_getPositionHistory` (2026-10-26→11-02, daily): avg position
+still flat at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, 25th
+straight session flat. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains,
+unchanged since 2026-09-10. `DATA_getDomainAuthority`: still 6, unchanged since September.
+`PROJECT_listLlmEngines` still returns empty — AI Result Tracker remains unconfigured, no
+AI-visibility baseline (now a 5th-full-month gap, flagged again for the next monthly checkpoint).
+`mcp__github__actions_list` confirmed all 60 `SEO Report Email` runs since kickoff green, 60/60
+all-time going into this session's push (run #61).
+
+`src/lib/connectors/catalog.ts` re-checked: all 9 gated connectors still `coming_soon`/`waitlist`,
+every ETA still past due, unchanged from the 2026-11-01 monthly re-check. `src/lib/destinations/catalog.ts`
+re-checked: all `coming_soon`/`waitlist`/`beta` entries unchanged, including `shareable_dashboard`
+(already confirmed lapsed on 2026-11-01, no change since). `src/content/connectors.ts` (5 slugs:
+google-analytics-mcp, google-ads-mcp, search-console-mcp, youtube-mcp, google-business-profile-mcp)
+and `src/content/comparisons.ts` (5 slugs: windsor-ai, supermetrics, agencyanalytics, whatagraph,
+funnel) both re-confirmed fully built out against current demand — FOCUS keyword cluster re-confirmed
+exhausted for a 9th consecutive session, no status-flip and no new keyword-driven page to ship.
+
+With FOCUS and both catalogs re-confirmed unchanged, picked up 2026-10-29's NEXT #4: the question-form
+`problemHeading` rewrite (geo-ai.md #10) is now complete across all 6 persona pages, and that session's
+NEXT explicitly flagged the remaining shared, non-persona-specific H2s — "What you get with ARLO,"
+"How it works," "Who this is for" (all three hardcoded in the shared
+`src/app/services/[slug]/page.tsx` template, rendered identically on every persona page) and the FAQ
+section's default heading, "Common questions" (hardcoded in `src/components/FAQ.tsx`, confirmed via
+grep to be used ONLY by the service-page template — not the homepage or compare pages, which use their
+own separate static-render `route.ts`/`_shell.html` pipeline with different FAQ headings already, so
+this change is scoped exclusively to the 6 persona pages) — as the next, more judgment-heavy step
+once a single rewrite could be found that works generically across all 6 personas rather than needing
+per-page content. Rewrote all four to the question form, same meaning/length, no persona-specific
+claim needed since none of the four ever carried one:
+- "What you get with ARLO" → "What do you get with ARLO?"
+- "How it works" → "How does ARLO work?"
+- "Who this is for" → "Who is ARLO for?"
+- "Common questions" (FAQ.tsx default heading) → "Got questions about ARLO?"
+
+No other heading, copy, schema, or page touched.
+- PAGE: `/services/google-ads-specialist`, `/services/meta-ads-specialist`, `/services/account-manager`,
+  `/services/agency-owner`, `/services/solo-business-owner`, `/services/seo-specialist` (all 6 persona
+  pages, via the shared `src/app/services/[slug]/page.tsx` template's 3 hardcoded section H2s, plus
+  the FAQ component each page renders) / CHANGE: rewrote the 3 shared section headings and the FAQ
+  component's default heading from declarative statements to the question form (see the four
+  before/after pairs above) — the last remaining non-question-form headings flagged by geo-ai.md #10
+  on these pages. / TARGET: no single keyword — a GEO/AI-citation structural fix (geo-ai.md §4/§10:
+  question-phrased headings favored by both classic featured-snippet extraction and AI-answer-engine
+  passage retrieval), now complete site-wide across every heading on the FOCUS cluster's conversion
+  funnel (persona pages). / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome`
+  prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret),
+  identical route list, not a regression. `npm run lint` clean (only the same pre-existing unrelated
+  `sitemap/page.tsx` CSS-tag warning). `git diff` shows the change isolated to the four heading strings
+  across `page.tsx` and `FAQ.tsx`. The build-regenerated `src/content/blog/manifest.json` diff (same
+  pattern as every prior session) was reverted before staging.
+
+NEXT:
+1. geo-ai.md #10's question-form heading rewrite is now closed site-wide across all 6 persona pages —
+   every H2/H3 on that template (problemHeading + the 3 shared section H2s + the FAQ heading) is in
+   question form. Do not reopen; the only headings left in statement form are on the homepage/compare
+   pages' separate static-render pipeline, which was explicitly out of scope for this item (different
+   FAQ headings already, e.g. compare pages' "Questions, answered").
+2. FOCUS keyword cluster exhausted for a 9th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+3. `src/lib/schema.ts`'s `generateSchema()` is still dead code — still a human call on delete vs. wire
+   in; wiring it in would also let geo-ai.md #9 (Offer/SoftwareApplication schema for the 6 tiers)
+   finally ship.
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (5th straight month, per 2026-11-01's Month 5 goal #5); the
+   dormant 6-persona `route.ts` scaffold; a real Content-Security-Policy; the `www` redirect 307→301/308;
+   IndexNow; the second case study/testimonial (sxo.md #7); the static-render marketing-pages infra fix
+   (needs human OAuth verification); the unused `_shell.html` static artifacts under
+   `src/app/services/*/` (candidate for deletion); `generateSchema()` delete-vs-wire-in (#3 above); a
+   combined human pass on both gated catalogs per 2026-11-01's Month 5 goal #3.
+5. Next session due ~2026-11-05/06 per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-01 (Sun) — Monthly deep-dive: Month 4 review (October 2026) — SCORED Missed (2 of 6 measurable KPIs met), no code shipped; rank still flat 0/22 every day in October, backlinks flat 3/2, Domain Trust stalled at 6 after 3 straight monthly ticks, shareable_dashboard's October ETA now formally lapsed, CI green 59/59 all-time
 
 SCORE — Month 4 goal: **Missed** (2 of 6 measurable KPIs from the 2026-10-01 goal list met — `sxo.md`

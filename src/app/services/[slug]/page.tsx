@@ -135,7 +135,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="text-center mb-12">
             <p className="eyebrow text-brand mb-4">The Solution</p>
             <h2 className="font-sans font-medium text-fluid-h2 leading-[1.1] text-dark max-w-[22ch] mx-auto">
-              What you get with ARLO
+              What do you get with ARLO?
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -159,7 +159,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="text-center mb-12">
             <p className="eyebrow text-brand mb-4">Process</p>
             <h2 className="font-sans font-medium text-fluid-h2 leading-[1.1] text-dark max-w-[22ch] mx-auto">
-              How it works
+              How does ARLO work?
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-y-8 max-w-5xl mx-auto">
@@ -193,7 +193,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="max-w-3xl mx-auto text-center">
             <p className="eyebrow text-brand mb-4">Best Fit</p>
             <h2 className="font-sans font-medium text-fluid-h3 text-dark mb-6">
-              Who this is for
+              Who is ARLO for?
             </h2>
             <div className="flex flex-wrap justify-center gap-3">
               {service.bestFitCompanies.map((company) => (
