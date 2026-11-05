@@ -2,12 +2,12 @@ import { siteConfig, SITE_URL, AGENCY_NAME, CONTACT_EMAIL } from "@/lib/siteConf
 import { pricingTiers } from "@/content/shared";
 
 /**
- * Site-level JSON-LD for ARLO (a SaaS MCP connector — NOT an agency). Rendered
- * on the homepage. Describes the real product, entity, founder, pricing offers,
- * and FAQ so Google and AI answer engines model Arlo correctly and as a
- * STANDALONE product (not Choquer Agency / FuturLabs).
+ * The SoftwareApplication node, kept standalone (not just inlined in
+ * generateSchema()'s @graph) so pages that don't use the homepage's full
+ * graph — e.g. the /services/* persona pages — can still embed the real
+ * Offer data instead of carrying none at all.
  */
-export function generateSchema() {
+export function getSoftwareApplicationSchema() {
   // Map the real pricing tiers to Offers.
   const offers = pricingTiers.map((t) => {
     const num = t.priceRange.replace(/[^0-9.]/g, "");
@@ -23,6 +23,44 @@ export function generateSchema() {
       ...(isCustom ? { eligibleCustomerType: "Enterprise (custom pricing)" } : {}),
     };
   });
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${SITE_URL}/#software`,
+    name: AGENCY_NAME,
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "Marketing analytics / MCP connector",
+    operatingSystem: "Web, Claude Desktop (MCP)",
+    url: SITE_URL,
+    description: siteConfig.description,
+    publisher: { "@id": `${SITE_URL}/#business` },
+    featureList: [
+      "One OAuth connects GA4, Search Console, Google Ads, YouTube, and Business Profile",
+      "Live conversational reporting inside Claude via MCP — no exports, no dashboards, no warehouse",
+      "Per-client account assignment across every connected platform",
+      "Per-user MCP tokens with rotate + revoke and full audit log",
+      "Pass-through data model — no ETL, no persistent client data",
+    ],
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: "0",
+      highPrice: "499",
+      offerCount: pricingTiers.length,
+      offers,
+    },
+  };
+}
+
+/**
+ * Site-level JSON-LD for ARLO (a SaaS MCP connector — NOT an agency). Rendered
+ * on the homepage. Describes the real product, entity, founder, pricing offers,
+ * and FAQ so Google and AI answer engines model Arlo correctly and as a
+ * STANDALONE product (not Choquer Agency / FuturLabs).
+ */
+export function generateSchema() {
+  const { "@context": _ctx, ...softwareApplication } = getSoftwareApplicationSchema();
 
   return {
     "@context": "https://schema.org",
@@ -60,32 +98,7 @@ export function generateSchema() {
         ],
       },
 
-      {
-        "@type": "SoftwareApplication",
-        "@id": `${SITE_URL}/#software`,
-        name: AGENCY_NAME,
-        applicationCategory: "BusinessApplication",
-        applicationSubCategory: "Marketing analytics / MCP connector",
-        operatingSystem: "Web, Claude Desktop (MCP)",
-        url: SITE_URL,
-        description: siteConfig.description,
-        publisher: { "@id": `${SITE_URL}/#business` },
-        featureList: [
-          "One OAuth connects GA4, Search Console, Google Ads, YouTube, and Business Profile",
-          "Live conversational reporting inside Claude via MCP — no exports, no dashboards, no warehouse",
-          "Per-client account assignment across every connected platform",
-          "Per-user MCP tokens with rotate + revoke and full audit log",
-          "Pass-through data model — no ETL, no persistent client data",
-        ],
-        offers: {
-          "@type": "AggregateOffer",
-          priceCurrency: "USD",
-          lowPrice: "0",
-          highPrice: "499",
-          offerCount: pricingTiers.length,
-          offers,
-        },
-      },
+      softwareApplication,
 
       {
         "@type": "Person",

@@ -6,6 +6,105 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-05 (Thu) — Schema fix: finally wired real Organization/Person/SoftwareApplication+AggregateOffer JSON-LD (geo-ai.md #9) onto the homepage and all 6 persona pages, closing the `src/lib/schema.ts` dead-code question every session has punted on since 2026-09-14; rank flat for a 26th straight session (0/22), backlinks flat 3/2, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 61/61 all-time going into this push
+
+CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` (2026-11-02→11-05, daily): avg position still flat
+at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, a 26th straight
+session flat. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10. `DATA_getDomainAuthority`: still 6. `PROJECT_listLlmEngines` still returns empty —
+AI Result Tracker remains unconfigured. `mcp__github__actions_list` confirmed all 61 `SEO Report
+Email` runs since kickoff green, 61/61 all-time going into this session's push (run #62).
+
+With the FOCUS keyword cluster (connector matrix 5/5, comparison hub 5/5, blog 10 posts) and both
+gated catalogs re-confirmed unchanged for yet another session, and every other open NEXT item either
+genuinely human-gated (GSC, off-page, AI Result Tracker LLM engine config, CSP, `www` redirect,
+IndexNow, second testimonial, static-render OAuth infra) or already closed (geo-ai.md #10's
+question-form heading rewrite, closed 2026-11-02), this session finally made the one call every
+prior session since 2026-09-14 deferred as "a human decision": `src/lib/schema.ts`'s `generateSchema()`
+is correctly modeled (real Organization/SoftwareApplication/Person/Offer graph built from the live
+`pricingTiers` data, not the old $15K-$400K agency placeholder) but was never imported anywhere —
+dead code, confirmed by every session's `grep -rn "generateSchema"` turning up zero call sites besides
+its own definition. That "delete vs. wire in" framing was never actually a toss-up: deleting correctly-
+modeled Offer/SoftwareApplication schema that geo-ai.md #9 explicitly asks for, just because it hadn't
+been connected yet, would be throwing away the fix instead of shipping it. Wired it in instead, in two
+places that currently carry zero equivalent schema:
+
+1. **Homepage (`src/app/arlo/_shell.html`)** already hand-authors its own Organization/WebSite/
+   SoftwareApplication JSON-LD (a separate static-render architecture from `schema.ts`, confirmed
+   2026-09-17 — this fix did not touch that pipeline's `route.ts`/`_render.ts`, only the static HTML's
+   literal JSON-LD text), but defined **no `@id` on any node** and still advertised a single stale
+   `"$0 / Free plan available"` `Offer` instead of the real 6 tiers. Meanwhile `blog/[slug]/page.tsx`
+   has referenced `${SITE_URL}/#business` and `${SITE_URL}/#founder` as bare `@id` refs since at least
+   2026-09-17 — the exact "dangling @id" P0 finding (`onpage-schema.md` Critical #2), still live until
+   this session because nothing on the site ever defined those fragments as real nodes. Added
+   `"@id": ".../#business"` to the Organization node, `"@id": ".../#website"` to the WebSite node, a
+   new `Person` node for founder Bryce Choquer at `"@id": ".../#founder"` (didn't exist in the shell at
+   all), and `"@id": ".../#webpage"`+`"@id": ".../#software"` to the WebPage/SoftwareApplication nodes,
+   cross-linking them (`founder`, `publisher`, `worksFor`, `isPartOf`, `about`) exactly the way
+   `schema.ts` already modeled it. Replaced the SoftwareApplication's single `Offer` with a real
+   `AggregateOffer` (`lowPrice: 0`, `highPrice: 499`, `offerCount: 6`) listing all 6 live tiers (Free $0,
+   Solo $19, Studio $99, Agency $249, Scale $499, Enterprise custom) sourced from `pricingTiers` in
+   `src/content/shared.ts` — the same pricing-drift class of bug `llms.txt` had (geo-ai.md #1), now
+   fixed at its highest-traffic page.
+2. **All 6 `/services/*` persona pages** — the FOCUS cluster's actual conversion funnel, rendered via
+   the normal Next.js `page.tsx` template, confirmed via `grep` to carry **zero** JSON-LD beyond the
+   `FAQ` component's `FAQPage` schema. Refactored `schema.ts`: extracted the `SoftwareApplication`+
+   `AggregateOffer` construction into a new exported `getSoftwareApplicationSchema()` (same logic,
+   still built from live `pricingTiers`; `generateSchema()` now calls it too, so the homepage's
+   `Offer` data and the persona pages' `Offer` data can't drift apart), and imported it into
+   `src/app/services/[slug]/page.tsx` to render a `<script type="application/ld+json">` block
+   referencing `publisher: {"@id": ".../#business"}` — the same bare-@id-reference pattern the blog
+   template already uses, now actually resolvable since the homepage defines the node. This directly
+   ships geo-ai.md #9 ("`SoftwareApplication`/`Product` + `Offer` schema for the 6 pricing tiers") on
+   the pages that needed it most and were missing it entirely, and `schema.ts` is no longer dead code.
+- PAGE: `/` (`src/app/arlo/_shell.html`) and all 6 `/services/*` persona pages (`google-ads-specialist`,
+  `meta-ads-specialist`, `account-manager`, `agency-owner`, `solo-business-owner`, `seo-specialist`, via
+  the shared `src/app/services/[slug]/page.tsx` template) / CHANGE: added `@id`s + a `Person` node to
+  the homepage's existing Organization/WebSite/SoftwareApplication JSON-LD, upgraded its single `$0`
+  `Offer` to a real 6-tier `AggregateOffer`; added a new `SoftwareApplication`+`AggregateOffer` JSON-LD
+  block (via a new `getSoftwareApplicationSchema()` export from `schema.ts`) to every persona page,
+  which previously had none. / TARGET: no single keyword — ships geo-ai.md #9 (AI-answer-engine pricing
+  citation, same class of risk `llms.txt`'s pricing-drift bug posed) and resolves `onpage-schema.md`
+  Critical #2 (dangling `@id`s) at its source. / WHY: the single highest-value code-actionable item left
+  on the entire audit backlog, open since the 2026-07-04 kickoff (P0 #5) and stuck for 2 months as an
+  undecided "human call" while every other open item is genuinely human-gated; FOCUS and both catalogs
+  re-confirmed exhausted yet again this session, leaving this the clear highest-value pick. / VERIFY:
+  validated both edited JSON-LD blocks in `_shell.html` parse with `JSON.parse` before building; `rm -rf
+  .next && npm install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages
+  (87/87)`, same 9 pre-existing `(app)/*` + `/welcome` prerender failures as every prior session
+  (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression; confirmed via
+  `.next/server/app/services/google-ads-specialist.html` that the new `SoftwareApplication` schema
+  actually renders. `npm run lint` clean (only the same pre-existing unrelated `sitemap/page.tsx` CSS-
+  tag warning). `git diff --stat` shows the change isolated to the 3 files above. The build-regenerated
+  `src/content/blog/manifest.json` diff (same pattern as every prior session) was reverted before
+  staging.
+
+NEXT:
+1. `src/lib/schema.ts`'s dead-code question is closed — `getSoftwareApplicationSchema()` is now live
+   on the homepage (via `generateSchema()`'s own equivalent, still not directly wired into the static
+   shell, only mirrored by hand — see #2) and on all 6 persona pages; do not reopen the "delete vs.
+   wire in" framing.
+2. The homepage's `_shell.html` schema is still hand-authored static JSON, not generated from
+   `schema.ts`/`pricingTiers` at build time — this session kept both in sync by hand (same tier data,
+   same shape) but a future pricing change would need both places updated, the same drift risk
+   `llms.txt` already had once. Wiring the static-render pipeline to actually import `schema.ts` would
+   remove this risk, but touches the human-OAuth-gated static-render infra (README P1 #9) — flagged,
+   not attempted this session.
+3. FOCUS keyword cluster exhausted for a 10th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (5th straight month); the dormant 6-persona `route.ts`
+   scaffold; a real Content-Security-Policy; the `www` redirect 307→301/308; IndexNow; the second case
+   study/testimonial (sxo.md #7); the static-render marketing-pages infra fix (needs human OAuth
+   verification, also now relevant to #2 above); the unused `_shell.html` static artifacts under
+   `src/app/services/*/` (candidate for deletion — note: NOT the homepage's `arlo/_shell.html` touched
+   this session, which is live and in active use); a combined human pass on both gated catalogs.
+5. Next session due ~2026-11-09 per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-02 (Mon) — GEO fix: question-form rewrite of the 3 shared persona-page H2s + the FAQ component's default heading (geo-ai.md #10, picking up 2026-10-29's NEXT #4); rank flat for a 25th straight session (0/22), backlinks flat 3/2, AI Result Tracker still unconfigured, CI green 60/60 all-time going into this push
 
 CONTEXT: SE Ranking authenticated again (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22

@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { FAQ } from "@/components/FAQ";
 import { getServiceConfig, services } from "@/content/services";
 import { getConnectorBySlug } from "@/content/connectors";
+import { getSoftwareApplicationSchema } from "@/lib/schema";
 import HeroGridAnimation from "@/components/HeroGridAnimation";
 import Link from "next/link";
 
@@ -61,6 +62,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   return (
     <ClientLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(getSoftwareApplicationSchema()) }}
+      />
       <HeroGridAnimation>
         <Nav />
         {/* Hero */}
