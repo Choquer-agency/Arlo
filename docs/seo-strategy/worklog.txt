@@ -6,6 +6,10 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-06 (Fri) — Weekly pulse: pure reporting session, no code change — rank flat for a 27th straight session (0/22 tracked keywords), backlinks flat 3/2 (13th straight week), Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 62/62 all-time; report: reports/outbox/2026-11-06-weekly-pulse.json
+
+=====================================================================================
+
 ## 2026-11-05 (Thu) — Schema fix: finally wired real Organization/Person/SoftwareApplication+AggregateOffer JSON-LD (geo-ai.md #9) onto the homepage and all 6 persona pages, closing the `src/lib/schema.ts` dead-code question every session has punted on since 2026-09-14; rank flat for a 26th straight session (0/22), backlinks flat 3/2, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 61/61 all-time going into this push
 
 CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
