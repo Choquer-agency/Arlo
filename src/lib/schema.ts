@@ -1,29 +1,24 @@
 import { siteConfig, SITE_URL, AGENCY_NAME, CONTACT_EMAIL } from "@/lib/siteConfig";
-import { pricingTiers } from "@/content/shared";
 
 /**
  * The SoftwareApplication node, kept standalone (not just inlined in
  * generateSchema()'s @graph) so pages that don't use the homepage's full
  * graph — e.g. the /services/* persona pages — can still embed the real
  * Offer data instead of carrying none at all.
+ *
+ * Pricing source of truth is the live `/pricing` page
+ * (`src/app/pricing/_content/pricing.ts`): ARLO is free for everyone during
+ * early access, full stop — "we'll introduce pricing down the road." It is
+ * NOT `src/content/shared.ts`'s `pricingTiers` (Free/Solo $19/Studio $99/
+ * Agency $249/Scale $499/Enterprise), which models a paid-tier structure
+ * that was never shipped and isn't rendered on any live page (`Pricing.tsx`,
+ * the only component that reads it, is never imported anywhere). Building
+ * an AggregateOffer from that array — as this function previously did —
+ * told Google/AI crawlers ARLO charges $19–$499/mo and linked every tier to
+ * `/#pricing`, an anchor that doesn't exist on the current homepage: the
+ * exact live-pricing-drift failure mode `llms.txt` was fixed for earlier.
  */
 export function getSoftwareApplicationSchema() {
-  // Map the real pricing tiers to Offers.
-  const offers = pricingTiers.map((t) => {
-    const num = t.priceRange.replace(/[^0-9.]/g, "");
-    const isCustom = t.priceRange.toLowerCase().includes("custom") || num === "";
-    return {
-      "@type": "Offer",
-      name: t.name,
-      priceCurrency: "USD",
-      price: isCustom ? "0" : num,
-      description: t.description,
-      availability: "https://schema.org/InStock",
-      url: `${SITE_URL}/#pricing`,
-      ...(isCustom ? { eligibleCustomerType: "Enterprise (custom pricing)" } : {}),
-    };
-  });
-
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -43,12 +38,13 @@ export function getSoftwareApplicationSchema() {
       "Pass-through data model — no ETL, no persistent client data",
     ],
     offers: {
-      "@type": "AggregateOffer",
+      "@type": "Offer",
       priceCurrency: "USD",
-      lowPrice: "0",
-      highPrice: "499",
-      offerCount: pricingTiers.length,
-      offers,
+      price: "0",
+      description:
+        "Free for every feature, every client, and every destination during early access — no credit card, no usage limits. Paid plans will be introduced later.",
+      availability: "https://schema.org/InStock",
+      url: `${SITE_URL}/pricing`,
     },
   };
 }

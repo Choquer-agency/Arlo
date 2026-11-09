@@ -6,6 +6,91 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-09 (Mon) — Trust/schema fix: removed a fabricated 6-tier AggregateOffer ($0–$499) from the homepage, all 6 persona pages, and the `/pricing` page's own JSON-LD — the live site has no paid tiers at all, it's 100% free during early access; rank flat for a 28th straight session (0/22), backlinks flat 3/2, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 63/63 all-time going into this push
+
+CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` (2026-11-05→11-09, daily): avg position still flat
+at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, a 28th straight
+session flat. `DATA_getBacklinksSummary` (domain mode): still 3 backlinks / 2 refdomains, unchanged
+since 2026-09-10. `DATA_getDomainAuthority`: still 6. `PROJECT_listLlmEngines` still returns empty —
+AI Result Tracker remains unconfigured. `mcp__github__actions_list` confirmed all 63 `SEO Report
+Email` runs since kickoff green, 63/63 all-time going into this session's push (run #64).
+
+With the FOCUS keyword cluster (connector matrix 5/5, comparison hub 5/5, blog 10 posts) and both
+gated catalogs re-confirmed unchanged for an 11th consecutive session, this session re-audited the
+2026-11-05 schema-wiring commit against the actual live site instead of taking its own `pricingTiers`
+source data on faith, and found that commit had introduced exactly the class of bug it was trying to
+fix. `src/content/shared.ts`'s `pricingTiers` array (Free $0 / Solo $19 / Studio $99 / Agency $249 /
+Scale $499 / Enterprise custom) is **dead data** — `Pricing.tsx`, the only component that reads it, is
+never imported by any live route (confirmed via `grep -rln "components/Pricing\"" src`, zero hits).
+The actual live `/pricing` page (`src/app/pricing/_content/pricing.ts` + `_shell.html`) says, in its
+own words: *"Right now, ARLO is free... every feature, every client, every destination, for $0 and no
+credit card... Paid plans come later."* There are no paid tiers shipping today. But 2026-11-05's
+`getSoftwareApplicationSchema()` built an `AggregateOffer` from `pricingTiers` anyway and wired it into
+the homepage's hand-authored `_shell.html` JSON-LD and all 6 `/services/*` persona pages — so every one
+of those live, crawlable pages has been telling Google Rich Results and every AI answer engine that
+ARLO charges $19–$499/mo, directly contradicting the `/pricing` page one click away. Worse, every
+fabricated `Offer.url` pointed at `https://askarlo.app/#pricing`, an anchor that doesn't exist on the
+current (redesigned) homepage shell at all — a dangling-link defect on top of the pricing-drift one.
+Separately, `src/app/pricing/_shell.html`'s own JSON-LD carried the *identical* fabricated 6-tier
+`AggregateOffer`, directly contradicting that same page's own visible "free during early access" copy
+— this one predates 11-05 and has apparently been live since the pricing page was first built.
+This is the same pricing-drift failure mode `public/llms.txt` was fixed for back in the kickoff P0
+list — just reintroduced in schema form instead of in a hand-written text file.
+- PAGE: `/` (`src/app/arlo/_shell.html`), all 6 `/services/*` persona pages (via `src/lib/schema.ts`'s
+  `getSoftwareApplicationSchema()`), and `/pricing` (`src/app/pricing/_shell.html`) / CHANGE: replaced
+  the fabricated `AggregateOffer` (6 named tiers, $0–$499, each linking to a nonexistent `/#pricing`
+  anchor) with a single accurate `Offer` — `price: "0"`, description stating ARLO is free during early
+  access with paid plans to come, `url` pointing at the real `/pricing` page — in all three places.
+  Removed the now-unused `pricingTiers` import from `schema.ts` entirely rather than leave dead-code
+  wiring that could silently resurrect the same bug on the next schema edit. / TARGET: no single
+  keyword — this is a GEO/AI-citation trust fix (an AI system quoting Arlo's price from structured data
+  would quote a materially wrong number) and a Rich Results accuracy fix, same risk class as the
+  original `llms.txt` pricing bug. / WHY: discovered while re-verifying 2026-11-05's NEXT #2 ("a future
+  pricing change would need both places updated by hand") — that framing assumed `pricingTiers` was
+  accurate and only *future* changes were a drift risk; it was already wrong the day it was wired in,
+  on a site that currently has no paid tiers at all. Higher-confidence and higher-severity than any
+  remaining FOCUS/catalog work (both re-confirmed exhausted again this session), and a correctness bug
+  beats a word-count/polish pass every time. / VERIFY: `python3 -I` JSON-parsed every `application/ld+json`
+  block in both edited `_shell.html` files before building; `rm -rf .next && npm install && npm run
+  build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing
+  `(app)/*` + `/welcome` prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`,
+  Vercel-only secret), not a regression; `npm run lint` clean (same pre-existing unrelated
+  `sitemap/page.tsx` CSS-tag warning). Confirmed via `.next/server/app/services/seo-specialist.html`
+  that the built output now contains zero `AggregateOffer` occurrences and the corrected single `Offer`
+  renders with the right description and URL. `git diff --stat` shows the change isolated to the 3
+  files above (the build-regenerated `src/content/blog/manifest.json` diff was reverted before staging,
+  same pattern as every prior session).
+
+NEXT:
+1. The pricing-schema bug is closed on all 3 pages that had it (homepage, 6 persona pages via
+   `schema.ts`, `/pricing`'s own shell) — do not reopen by re-wiring `pricingTiers` into schema without
+   first checking it against the live `/pricing` page's actual copy.
+2. `src/content/shared.ts`'s `pricingTiers` array and `src/components/Pricing.tsx` are now fully
+   confirmed dead code (zero live importers of either, beyond `schema.ts`'s now-removed one) — flagged
+   as a deletion candidate for a future session, not deleted this session to keep the diff isolated to
+   the trust fix. Also still dead/unused: `src/content/shared.ts`'s `faqs` export and `FAQ.tsx`'s
+   default-prop fallback that reads it (the live homepage shell has no FAQ section at all post-redesign;
+   every live `<FAQ />` usage passes its own `items`) — found while chasing a dead end on a planned
+   FAQ-answer-length expansion (geo-ai.md #11) before realizing the homepage FAQ section itself no
+   longer exists. If that GEO fix is picked up again, target the 24 real, live, schema-emitting FAQ
+   answers in `src/content/services.ts` (currently 21–49 words each, same gap geo-ai.md #11 originally
+   flagged) — not the dead `shared.ts` array.
+3. FOCUS keyword cluster exhausted for an 11th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (6th straight month); a real Content-Security-Policy beyond
+   the additive headers already shipped; the `www` redirect 307→301/308; the second case study/
+   testimonial (sxo.md #7); a combined human pass on both gated catalogs; verifying whether ARLO's
+   standards-based MCP OAuth implementation actually works with ChatGPT's connector flow before
+   building any "ChatGPT MCP" content (Month 4 review flagged this as a Month 5 goal, but shipping that
+   claim without a real test is the same class of trust risk this session just fixed — do not add it
+   on assumption).
+5. Next session due ~2026-11-12 per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-06 (Fri) — Weekly pulse: pure reporting session, no code change — rank flat for a 27th straight session (0/22 tracked keywords), backlinks flat 3/2 (13th straight week), Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 62/62 all-time; report: reports/outbox/2026-11-06-weekly-pulse.json
 
 =====================================================================================
