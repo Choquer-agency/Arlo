@@ -27,7 +27,7 @@ const solo: Record<string, any> = {
       },
       {
         q: "Which platforms can I connect on Solo?",
-        a: "GA4, Search Console, Google Ads, Meta, Shopify, Stripe, and email tools cover what most single-business owners need — and every source type is unlocked free during early access, no plan-based limits.",
+        a: "GA4, Search Console, and Google Ads are live today and unlocked free during early access, no plan-based limits. Meta, Shopify, Stripe, and email tools are coming soon — early ARLO accounts get first access the moment they ship.",
       },
       {
         q: "Can I use ARLO without Claude Desktop?",

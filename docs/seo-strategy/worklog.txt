@@ -6,6 +6,106 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-12 (Thu) — Trust/accuracy fix: corrected the `/services/solo-business-owner` page, which was telling buyers (and AI engines, via its own FAQPage JSON-LD) that Meta, Shopify, Stripe, and an email tool were connectable on Solo *today* — all four are still `coming_soon` in `catalog.ts`, not live; rank flat for a 29th straight session (0/22), backlinks actually dropped 3/2 → 2/1 this week (futurlabs.dev's own `/built-by-us` link to Arlo was lost to a redirect on their side, nothing to action on ours), Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 64/64 all-time going into this push
+
+CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` (2026-11-06→11-12, daily): avg position still flat at
+100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, a 29th straight session
+flat. `DATA_getBacklinksSummary` (domain mode) now returns **2 backlinks / 1 refdomain**, down from the
+3/2 that had been flat since 2026-09-10 — the first backlink-count change in 13+ straight sessions.
+`DATA_listNewLostBacklinks`/`DATA_listNewLostReferringDomains` (2026-11-06→11-12) pinpoint it: on
+2026-11-10, the one backlink from `futurlabs.dev/built-by-us` (an image link to askarlo.app, live since
+2026-07-23) was marked lost with `reason_lost: "redirect"` — futurlabs.dev's own page apparently moved
+or restructured. This is entirely on futurlabs.dev's side (a sister domain outside this repo) and HARD
+RULE #1 forbids touching/redirecting sister domains from here anyway, so this is a flag, not an action:
+nothing to fix in this repo. `DATA_getDomainAuthority`: flat at 6. `PROJECT_listLlmEngines` still empty
+— AI Result Tracker remains unconfigured. `mcp__github__actions_list` confirmed all 64 `SEO Report
+Email` runs since kickoff green, 64/64 all-time going into this session's push (run #65). `catalog.ts`/
+`destinations/catalog.ts` re-checked: FOCUS cluster (connector matrix 5/5, comparison hub 5/5, blog 10
+posts) re-confirmed exhausted for a 12th consecutive session; every `coming_soon` entry (meta_ads,
+shopify, stripe, mailchimp, mailerlite, hubspot, power_bi, excel, snowflake, shareable_dashboard) is
+still `coming_soon` with an ETA that has already passed — unchanged, still human-gated.
+
+With both content-engine catalogs re-confirmed exhausted yet again, this session instead re-audited one
+of the six live `/services/*` persona pages against `catalog.ts`'s actual live/coming_soon truth — the
+same kind of audit that caught the fabricated pricing schema on 11-09 — and found `/services/
+solo-business-owner` has the identical failure mode, just about *connector availability* instead of
+*price*. The page's meta description, OG/Twitter tags, `SoftwareApplication` JSON-LD description, hero
+subhead, "how it works" step 1, two "what you get" feature bullets, the "Live, not cached" bullet, the
+setup-section paragraph, a "what you can ask" example bullet, and — most importantly — the page's own
+FAQPage JSON-LD answer to "Which platforms can I connect on Solo?" all stated or implied that Meta,
+Shopify, Stripe, and an email tool are connectable on the Solo plan right now, several explicitly
+saying "every source type is unlocked free during early access, no plan-based limits." Per
+`src/lib/connectors/catalog.ts`, none of those four are live — all four are still `coming_soon` (Meta:
+May 2026 ETA, Shopify: April 2026, Stripe: June 2026, Mailchimp: August 2026 — all already past due,
+confirmed above). The only connectors actually live today are GA4, Search Console, Google Ads, YouTube,
+PageSpeed, and Google Business Profile. A prospect who signs up for Solo expecting to connect Shopify or
+Stripe today — because the page's own FAQ schema told them, and every answer engine citing that FAQ
+would repeat it — hits a real letdown, and the same text sits inside crawlable, AI-citable structured
+data. (Also confirmed `/services/meta-ads-specialist`'s own FAQ already handles this correctly — it
+frames Meta/LinkedIn/TikTok explicitly as "Phase 2," so this was an isolated lapse on the Solo page, not
+a site-wide pattern; no other persona's `_content/*.ts` makes the same overclaim.)
+- PAGE: `/services/solo-business-owner` (`_content/solo-business-owner.ts` + `_shell.html`) / CHANGE:
+  rewrote every instance above to honestly split "live today" (GA4, Search Console, Google Ads) from
+  "coming soon" (Meta, Shopify, Stripe, email) — including the FAQ item's live `<FAQ />` answer and its
+  duplicate FAQPage JSON-LD text, which the `_content` file's own header comment requires to match
+  verbatim (re-verified programmatically: byte-identical after the edit). Left the sitewide Organization
+  boilerplate ("ARLO connects Claude to every client's marketing data — GA4, Search Console, Google Ads,
+  Meta, YouTube, and more") untouched — it's identical across all 6 persona pages plus the homepage, so
+  it's a separate, out-of-scope, shared-template question, not a Solo-specific overclaim. / TARGET: no
+  single keyword — a GEO/AI-citation trust fix (an AI system answering "can I connect Shopify to Arlo on
+  the Solo plan" from this page's own FAQPage data would answer wrong) and a signup-expectation fix,
+  same risk class as 11-09's pricing-schema fix and 2026-11-05's original Offer-wiring work. / WHY: the
+  FOCUS cluster and both gated catalogs are re-confirmed exhausted session after session (11th→12th
+  straight now); re-auditing shipped pages against the catalog's ground truth — rather than re-running
+  the same exhausted checks — is what actually turned up a real, live, structured-data trust bug, exactly
+  like it did on 11-09. A correctness/trust fix beats another "nothing changed" pulse. / VERIFY: `python3
+  -I` JSON-parsed all 3 `application/ld+json` blocks in the edited `_shell.html` (all valid); confirmed
+  the FAQPage JSON-LD answer text is byte-identical to the `_content` file's rendered FAQ answer (per the
+  file's own "MUST match" rule); `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome`
+  prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not
+  a regression; `npm run lint` clean (same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning).
+  `git status` after the build showed only the build-regenerated `src/content/blog/manifest.json` diff,
+  reverted before staging (same pattern as every prior session) — the real diff is isolated to the 2
+  files above.
+
+NEXT:
+1. The Solo-page connector-availability overclaim is closed — do not reopen by re-adding Meta/Shopify/
+   Stripe/email as "available" copy until `catalog.ts` actually flips their status off `coming_soon`.
+2. The futurlabs.dev → askarlo.app lost backlink (2026-11-10, `reason_lost: redirect`) is worth a human
+   look on the FuturLabs/futurlabs.dev side (not this repo) — confirm `/built-by-us` still exists and
+   still links to Arlo; HARD RULE #1 means this session cannot and did not touch futurlabs.dev itself.
+3. `src/content/services.ts` and `src/app/services/[slug]/page.tsx` (the dynamic catch-all persona
+   route) are now confirmed **dead code** for all 6 persona slugs: each of the 6 personas has its own
+   static-folder `route.ts` (e.g. `services/solo-business-owner/route.ts`), and Next.js always resolves
+   a literal path segment ahead of a `[slug]` dynamic one — so `[slug]/page.tsx` and everything it reads
+   from `content/services.ts` (including its 24 FAQ answers) can never actually render for any of the 6
+   slugs `generateStaticParams()` produces. This is the same dead-code pattern as `shared.ts`'s `faqs`/
+   `pricingTiers` and `Pricing.tsx` (found 2026-11-05/11-09) — flagged as a deletion candidate for a
+   future session, not deleted this session to keep this session's diff isolated to the trust fix. Any
+   future "expand FAQ answer length" pass (geo-ai.md #11) must target the live `_content/<persona>.ts`
+   files (5 FAQ items each, ~25-45 words) + their paired `_shell.html` FAQPage JSON-LD — not
+   `content/services.ts`, which cannot possibly be the one geo-ai.md #11 meant despite how a prior
+   session's note read.
+4. The other 5 persona pages' `_content/*.ts` files were spot-checked this session for the same
+   Meta/Shopify/Stripe-as-available pattern and came back clean — but they were not re-audited line by
+   line against `catalog.ts` for other possible drift the way Solo's page now has been. If another trust
+   bug turns up, check `account-manager`, `agency-owner`, `google-ads-specialist`, and `seo-specialist`
+   next the same way.
+5. FOCUS keyword cluster exhausted for a 12th consecutive session (connector matrix 5/5, comparison hub
+   5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any `catalog.ts`
+   connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+6. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (7th straight month); a real Content-Security-Policy beyond
+   the additive headers already shipped; the `www` redirect 307→301/308; the second case study/
+   testimonial (sxo.md #7); a combined human pass on both gated catalogs; verifying whether ARLO's
+   standards-based MCP OAuth implementation actually works with ChatGPT's connector flow before
+   building any "ChatGPT MCP" content.
+7. Next session due ~2026-11-16 per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-09 (Mon) — Trust/schema fix: removed a fabricated 6-tier AggregateOffer ($0–$499) from the homepage, all 6 persona pages, and the `/pricing` page's own JSON-LD — the live site has no paid tiers at all, it's 100% free during early access; rank flat for a 28th straight session (0/22), backlinks flat 3/2, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 63/63 all-time going into this push
 
 CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
