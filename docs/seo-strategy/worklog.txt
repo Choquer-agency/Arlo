@@ -6,6 +6,10 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-13 (Fri) — Weekly pulse: SE Ranking MCP connector failed to connect (`CONNECT_TIMEOUT`, confirmed on repeated lookups) — rank/backlink/Domain Trust/AI-visibility figures could not be refreshed this session, report uses the last-confirmed 2026-11-12 numbers (rank flat 0/22 for a 29th straight session, backlinks 2/1) with the gap flagged as the week's actionable item; `catalog.ts` re-checked directly, all gated connectors still `coming_soon` past their ETAs, unchanged; CI green 65/65 all-time. See reports/outbox/2026-11-13-weekly-pulse.json.
+
+=====================================================================================
+
 ## 2026-11-12 (Thu) — Trust/accuracy fix: corrected the `/services/solo-business-owner` page, which was telling buyers (and AI engines, via its own FAQPage JSON-LD) that Meta, Shopify, Stripe, and an email tool were connectable on Solo *today* — all four are still `coming_soon` in `catalog.ts`, not live; rank flat for a 29th straight session (0/22), backlinks actually dropped 3/2 → 2/1 this week (futurlabs.dev's own `/built-by-us` link to Arlo was lost to a redirect on their side, nothing to action on ours), Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 64/64 all-time going into this push
 
 CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
