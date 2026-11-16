@@ -6,6 +6,116 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-16 (Mon) — Trust/GEO fix: removed the false "Meta/Shopify are connectable now" claim from the homepage's actual <meta>/OG/Twitter description + hero subhead + alt text, from the shared SoftwareApplication JSON-LD description baked into all 15 other live page shells, and from a comparison-page FAQ answer — both connectors are still `coming_soon` in `catalog.ts`; rank flat for a 30th straight session (0/22), backlinks flat 2/1, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 66/66 all-time going into this push
+
+CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` (2026-11-13→11-16, daily): avg position still flat
+at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, a 30th straight
+session flat. `DATA_getBacklinksSummary` (domain mode): 2 backlinks / 1 refdomain, unchanged since
+the 11-10 `futurlabs.dev` redirect-loss confirmed 11-12 — still nothing to action in this repo.
+`DATA_getDomainAuthority`: flat at 6. `PROJECT_listLlmEngines` still empty — AI Result Tracker
+remains unconfigured. `mcp__github__actions_list` confirmed all 66 `SEO Report Email` runs since
+kickoff green, 66/66 all-time going into this session's push (run #67). `catalog.ts` re-checked
+directly: FOCUS cluster (connector matrix 5/5, comparison hub 5/5, blog 10 posts) re-confirmed
+exhausted for a 13th consecutive session; `meta_ads`/`shopify`/`stripe`/`hubspot`/`mailchimp`/
+`mailerlite` all still `coming_soon`, every ETA already past due, unchanged.
+
+Per NEXT item #4 from 11-12, spot-checked the 4 remaining persona pages not yet audited line-by-line
+(`account-manager`, `agency-owner`, `google-ads-specialist`, `seo-specialist`) against `catalog.ts`
+for the same Meta/Shopify/Stripe-as-available drift that hit the Solo page on 11-12 — all 4 came back
+clean (their FAQ content only references the 6 connectors that are actually `live`: GA4, Search
+Console, Google Ads, YouTube, PageSpeed, Business Profile). With the persona-FAQ audit now closed out
+across all 6 pages and the FOCUS/catalog checks re-confirmed exhausted for a 13th session, widened the
+search to the shared Organization/SoftwareApplication boilerplate the 11-12 entry had explicitly
+flagged as "a separate, out-of-scope, shared-template question" — and it turned out to be exactly the
+same trust-bug class, just bigger: 16 live page shells carry a hand-authored (not dynamically
+generated — confirmed `src/lib/schema.ts`'s `getSoftwareApplicationSchema()`/`generateSchema()` are
+dead code, never imported by any live route) SoftwareApplication JSON-LD description claiming "ARLO
+connects Claude to every client's marketing data — GA4, Search Console, Google Ads, Meta, YouTube,
+and more" — present tense, Meta included. Worse, the homepage itself (`src/app/arlo/_shell.html`) has
+its *own* distinct copy of the same false claim three times over: the literal `<meta name="description">`
+/ `og:description` / `twitter:description` tags (what Google's snippet and every social preview
+actually show), its `WebPage` JSON-LD description, its `SoftwareApplication` JSON-LD description, its
+visible H1-adjacent hero subhead, and an image `alt` attribute — all stating or implying Meta and/or
+Shopify are connectable today. Per `catalog.ts`, both are still `coming_soon` (Meta: May 2026 ETA,
+Shopify: April 2026 — both already past due). Also found and fixed the identical present-tense overclaim
+on `/pricing` (a "how it works" paragraph + two UI connector-list labels), `/destinations`'s dynamic
+per-destination template (`destinations/_template/_shell.html`, a "how it works" paragraph), `/about`'s
+visible hero subhead, and a comparison-page FAQ answer in `src/content/comparisons.ts`
+(`supermetrics-vs-arlo`'s "Is ARLO a full Supermetrics replacement?" answer, live via the dynamic
+`compare/[slug]` route — confirmed this route builds both its visible HTML and its structured data from
+the same `comparisons.ts` source at request time, so this one fix covers both surfaces consistently,
+unlike the hand-synced persona `_shell.html`+`_content` pattern).
+- PAGE: `/` (`src/app/arlo/_shell.html`), `/about`, `/pricing`, `/destinations/*` (via
+  `destinations/_template/_shell.html`), all 6 `/services/*` persona pages, `/blog`, `/contact`,
+  `/compare`, `/compare/[slug]`, `/base-template` (the clone source for new pages), and
+  `src/content/comparisons.ts` (`supermetrics-vs-arlo` FAQ) / CHANGE: surgically removed "Meta"
+  and/or "Shopify" from every present-tense "ARLO connects to ___" list in the above — 15 shells
+  shared one identical SoftwareApplication description string (fixed with a verified-unique
+  find/replace per file, `python3 -I`); the homepage's three distinct occurrences (meta/OG/Twitter,
+  WebPage JSON-LD, SoftwareApplication JSON-LD), its hero subhead, and its image alt text were each
+  fixed individually; `/pricing` and `/destinations/_template` each had their own "One Google OAuth
+  grant links… Meta, Shopify and more" overclaim fixed the same way. Left "and more"/"and more coming"
+  in place everywhere as the honest catch-all for the real roadmap (Meta, Shopify, Stripe, etc.) —
+  this is a pure accuracy fix, not a copy rewrite: no page's structure, tone, or other claims changed.
+  Flagged but did NOT touch (confirmed dead code, same pattern as `content/services.ts`/`Pricing.tsx`
+  found 2026-11-09/11-12): `src/components/Hero.tsx` (never imported), `src/lib/schema.ts`'s
+  `generateSchema()`/`getSoftwareApplicationSchema()` (never imported), and `src/content/shared.ts`
+  (`faqs`/`saasProblems`/etc., only read by dead components). Deliberately left blog-post body copy
+  (5 posts mention Meta/Shopify in passing) out of scope — that's a content-rewrite task, not a
+  structured-data/metadata trust fix, and belongs in its own session. / TARGET: no single keyword — a
+  GEO/AI-citation and literal Google-snippet trust fix (the homepage's own `<meta name="description">`
+  is what Google shows in search results and what any AI engine reading the page would cite first) and
+  a signup-expectation fix, same risk class as 11-09's pricing-schema fix and 11-12's Solo-page fix,
+  just with materially larger blast radius (homepage + 15 shells vs. one persona page). / WHY: the
+  FOCUS cluster and both gated catalogs are re-confirmed exhausted session after session (12th→13th
+  straight now); re-auditing shipped pages against `catalog.ts`'s ground truth — rather than re-running
+  the same exhausted checks — is what turned up this bug, exactly like it did on 11-09 and 11-12. A
+  correctness/trust fix on the single highest-traffic page (the homepage) plus its template source beats
+  another "nothing changed" pulse. / VERIFY: `python3 -I` JSON-parsed all JSON-LD blocks across all 16
+  touched `_shell.html` files (all valid, confirmed with a script, not by eye); grepped all 16 files
+  post-fix for any remaining "Meta"/"Shopify" string and manually reviewed every hit — all remaining
+  mentions are either already-correct hedged copy (`meta-ads-specialist`, `solo-business-owner`, both
+  fixed in prior sessions) or descriptions of a *competitor's* capabilities in `comparisons.ts` (not a
+  claim about ARLO, left untouched); confirmed `comparisons.ts`'s dynamic route builds schema from the
+  same source as the visible copy, so no separate JSON-LD duplicate to sync; `rm -rf .next && npm
+  install && npm run build` — `✓ Compiled successfully`, `✓ Generating static pages (87/87)`, same 9
+  pre-existing `(app)/*` + `/welcome` prerender failures as every prior session (missing
+  `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression; `npm run lint` clean (same
+  pre-existing unrelated `sitemap/page.tsx` CSS-tag warning); `git status` after the build showed only
+  the build-regenerated `src/content/blog/manifest.json` diff, reverted before staging (same pattern as
+  every prior session) — the real diff is isolated to the 17 files above (16 `_shell.html` + 1 `.ts`).
+
+NEXT:
+1. The Meta/Shopify-as-live overclaim is closed on every structured-data/metadata/head-copy surface
+   checked this session — do not reopen by re-adding Meta/Shopify as "available" anywhere until
+   `catalog.ts` actually flips their status off `coming_soon`.
+2. Blog-post body copy was deliberately left out of scope this session (found live Meta/Shopify
+   mentions in `how-to-use-ai-for-seo.md`, `how-choquer-agency-uses-arlo.md`,
+   `how-to-install-arlo-vs-windsor-ai.md`, `client-reporting-for-agencies.md`,
+   `100-questions-to-ask-google-analytics.md` — most describe ARLO's target platform list in passing,
+   not all are clear-cut present-tense overclaims the way the schema/metadata bugs were). Next session
+   should read each one in context and decide fix vs. leave (some may already correctly read as
+   roadmap/aspirational rather than "connects today").
+3. Confirmed (again) dead code, not touched to keep this session's diff isolated: `src/lib/schema.ts`'s
+   `generateSchema()` and `getSoftwareApplicationSchema()` (zero importers — even `/services/[slug]/
+   page.tsx`, their one remaining caller, is itself dead per 11-12's finding), `src/components/Hero.tsx`,
+   and `src/content/shared.ts` (read only by `FAQ.tsx`/`Pricing.tsx`/`ComparisonTable.tsx`/`Process.tsx`/
+   `SaaSPain.tsx`/`Testimonials.tsx`, all unimported). A future cleanup session could delete all of this
+   in one pass — flagged repeatedly since 11-09/11-12, still not deleted, still not blocking anything.
+4. FOCUS keyword cluster exhausted for a 13th consecutive session (connector matrix 5/5, comparison hub
+   5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any `catalog.ts`
+   connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (8th straight month); a real Content-Security-Policy beyond
+   the additive headers already shipped; the `www` redirect 307→301/308; the second case study/
+   testimonial (sxo.md #7); a combined human pass on both gated catalogs; verifying whether ARLO's
+   standards-based MCP OAuth implementation actually works with ChatGPT's connector flow before
+   building any "ChatGPT MCP" content.
+6. Next session due ~2026-11-20 (Fri) per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-13 (Fri) — Weekly pulse: SE Ranking MCP connector failed to connect (`CONNECT_TIMEOUT`, confirmed on repeated lookups) — rank/backlink/Domain Trust/AI-visibility figures could not be refreshed this session, report uses the last-confirmed 2026-11-12 numbers (rank flat 0/22 for a 29th straight session, backlinks 2/1) with the gap flagged as the week's actionable item; `catalog.ts` re-checked directly, all gated connectors still `coming_soon` past their ETAs, unchanged; CI green 65/65 all-time. See reports/outbox/2026-11-13-weekly-pulse.json.
 
 =====================================================================================

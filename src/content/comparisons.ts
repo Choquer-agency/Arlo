@@ -142,7 +142,7 @@ export const comparisons: Record<string, ComparisonPage> = {
         {
           question: "Is ARLO a full Supermetrics replacement?",
           answer:
-            "For the common case — agencies answering questions about client performance across GA4, Search Console, Google Ads, Meta, YouTube and more — yes. Where Supermetrics still wins is when you specifically need data warehoused for scheduled BI dashboards or one of its long-tail niche connectors. Some teams keep both: Supermetrics for templated reporting, ARLO for day-to-day questions.",
+            "For the common case — agencies answering questions about client performance across GA4, Search Console, Google Ads, and YouTube — yes. Where Supermetrics still wins is when you specifically need data warehoused for scheduled BI dashboards, one of its long-tail niche connectors, or a platform like Meta/Shopify that's still on ARLO's roadmap. Some teams keep both: Supermetrics for templated reporting, ARLO for day-to-day questions.",
         },
         {
           question: "How much does ARLO cost?",
