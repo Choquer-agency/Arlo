@@ -57,7 +57,7 @@ That's the margin story. **AI marketing reporting** doesn't just make the report
 
 Quarterly business reviews used to be a two-day fire drill. Three specialists pulling from three toolsets, one poor soul assembling it all into a deck the night before.
 
-Now whoever's running the QBR asks ARLO for the quarter across every channel at once: organic trends from **Google Analytics for agencies** and Search Console, paid performance from Google Ads and Meta, local visibility from Google Business Profile. Claude synthesizes it into a coherent narrative — not twelve disconnected charts, but an actual story about where the account is heading.
+Now whoever's running the QBR asks ARLO for the quarter across every channel at once: organic trends from **Google Analytics for agencies** and Search Console, paid performance from Google Ads, local visibility from Google Business Profile. Claude synthesizes it into a coherent narrative — not twelve disconnected charts, but an actual story about where the account is heading.
 
 Better QBRs renew accounts. When a client walks out of a review understanding exactly what happened and why, and what we're doing next, they don't shop around. A strong QBR is a renewal conversation you didn't have to have. (If you want the SEO half of that story sharper, here's [how to use AI for SEO](/blog/how-to-use-ai-for-seo).)
 

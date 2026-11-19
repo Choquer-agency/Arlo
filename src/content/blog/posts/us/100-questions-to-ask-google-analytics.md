@@ -188,7 +188,7 @@ Read that list again. Every question is answerable in GA4. And every answer cost
 
 That's the job most agencies quietly hate. It's not analysis — it's data janitor work. And it's exactly what [ARLO](/welcome) exists to delete.
 
-ARLO is the MCP layer for agencies. It connects Claude Desktop directly to every client's live marketing data — GA4, [Search Console](https://search.google.com/search-console/about), Google Ads, Meta, YouTube, Google Business Profile, Shopify, Stripe — through the Model Context Protocol. Which means you stop *reading* Google Analytics and start *talking* to it.
+ARLO is the MCP layer for agencies. It connects Claude Desktop directly to every client's live marketing data — GA4, [Search Console](https://search.google.com/search-console/about), Google Ads, YouTube, Google Business Profile, and more coming — through the Model Context Protocol. Which means you stop *reading* Google Analytics and start *talking* to it.
 
 You type question 27 — "which search terms led to conversions last month?" — into Claude, in plain English, and ARLO passes it through to the live GA4 API and hands back the answer. No report to build. No CSV to export. No tab to hop to. It's a pure pass-through connector, so it stores nothing — your client data never sits on someone else's server. One Google OAuth grant connects every client, and every team member gets their own MCP token.
 

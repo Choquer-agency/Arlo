@@ -17,7 +17,7 @@ Let's install it first, then talk about where each model fits.
 
 ## What ARLO actually is
 
-ARLO is the MCP layer for agencies. It uses the [Model Context Protocol](https://modelcontextprotocol.io) — the open standard for connecting AI assistants to live systems — to wire Claude Desktop into every client's marketing accounts: GA4, Google Search Console, Google Ads, Meta, YouTube, Google Business Profile, Shopify, and Stripe.
+ARLO is the MCP layer for agencies. It uses the [Model Context Protocol](https://modelcontextprotocol.io) — the open standard for connecting AI assistants to live systems — to wire Claude Desktop into every client's marketing accounts: GA4, Google Search Console, Google Ads, YouTube, Google Business Profile, and more coming.
 
 The important part: ARLO is a pure pass-through connector. It stores nothing. There's no ARLO database sitting between you and your clients, and no warehouse quietly accumulating a copy of their data. When you ask a question, Claude queries each connected account live and answers on the spot. When you're done, there's nothing to clean up and nothing to keep in sync.
 

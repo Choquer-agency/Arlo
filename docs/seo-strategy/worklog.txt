@@ -6,6 +6,94 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-19 (Thu) — Trust fix: closed out 11-16's NEXT #2 — removed the "Meta/Shopify/Stripe
+connect today" overclaim from 4 of the 5 flagged blog posts' body copy; rank flat for a 31st
+straight session (0/22), backlinks flat 2/1, Domain Trust flat at 6, AI Result Tracker still
+unconfigured, CI green 67/67 all-time going into this push
+
+CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
+tracked keywords). `PROJECT_getPositionHistory` (2026-11-16→11-19, daily): avg position still flat
+at 100 (not-ranked floor) every day — unchanged since tracking began 2026-08-01, a 31st straight
+session flat. `DATA_getBacklinksSummary` (domain mode): 2 backlinks / 1 refdomain, unchanged since
+11-10's `futurlabs.dev` redirect-loss. `DATA_getDomainAuthority`: flat at 6. `PROJECT_listLlmEngines`
+still empty — AI Result Tracker remains unconfigured. `mcp__github__actions_list` confirmed all 67
+`SEO Report Email` runs since kickoff green, 67/67 all-time going into this session's push (run
+#68). `catalog.ts` re-checked directly: `meta_ads` (May 2026 ETA), `shopify` (April 2026), `stripe`
+(June 2026), `hubspot` (July 2026), `mailchimp`/`mailerlite` (July/Aug 2026) all still `coming_soon`,
+every ETA already past due — the only 6 live connectors are GA4, Search Console, Google Ads,
+YouTube, PageSpeed Insights, and Google Business Profile. FOCUS cluster (connector matrix 5/5,
+comparison hub 5/5, blog 10 posts) re-confirmed exhausted for a 14th consecutive session.
+
+With both content-engine catalogs and the structured-data/metadata surfaces re-confirmed exhausted
+yet again, this session closed out 11-16's NEXT #2: read each of the 5 blog posts flagged there for
+live Meta/Shopify/Stripe mentions, in context, and decided fix vs. leave per post rather than
+mechanically stripping every mention (that would have wrongly flattened legitimate problem-framing
+and generic-industry copy into something clunky).
+- PAGE: `src/content/blog/posts/us/how-to-use-ai-for-seo.md` (the "What are the best AI tools for
+  SEO?" FAQ answer) / CHANGE: "it connects Search Console and GA4 (plus Google Ads, Meta, and more)"
+  → "...(plus Google Ads, and more coming)" — present-tense claimed Meta today. / WHY: Meta is
+  `coming_soon`, not live.
+- PAGE: `src/content/blog/posts/us/how-choquer-agency-uses-arlo.md` (the QBR paragraph) / CHANGE:
+  "paid performance from Google Ads and Meta" → "paid performance from Google Ads" — same bug,
+  present-tense "ask ARLO... from Meta." Left this post's earlier line 16 ("At Choquer Agency, we
+  run a dozen platforms per client... Meta... Shopify, Stripe") untouched — that line is pain-point
+  framing of what the agency juggled *before* ARLO, not a claim about what ARLO connects today, so
+  it isn't the same bug class.
+- PAGE: `src/content/blog/posts/us/how-to-install-arlo-vs-windsor-ai.md` ("What ARLO actually is")
+  / CHANGE: "to wire Claude Desktop into every client's marketing accounts: GA4, ... Google Ads,
+  Meta, YouTube, Google Business Profile, Shopify, and Stripe" → "...GA4, ... Google Ads, YouTube,
+  Google Business Profile, and more coming" — direct present-tense capability list naming 3
+  `coming_soon` connectors as live.
+- PAGE: `src/content/blog/posts/us/100-questions-to-ask-google-analytics.md` (the "what ARLO is"
+  paragraph) / CHANGE: same list pattern, same fix — "GA4, Search Console, Google Ads, YouTube,
+  Google Business Profile, and more coming" in place of naming Meta/Shopify/Stripe as connected.
+- LEFT UNCHANGED (read in context, decided not an overclaim): `client-reporting-for-agencies.md`'s
+  "from however many platforms the account touches (GA4, Google Ads, Meta, Search Console, a CRM)"
+  — this is generic industry description of what client reporting covers in general, never
+  mentions ARLO in that sentence, not a claim about ARLO's own connector list.
+  / TARGET: no single keyword — a GEO/AI-citation trust fix on blog body copy, same risk class as
+  every prior session's structured-data/metadata fix in this bug family, just extended to prose.
+  / VERIFY: grepped all 5 originally-flagged posts for "Meta|Shopify" post-fix — only the one
+  deliberately-left line (`how-choquer-agency-uses-arlo.md` line 16, pain-point framing) and the one
+  deliberately-left generic-industry line (`client-reporting-for-agencies.md`) remain, both reviewed
+  and confirmed not overclaims; `rm -rf .next && npm install && npm run build` — `✓ Compiled
+  successfully`, `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome`
+  prerender failures as every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret),
+  not a regression; `npm run lint` clean (same pre-existing unrelated `sitemap/page.tsx` CSS-tag
+  warning); `git status` after the build showed only the build-regenerated
+  `src/content/blog/manifest.json` diff, reverted before staging — the real diff is isolated to the
+  4 `.md` files above.
+
+NEXT:
+1. 11-16's NEXT #2 (blog-post Meta/Shopify body-copy audit) is now closed — 4 of 5 flagged posts
+   fixed, 1 confirmed clean on re-read. Do not reopen by re-adding Meta/Shopify/Stripe as "available"
+   anywhere until `catalog.ts` actually flips their status off `coming_soon`.
+2. Confirmed (again) dead code, not touched to keep this session's diff isolated: `src/lib/schema.ts`'s
+   `generateSchema()` and `getSoftwareApplicationSchema()` (zero importers — even `/services/[slug]/
+   page.tsx`, their one remaining caller, is itself dead per 11-12's finding), `src/components/Hero.tsx`,
+   and `src/content/shared.ts` (read only by unimported components). A future cleanup session could
+   delete all of this in one pass — flagged repeatedly since 11-09/11-12, still not deleted, still not
+   blocking anything.
+3. FOCUS keyword cluster exhausted for a 14th consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any
+   `catalog.ts` connector or destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+4. With the trust/accuracy bug family (schema, metadata, homepage copy, now blog body copy) fully
+   swept and closed, and the FOCUS cluster still exhausted, the next session with no fresh overclaim
+   to fix should pick up the one still-open mechanical P1/P2 item from the strategy doc not yet
+   gated on a human decision — `sitemap.ts`'s fake "modified now" `lastModified` (12-week-strategy
+   item #14) — or do a fresh audit pass of a different page class (e.g. the `/destinations/*`
+   per-destination pages) against `catalog.ts`, the same technique that has found every bug in this
+   family so far.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured (9th straight month); a real Content-Security-Policy beyond
+   the additive headers already shipped; the `www` redirect 307→301/308; the second case study/
+   testimonial (sxo.md #7); a combined human pass on both gated catalogs; verifying whether ARLO's
+   standards-based MCP OAuth implementation actually works with ChatGPT's connector flow before
+   building any "ChatGPT MCP" content.
+6. Next session due ~2026-11-23 (Mon) per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-16 (Mon) — Trust/GEO fix: removed the false "Meta/Shopify are connectable now" claim from the homepage's actual <meta>/OG/Twitter description + hero subhead + alt text, from the shared SoftwareApplication JSON-LD description baked into all 15 other live page shells, and from a comparison-page FAQ answer — both connectors are still `coming_soon` in `catalog.ts`; rank flat for a 30th straight session (0/22), backlinks flat 2/1, Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 66/66 all-time going into this push
 
 CONTEXT: SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22
