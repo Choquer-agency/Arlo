@@ -6,6 +6,43 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-20 (Fri) — Weekly pulse: 32nd straight flat session (0/22), backlinks flat 2/1, Domain
+Trust flat at 6, AI Result Tracker still unconfigured, CI green 68/68 all-time; also recovered 2
+commits from 11-19 that never made it to origin/main
+
+CONTEXT: found before pulling fresh data that this checkout's HEAD was detached 2 commits ahead of
+local `main`/`origin/main` (11-19's blog-copy overclaim fix `f90ce36` + its report-archive commit
+`0f4ce0c`) — the work was real and already reflected in last session's worklog entry, it just never
+got pushed. Fast-forwarded `main` to HEAD and pushed; `git fetch` confirmed `origin/main` now carries
+both commits. No content lost, nothing in this repo caused the gap.
+
+SE Ranking re-authenticated (`PROJECT_listProjects`, askarlo.app site_id 12704162, 22 tracked
+keywords). `PROJECT_getPositionHistory` (2026-11-13→11-20, daily): avg position still flat at 100
+(not-ranked floor) every day for both the Google USA series and the overall average — unchanged
+since tracking began 2026-08-01, a 32nd straight session flat. `PROJECT_getSummary` corroborates:
+today/yesterday avg both 100, top5/top10/top30 all 0, visibility 0%. `DATA_getBacklinksSummary`
+(domain mode): 2 backlinks / 1 refdomain, unchanged since 11-10's `futurlabs.dev` redirect-loss.
+`DATA_getDomainAuthority`: flat at 6. `PROJECT_listLlmEngines` still empty — AI Result Tracker
+remains unconfigured. `mcp__github__actions_list` confirmed all 68 `SEO Report Email` runs since
+kickoff green, 68/68 all-time going into this session's push (run #69). No code changes this
+session — pure reporting pulse, on top of the git fast-forward above.
+
+NEXT:
+1. Both trust/GEO fixes (11-16 sitewide, 11-19 blog body copy) are closed; keep watching for any new
+   Meta/Shopify/Stripe-as-live drift until `catalog.ts` actually flips their status.
+2. Verify before next push that `main` tracks `origin/main` cleanly (`git status -sb`, `git fetch`)
+   — this session's detached-HEAD/unpushed-commits gap should not recur, but confirm each session
+   rather than assume.
+3. FOCUS keyword cluster still exhausted (connector matrix 5/5, comparison hub 5/5, blog 10 posts) —
+   keep re-pulling fresh each session; watch for any `catalog.ts`/destinations-catalog entry flipping
+   off `coming_soon`/`waitlist`.
+4. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; a real Content-Security-Policy beyond additive headers
+   already shipped; the `www` redirect 307→301/308; the second case study/testimonial (sxo.md #7).
+5. Next session due ~2026-11-23 (Mon) per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-19 (Thu) — Trust fix: closed out 11-16's NEXT #2 — removed the "Meta/Shopify/Stripe
 connect today" overclaim from 4 of the 5 flagged blog posts' body copy; rank flat for a 31st
 straight session (0/22), backlinks flat 2/1, Domain Trust flat at 6, AI Result Tracker still
