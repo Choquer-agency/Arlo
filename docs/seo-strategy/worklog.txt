@@ -6,6 +6,106 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-23 (Mon) — Trust/schema fix: found that 11-05/11-09/11-12's "pricing-schema fix" never
+actually reached the live site — it edited `schema.ts`/`page.tsx`, a dead code path shadowed by the
+static `route.ts`/`_shell.html` pages Next.js actually serves — so the stale, thin `"Free plan
+available"` `SoftwareApplication` Offer was still live on all 6 persona pages plus 8 other page-type
+shells (14 files total); replaced it everywhere with the accurate "free during early access" wording
+already proven correct on the homepage; SE Ranking MCP connector refused re-auth this session (no
+fresh rank/backlink/Domain Trust pull possible — report uses last-confirmed 2026-11-20 figures: rank
+flat 0/22, backlinks flat 2/1), CI green 69/69 all-time going into this push
+
+CONTEXT: this checkout's `main` was again 4 commits behind `origin/main` on a detached HEAD at session
+start (same gap class as 11-20's finding, not 11-20's own fault — those commits were already on
+`origin/main`); fast-forwarded local `main` cleanly, confirmed `git status -sb` shows no divergence
+before proceeding. SE Ranking: `mcp__Se-Rankings__*` reconnect was refused outright this session (no
+prior-session connect/disconnect event recorded) — unlike the occasional `CONNECT_TIMEOUT` seen
+before, this was a hard sign-in refusal, so no fresh `PROJECT_getPositionHistory`/
+`DATA_getBacklinksSummary`/`DATA_getDomainAuthority`/`PROJECT_listLlmEngines` pull was possible;
+flagging for a human to re-authorize next session. `catalog.ts`/`destinations/catalog.ts` re-checked
+directly (code, not SE Ranking): still only 6 live connectors (GA4, GSC, Google Ads, YouTube,
+PageSpeed Insights, GBP), all `coming_soon` entries past their ETAs unchanged — FOCUS cluster
+(connector matrix 5/5, comparison hub 5/5, blog 10 posts) re-confirmed exhausted. Audited
+`/destinations/[slug]` (catalog-driven `route.ts`, status/bubbles pulled live from
+`DESTINATION_CATALOG`, cannot structurally overclaim) and its FAQ copy against current statuses — no
+drift found, "Looker Studio, Google Sheets, Google BigQuery, and the Slack Digest are live or in beta
+today" still matches `beta`/`beta`/`beta`/`live` exactly. `sitemap.ts`'s `lastModified` (12-week-
+strategy #14) was already fixed in an earlier session (per-page dates, not blanket `new Date()`) —
+re-confirmed, nothing to do there.
+
+Per 11-19's NEXT #4 (pick the sitemap fix or a fresh `/destinations/*`-style audit), re-opened the
+`src/lib/schema.ts`/`getSoftwareApplicationSchema()` question one more time instead — 11-19's own NEXT
+had flagged `/services/[slug]/page.tsx` as "itself dead" (per 11-12's finding) but no session had
+followed that thread to its conclusion: if the schema-wiring sessions (11-05 wired it in, 11-09
+"fixed" a fabricated AggregateOffer on it, 11-12 added `@id`s referencing it) were all editing a page
+template Next.js never serves, the live persona pages' actual schema was never touched by any of that
+work. Confirmed via build output (`app-paths-manifest.json` lists both `/services/[slug]/page` and
+`/services/account-manager/route` etc. as separate entries) and, conclusively, by running `next dev`
+and curling `/services/account-manager` directly: the response is the `arlo-*`-classed static shell
+(not the React template), and its "Global Markup Schema" `<script>` block still carried the exact
+pre-11-09 stale `Organization`/`WebSite`/`SoftwareApplication` JSON-LD with `"offers":{"price":"0",
+"priceCurrency":"USD","description":"Free plan available"}` — no `@id`s, no `AggregateOffer`, none of
+the fixes 3 separate worklog entries claimed to have shipped "to all 6 persona pages." Grepped
+site-wide for the exact string and found it byte-identical (same block, same line 109) in all 6
+persona `_shell.html` files *and* 8 other page-type shells that were never audited for this at all:
+`blog`, `base-template`, `compare` (index + `[slug]` template), `contact`, `destinations` (index +
+`_template`), `about`. Only the homepage's `_shell.html` and `/pricing`'s `_shell.html` — the two files
+11-09 actually edited, both hand-authored and outside the `schema.ts`/`page.tsx` path — ever got the
+real fix.
+- PAGE: `src/app/services/{account-manager,agency-owner,google-ads-specialist,meta-ads-specialist,
+  seo-specialist,solo-business-owner}/_shell.html`, `src/app/blog/_shell.html`,
+  `src/app/base-template/_shell.html`, `src/app/compare/_shell.html`, `src/app/compare/[slug]/
+  _shell.html`, `src/app/contact/_shell.html`, `src/app/destinations/_shell.html`,
+  `src/app/destinations/_template/_shell.html` (14 files) / CHANGE: replaced the `SoftwareApplication`
+  node's `offers.description` ("Free plan available") with the homepage's already-correct, already-
+  shipped wording ("Free for every feature, every client, and every destination during early access —
+  no credit card, no usage limits. Paid plans will be introduced later."), and added the matching
+  `availability`/`url` fields the homepage's `Offer` already carries — a pure text-and-field addition
+  inside an existing self-contained JSON-LD node, no new `@id` cross-references introduced (avoiding
+  any risk of a new dangling-`@id` bug on 14 files at once). / TARGET: no single keyword — a GEO/AI-
+  citation pricing-accuracy fix, the exact bug class `llms.txt` (kickoff), the homepage/pricing page
+  (11-09), and the dangling-`@id` fix (11-12) were all already fixed for *once each*, just never
+  propagated past the two hand-authored files 11-09 happened to touch. / WHY: higher-confidence and
+  higher-severity than re-pulling an already-exhausted FOCUS cluster with SE Ranking down anyway, and
+  it closes a real multi-session blind spot (3 prior entries believed this was done sitewide when it
+  demonstrably wasn't on the pages Google and AI engines actually crawl) rather than relitigating
+  `schema.ts`'s dead-code status again. / VERIFY: `python3 -I` JSON-parsed the `SoftwareApplication`
+  node in all 14 edited files and asserted the new description string is present and the old one is
+  gone, before building; `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`,
+  `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome` prerender failures as
+  every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression;
+  `npm run lint` clean (same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning); ran `next dev`
+  and curled `/services/account-manager`, `/about`, `/contact`, `/blog`, `/compare`, `/destinations` —
+  confirmed "Free plan available" no longer appears in any of the 6 sampled live-rendered pages.
+  `git status` after the build showed only the build-regenerated `src/content/blog/manifest.json` diff,
+  reverted before staging — the real diff is isolated to the 14 `_shell.html` files above.
+
+NEXT:
+1. The "all 6 persona pages" pricing-schema fix is now *actually* closed on the live pages (not just
+   the dead `schema.ts`/`page.tsx` path) — do not re-treat `src/lib/schema.ts`'s dead-code status as
+   unresolved; it is dead, confirmed again this session, and that's fine, it's not wired into anything
+   live. If it's ever deleted (flagged as a candidate since 11-09/11-12, still not done, still not
+   blocking anything), delete `getSoftwareApplicationSchema()`'s callers in `page.tsx` too.
+2. Re-authorize the SE Ranking MCP connector — this session's reconnect attempt was refused outright
+   (not a timeout), so rank/backlink/Domain Trust/AI-visibility figures are one session stale
+   (2026-11-20). If it's still refused next session, that's 2 consecutive sessions without a fresh
+   pull and worth flagging more prominently.
+3. FOCUS keyword cluster exhausted for a 33rd+ consecutive session (connector matrix 5/5, comparison
+   hub 5/5, blog 10 posts) — keep re-pulling fresh each session once SE Ranking is back; watch
+   specifically for any `catalog.ts`/destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+4. This session's technique (re-verify a *claimed-done* fix against the actual live-rendered output,
+   not just the source file a past session edited) is what found this bug, same lesson as 11-09's own
+   "re-audited the 11-05 commit against the live site instead of taking it on faith" — worth repeating
+   on other claimed-done items if FOCUS stays exhausted and no SE Ranking signal is available.
+5. Human decisions still open, unchanged: GSC sitemap submission; off-page Phase 1 (0/6); AI Result
+   Tracker has no LLM engines configured; a real Content-Security-Policy beyond additive headers
+   already shipped; the `www` redirect 307→301/308; the second case study/testimonial (sxo.md #7);
+   verifying whether ARLO's standards-based MCP OAuth implementation actually works with ChatGPT's
+   connector flow before building any "ChatGPT MCP" content.
+6. Next session due ~2026-11-26 (Thu) per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-20 (Fri) — Weekly pulse: 32nd straight flat session (0/22), backlinks flat 2/1, Domain
 Trust flat at 6, AI Result Tracker still unconfigured, CI green 68/68 all-time; also recovered 2
 commits from 11-19 that never made it to origin/main
