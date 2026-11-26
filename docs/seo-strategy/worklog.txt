@@ -6,6 +6,95 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-26 (Thu) — Indexation fix: `/api/indexnow` existed but was dead code (never called by
+anything) and, worse, its hand-maintained URL list omitted `/connect/*` and `/compare/*` — the FOCUS
+cluster's own pages — entirely; fixed both by deriving its list from `sitemap.ts` and wiring a new
+GitHub Action to actually fire it; rank flat for a 33rd straight session (0/22), backlinks flat 2/1,
+Domain Trust flat at 6, AI Result Tracker still unconfigured, CI green 70/70 all-time going into this
+push
+
+CONTEXT: SE Ranking re-authenticated this session (`PROJECT_listProjects`, askarlo.app site_id
+12704162, 22 tracked keywords) after being refused outright last session (11-23) and timing out the
+session before that (11-13) — 2 consecutive stale-data sessions now recovered. `PROJECT_getPositionHistory`
+(2026-11-23→11-26, daily): avg position still flat at 100 (not-ranked floor) every day for both the
+Google USA series and the overall average — unchanged since tracking began 2026-08-01, a 33rd straight
+session flat. `PROJECT_getSummary` corroborates: today/yesterday avg both 100, top5/top10/top30 all 0,
+visibility 0%. `DATA_getBacklinksSummary` (domain mode): 2 backlinks / 1 refdomain, unchanged since
+11-10's `futurlabs.dev` redirect-loss. `DATA_getDomainAuthority`: flat at 6. `PROJECT_listLlmEngines`
+still empty — AI Result Tracker remains unconfigured (9th straight month). `mcp__github__actions_list`
+confirmed all 70 `SEO Report Email` runs since kickoff green, 70/70 all-time going into this session's
+push (run #71). `catalog.ts` re-checked directly: FOCUS cluster (connector matrix 5/5, comparison hub
+5/5, blog 10 posts) re-confirmed exhausted for a 33rd consecutive session; every `coming_soon` entry's
+ETA still past due, unchanged.
+
+Given 34 straight flat sessions despite the full FOCUS cluster being built and repeatedly verified live
+(11-23's audit confirmed the content itself is now accurate too), and GSC sitemap submission still
+human-gated, looked for any indexation mechanism this routine *can* act on without human GSC access.
+Found `src/app/api/indexnow/route.ts` (built per 12-week-strategy.md P2 #14 "add IndexNow", presumably
+in an earlier session not captured in this worklog's current window) — a POST endpoint that submits a
+URL list to the IndexNow API (no account/OAuth needed, just the key file already present at
+`public/ca45c7a616742eea062e85f715f6f354.txt`, confirmed matching the route's hardcoded key). Two
+problems: (1) nothing calls it — grepped the whole repo and `.github/workflows/*`, the only hit was a
+cosmetic mention in the `/sitemap` debug page's list of known API routes, not an invocation; no cron, no
+build hook, no GitHub Action. (2) its hand-maintained `urlList` only ever included the homepage,
+`/about`, `/blog`, `/contact`, tier-1 `/services/*`, and blog posts — it never included `/compare/*` or
+`/connect/*` at all, meaning even a manual call would never have told any search engine about the 10
+pages this entire 12-week strategy is built around.
+- PAGE: `src/app/api/indexnow/route.ts` / CHANGE: replaced the hand-maintained `urls` array with
+  `(await sitemap()).map(e => e.url)` — importing the default export of `src/app/sitemap.ts` directly,
+  so the IndexNow submission list can never drift from the sitemap again (the exact bug class — a
+  hand-maintained duplicate falling out of sync with the real page set — that cost 3 sessions on the
+  pricing-schema fix alone). Verified via a temporary debug log in `next dev` that this now submits all
+  50 sitemap URLs, up from the old list's ~18, and confirmed by diffing `/sitemap.xml`'s `<loc>` entries
+  that `/connect/*` (5) and `/compare/*` (5) are now included. / PAGE: `.github/workflows/indexnow.yml`
+  (new) / CHANGE: a GitHub Action that actually calls the live `/api/indexnow` endpoint — on push to
+  `main` (90s delay for the Vercel deploy to land first), on a Mon/Thu schedule matching this routine's
+  own cadence, and on `workflow_dispatch`. Confirmed GitHub Actions has outbound internet (same
+  assumption the existing Resend-based `seo-report.yml` already relies on), so this will actually reach
+  `api.indexnow.org` once merged — this sandbox itself cannot (outbound blocked), which is why the
+  in-session smoke test below hit the expected network failure at the external-fetch boundary rather than
+  a code bug. / TARGET: no single keyword — an indexation-mechanism fix, not a content fix; the goal is
+  getting Bing/Yandex/Seznam (IndexNow's network) and, via syndication, a faster signal to crawlers in
+  general to actually visit the FOCUS cluster pages, as a second channel alongside the still-unsubmitted
+  GSC sitemap. / WHY: with the FOCUS cluster fully built+verified and no new page content task left
+  un-exhausted, and GSC submission still blocked on a human login, this was the highest-value *lever this
+  routine can actually pull* against the one metric (indexation) every other explanation for "34 straight
+  flat sessions" keeps pointing back to — and it was a real, verifiable, two-part bug (dead + incomplete),
+  not a maybe. / VERIFY: `rm -rf .next && npm install && npm run build` — `✓ Compiled successfully`,
+  `✓ Generating static pages (87/87)`, same 9 pre-existing `(app)/*` + `/welcome` prerender failures as
+  every prior session (missing `NEXT_PUBLIC_CONVEX_URL`, Vercel-only secret), not a regression; `npm run
+  lint` clean (same pre-existing unrelated `sitemap/page.tsx` CSS-tag warning); ran `next dev`, curled
+  `/sitemap.xml` (50 `<url>` entries, including all 5 `/connect/*` and all 5 `/compare/*`), then curled
+  `POST /api/indexnow` with a temporary debug log confirming `urls.length === 50` (matches the sitemap
+  exactly) before the external `fetch()` to `api.indexnow.org` failed on this sandbox's outbound block as
+  expected — removed the debug log before committing; `git status` after the build showed only the
+  build-regenerated `src/content/blog/manifest.json` diff, reverted before staging — the real diff is
+  isolated to the 2 files above (1 edited `.ts`, 1 new `.yml`).
+
+NEXT:
+1. Confirm next session (or check the Action's run history) that `.github/workflows/indexnow.yml`'s
+   first scheduled/push-triggered run actually succeeded against the live site (HTTP 200 from
+   `api.indexnow.org`) — this session could only verify the route's logic locally; the sandbox can't
+   reach the external API to confirm the live round-trip.
+2. 34 straight flat sessions is now a pattern a code fix alone may not be able to explain away — if
+   indexation (via IndexNow + whatever `robots.txt`/sitemap already does) and another full sweep of the
+   content-accuracy bug family don't move anything within a few more sessions, the next open question
+   isn't "what's broken in this repo" so much as "is GSC sitemap submission (still 100% human-gated,
+   flagged every session for months) the actual blocker" — worth a human actually doing that this time,
+   not just re-flagging it.
+3. FOCUS keyword cluster exhausted for a 33rd consecutive session (connector matrix 5/5, comparison hub
+   5/5, blog 10 posts) — keep re-pulling fresh each session; watch specifically for any `catalog.ts`/
+   destinations-catalog entry flipping off `coming_soon`/`waitlist`.
+4. Human decisions still open, unchanged: GSC sitemap submission (now the single most-flagged open item
+   — months running); off-page Phase 1 (0/6); AI Result Tracker has no LLM engines configured (10th
+   straight month); a real Content-Security-Policy beyond additive headers already shipped; the `www`
+   redirect 307→301/308; the second case study/testimonial (sxo.md #7); verifying whether ARLO's
+   standards-based MCP OAuth implementation actually works with ChatGPT's connector flow before building
+   any "ChatGPT MCP" content.
+5. Next session due ~2026-11-30 (Mon) per the established cadence.
+
+=====================================================================================
+
 ## 2026-11-23 (Mon) — Trust/schema fix: found that 11-05/11-09/11-12's "pricing-schema fix" never
 actually reached the live site — it edited `schema.ts`/`page.tsx`, a dead code path shadowed by the
 static `route.ts`/`_shell.html` pages Next.js actually serves — so the stale, thin `"Free plan

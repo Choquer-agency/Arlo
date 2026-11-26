@@ -1,22 +1,18 @@
 import { NextResponse } from "next/server";
 import { SITE_URL } from "@/lib/siteConfig";
-import { getTier1Services } from "@/content/services";
-import { getAllBlogPosts } from "@/content/blog";
+import sitemap from "@/app/sitemap";
 
 const INDEXNOW_KEY = "ca45c7a616742eea062e85f715f6f354";
 
 export async function POST() {
-  const serviceSlugs = getTier1Services().map((s) => s.slug);
-  const blogPosts = await getAllBlogPosts();
-
-  const urls = [
-    SITE_URL,
-    `${SITE_URL}/about`,
-    `${SITE_URL}/blog`,
-    `${SITE_URL}/contact`,
-    ...serviceSlugs.map((s) => `${SITE_URL}/services/${s}`),
-    ...blogPosts.map((p) => `${SITE_URL}/blog/${p.slug}`),
-  ];
+  // Derive the submitted URL list from the sitemap generator itself (single
+  // source of truth) instead of a hand-maintained duplicate list — a
+  // hand-maintained copy is exactly the drift bug class this site has hit
+  // repeatedly elsewhere (stale shells, stale schema). This also means
+  // /connect/* and /compare/*, the FOCUS keyword cluster's own pages, are
+  // included automatically since they're already in sitemap.ts.
+  const entries = await sitemap();
+  const urls = entries.map((entry) => entry.url);
 
   const payload = {
     host: "askarlo.app",

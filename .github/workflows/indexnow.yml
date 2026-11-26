@@ -1,0 +1,39 @@
+name: IndexNow Ping
+
+# Resubmits every indexed URL (from sitemap.ts, via /api/indexnow) to IndexNow
+# (Bing/Yandex/Seznam/Naver — syndicated further from there) so new/changed
+# pages get picked up without waiting on a manual GSC submission. The route
+# itself (src/app/api/indexnow/route.ts) existed for weeks but was never
+# wired to anything — this is what actually fires it.
+#
+# Runs on a schedule (content changes even without a push, e.g. a
+# `lastUpdated` bump) and after every push to main, with a delay so Vercel's
+# deploy has finished first.
+on:
+  schedule:
+    - cron: "0 9 * * 1,4" # Mon & Thu, 09:00 UTC — same cadence as the SEO routine
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: indexnow-ping
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel deploy
+        if: github.event_name == 'push'
+        run: sleep 90
+
+      - name: POST to /api/indexnow
+        run: |
+          code=$(curl -s -o /tmp/indexnow.json -w "%{http_code}" -X POST https://askarlo.app/api/indexnow)
+          echo "HTTP $code"
+          cat /tmp/indexnow.json
+          echo
+          if [ "$code" -ge 400 ]; then
+            echo "::warning::IndexNow ping returned HTTP $code"
+          fi
