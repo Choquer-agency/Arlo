@@ -6,6 +6,8 @@ Hard rules: build-gate every deploy; stage only files you changed; never 301 sis
 
 =====================================================================================
 
+## 2026-11-27 (Fri) — Weekly pulse: rank flat 34th straight session (0/22), backlinks flat 2/1, 11-26's IndexNow Action verified live (HTTP 200, 50 URLs submitted), 71/71 CI all-time; no code changes. See reports/outbox/2026-11-27-weekly-pulse.json.
+
 ## 2026-11-26 (Thu) — Indexation fix: `/api/indexnow` existed but was dead code (never called by
 anything) and, worse, its hand-maintained URL list omitted `/connect/*` and `/compare/*` — the FOCUS
 cluster's own pages — entirely; fixed both by deriving its list from `sitemap.ts` and wiring a new
